@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>DOM基本操作及简单优化</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<style>
+#slideshow{
+	height:100px;
+	width:100px;
+	overflow:hidden;
+	position:relative;
+}
+ol{
+	list-style: none;
+}
+</style>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+	
+<p class="title">DEMO演示 DOM基本操作</p>
+<p>these are the things you should know</p>
+<ol id="linklist">
+	<li><a href="#">Structure</a></li>
+  	<li><a href="#">Presentation</a></li>
+	<li><a href="#">Behavior</a></li>
+</ol>
+
+
+<p class="title" id="js_title">DEMO js代码</p>
+<pre>
+window.onload = function(){
+
+	var slideshow = document.createElement('div');     //在js DOM里面创建div和img 而不是写在HTML里 
+	var preview = document.createElement('img');       //这样即使用户不开启JS 也能平稳退化 看不到滚动图片 也不影响其他效果
+	var oPre = document.getElementById('pre');
+	slideshow.appendChild(preview);
+	document.body.insertBefore(slideshow, oPre);
+	slideshow.setAttribute('id','slideshow');          //创建的id=slideshow的div在css中设置了宽度100溢出隐藏 这样值显示400宽度图片的1/4
+	preview.setAttribute('id','preview');
+	preview.setAttribute('src','aa.jpg');
+	
+	var preview = document.getElementById('preview');
+	preview.style.position = 'absolute';               //图片绝对定位
+	
+	var list = document.getElementById('linklist');
+	var links = list.getElementsByTagName('a');        //给每个a加事件
+	links[0].onmouseover = function(){
+		moveElement('preview',-100,0,20);      	   //调用运动函数
+	}		
+	links[1].onmouseover = function(){
+		moveElement('preview',-200,0,20);
+	}
+	links[2].onmouseover = function(){
+		moveElement('preview',-300,0,20);
+	}	
+
+}
+
+function moveElement(elementID,xFinal,yFinal,interval){    //参数都不加分号，后续是字符串的，具体到位置自己加分号
+	var elem = document.getElementById(elementID);
+	if(!elem.style.left){
+		elem.style.left = '0px';                   //加了这两句，在prepareSlideshow()中就不需要初始化初始位置了
+	}
+	if(!elem.style.top){
+		elem.style.top = '0px';
+	}
+	var xPos = parseInt(elem.style.left);
+	var yPos = parseInt(elem.style.top);
+	
+  	clearTimeout(elem.movement);                		//每次开启定时器 清空上一次的定时器
+         
+	if(xPos == xFinal && yPos == yFinal){  
+		return true;								    
+	} 															  
+	if(xPos&ltxFinal){		
+		dist = Math.ceil((xFinal - xPos)/10);		//离得越远 每次移动的距离dist越多 所以移动的越快		   
+		xPos = xPos + dist;											   
+	}															    
+	if(xPos>xFinal){		
+	  	dist = Math.ceil((xPos - xFinal)/10);
+		xPos = xPos - dist;												                                  
+	}															  
+	if(yPos&ltyFinal){	
+		dist = Math.ceil((yFinal - yPos)/10);							 
+		yPos = yPos + dist;                         
+	} 															 
+	if(yPos>yFinal){ 		
+		dist = Math.ceil((yPos - yFinal)/10);		 
+		yPos = yPos - dist;								 
+	}
+	elem.style.left = xPos + 'px';
+	elem.style.top = yPos + 'px'; 	
+	
+	var repeat = 'moveElement("'+elementID+'",'+xFinal+','+yFinal+','+interval+')'
+  	elem.movement = setTimeout(repeat,interval);	       //回调 形成类似setInterval
+}	
+</pre>
+
+
+<p class="title">DEMO html代码</p>
+<pre>
+&ltp class="title">DEMO演示&lt/p>
+&ltp>these are the things you should know&lt/p>
+&ltol id="linklist">
+	&ltli>&lta href="#">Structure&lt/a>&lt/li>
+  	&ltli>&lta href="#">Presentation&lt/a>&lt/li>
+	&ltli>&lta href="#">Behavior&lt/a>&lt/li>
+&lt/ol>
+</pre>
+
+
+<p class="title">DEMO css代码</p>
+<pre>
+#slideshow{
+	height:100px;
+	width:100px;
+	overflow:hidden;
+	position:relative;
+}
+ol{
+	list-style: none;
+}
+</pre>
+
+
+<p class="title">js性能优化</p>
+<pre>
+//1：尽量减少js操作DOM的次数 以提高运行性能
+/*console.time('test1');     		//这个程序耗时540ms
+var oDiv1 = document.getElementById('test1');
+for(var i=0 ; i&lt10000; i++){
+	oDiv1.innerHTML += 'a';   	//操作了10000次DOM 
+}
+console.timeEnd('test1');
+
+console.time('test2');  		//这个程序耗时1ms
+var oDiv2 = document.getElementById('test2');
+var str = '2';
+for(var i=0 ; i&lt10000; i++){
+	str += 'a';
+}
+oDiv2.innerHTML = str;   		//操作了1次DOM 
+console.timeEnd('test2');*/
+
+
+//2：尽量在appendChild前添加完innerHTML等操作 如下测试appendChild前添加耗时94ms appendChild后添加耗时164ms 
+/*console.time('ul1');     		//这个程序耗时94ms
+var oUl1 = document.getElementById('ul1');
+for(var i=0 ; i&lt10000; i++){
+	var oLi1 = document.createElement('li');  //创建10000次
+	oLi1.innerHTML = 'li1';   	//尽量在appendChild前添加完innerHTML等操作 
+	oUl1.appendChild(oLi1);   	//如果在appendChild后添加 会触发浏览器的多次重排重绘
+}   
+console.timeEnd('ul1');*/
+
+
+//3: cloneNode比重复createElement性能好
+/*console.time('ul2');  			//这个程序耗时32ms
+var oUl2 = document.getElementById('ul2');
+var oLi2 = document.createElement('li');  	//创建一次
+oLi2.innerHTML = 'li2';
+for(var i=0 ; i&lt10000; i++){
+	var oNewLi2 = oLi2.cloneNode(true);   	//克隆10000次
+	oUl1.appendChild(oNewLi2);
+}
+console.timeEnd('ul2');*/
+
+
+//4：预先存储 避免在for 定时器等循环中反复获取固定值
+/*for(var i=0; i&lt10000; i++){      	//性能差
+	alert($('.aaa').html());     	//进行了10000的元素查找 html内容提取
+}
+//如果$('.aaa').html()不管怎么循环 其实都是固定值的 那就应该预先存储
+var aaa = $('.aaa').html();
+for(var i=0; i&lt10000; i++){     //性能好
+	alert(aaa);     	//没有进行元素查找 html内容提取
+}*/
+
+
+//5：利用document.createDocumentFragment()收集文档碎片 集中打包处理
+/*var oUl1 = document.getElementById('ul1');
+var oFrag = document.createDocumentFragment();
+for(var i=0 ; i&lt10000; i++){
+	var oLi1 = document.createElement('li');  
+	oLi1.innerHTML = 'li1';   
+	oFrag.appendChild(oLi1);      	//把碎片化的li 打包缓存到oFrag里
+}   
+oUl1.appendChild(oFrag);          	//打包好的oFrag 集中一次给到oUl1
+//这种就比在循环内部直接oUl1.appendChild(oLi1)要速度快*/
+
+
+//6：尽量使用事件委托取代事件绑定
+
+//7: 变量查找从内到外 所以全局变量是最后被查找到的 所以全局变量性能最差
+
+//8：慎用闭包，少用with语句，少用eval，少用for in，浮点转整型用Math.floor而不用parseInt 
+
+
+//总结：js性能优化
+//1：尽量使用事件委托
+//2：循环时，arr.length等不需要循环变化的值先预存为固定值，避免多次计算arr.length等值
+//3：尽量使用局部变量，慎用闭包，少用with eval for in，用match.floor浮点转整型而不是parseInt
+//4: 尽量少访问DOM，例如先循环10000次拼接好字符串再innerHTML，而不是循环10000次innerHTML
+//5: 先innerHTML再appendChild，否则会触发重排重绘。
+//6：创建多个重复元素不要循环用createElement，而是创建一个然后cloneElement(true)
+//7：碎片元素用createDocumentFragment预存，然后集中处理。
+</pre>
+ 
+ 
+</body> 
+</html>    
+      
+     
+     
+     

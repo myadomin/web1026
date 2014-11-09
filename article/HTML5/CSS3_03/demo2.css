@@ -1,0 +1,25 @@
+/*当前屏幕宽度小于1000px大于600px时*/
+.wrap{
+	border: 1px solid green;
+	width: 100%;
+	padding: 10px 0;
+}
+.header{
+	width: 100%;
+	height: 100px;
+	background: red;
+	margin-bottom: 10px;
+}
+.sidebar{
+	width: 200px;
+	height: 100px;
+	float: left;
+	background: green;
+}
+.content{
+	width: 100%;
+	/*左边的sidebar已脱离稳定流 这里的content 100%并且margin-left 210px 形成自适应屏幕宽度*/
+	margin-left: 210px;
+	background: blue;
+	height: 100px;
+}

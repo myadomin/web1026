@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>AjaxJQ的应用</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+</head>
+<body>
+
+
+<p class="title">AjaxJQ的应用笔记</p>
+<pre>
+$(function(){
+
+<strong>//一：obj.load()方法 请求test1.php文档</strong>
+//合适请求静态数据 
+$("#btn1").click(function(){
+	//1：不需要刷新整个页面 点击按钮局部刷新 读取当前的test1.php的值 放入到#div1下 
+	//test1.php中的ul等HTML标签也能解析 相当于$("#div1").html()了
+	/*$("#div1").load("test1.php");*/  
+
+	//2："test.php #ul1"这类格式 先得到返回的整个HTML(返回值其实还是整个HTML文档)
+	//然后筛选此php中所有的HTML文档的id=ul1标签的HTML内容 并解析HTML标签
+	/*$("#div1").load("test1.php #ul1");   		//筛选id=ul1的ul下的HTML内容 然后加载 
+	$("#div1").load("test1.php #ul1>li")   		//筛选id=ul1的ul下的li的HTML内容 然后加载
+	$("#div1").load("test1.php .li1")   		//筛选class=li1的li的HTML内容 然后加载 所以是11 21
+	$("#div1").load("test1.php #ul1>.li1")   	//筛选id=ul1的ul下的class="li1"的li的HTML内容 然后加载 11
+	$("#div1").load("test1.php ul li")   		//筛选所有ul下的li的HTML内容 然后加载 */
+
+	//3：load()方法后续不加参数 就默认是get方式请求可以？键值对
+	/*$("#div1").load("test1.php?name=luo");*/
+
+	//4：load()方法可选第二个参数 默认的GET 写了第就是POST 传一个键值对data变成POST提交  
+	/*$("#div1").load("test1.php", {age:30});*/
+
+	//5：load()方法可选第三个参数 带一个回调函数 没写第二个参数就是 
+	/*$("#div1").load("test1.php?name=luo", function(){   //GET
+		alert("页面应该会显示 GET提交部分输出： 是GET方式提交给我的,并且是?name=luo ");
+	});*/
+	
+	//6：第三个参数回调函数内还能带三个参数
+	/*$("#div1").load("test1.php #ul1>.li1", function(response, status, xhr){
+		alert(response); 	//这个response就是返回值 就是整个没有解析的HTML标签的php文档	
+		alert(status);   	//success  当前的状态 成功状态
+		alert(xhr);      	//[object Object]
+		alert(xhr.responseText);  //返回数据 字符串形式 等同于直接alert("response")
+		alert(xhr.responseXML);   //返回数据 XML形式 这里未定义
+		alert(xhr.status);  	  //返回状态 200 等同于成功状态
+		alert(xhr.statusText);    //返回状态说明 OK
+	});*/
+
+});
+
+
+
+<strong>//二：$.get()  $.post()  $.getJSON() $.getScript() 请求test2.php test2.xml test2.json</strong>
+//全局方法 合适请求动态php文档
+$("#btn2").click(function(){
+	//1：普通的get()操作 不带第二个参数 带第三个回调函数才能获取data返回值
+	//JQ封装的ajax的回调函数 都有三个参数 可写三个或者只写一个data也可以
+	/*$.get("test2.php",function(data,status,xhr){ 
+		alert(data);              //第一个参数 返回的数据
+		alert(status);            //第二个参数 状态值 success
+		alert(xhr.responseText);  //第三个参数 对象  
+	});*/
+
+	//2：不带第二个参数 带?的get()操作 请求test2.php中  
+	/*$.get("test2.php?name=luo", function(response){
+		$("#div2").html(response);
+	});*/
+
+	//3：带第二个可选参数的get()操作 键值对不附在url的?后了 写在第二个参数(字符串形式) 
+	/*$.get("test2.php", "name=luo", function(response){
+		$("#div2").html(response);
+	});*/
+
+	//4：带第二个可选参数的get()操作 键值对形式
+	/*$.get("test2.php", {name:"luo"}, function(response){
+		$("#div2").html(response);
+	});*/
+	
+	//5：不带第二个可选参数的post()操作 没法传给后台数据
+	/*$.post("test2.php", function(response){
+		$("#div2").html(response);
+	});*/
+
+	//6：带第二个可选参数的post()操作 字符串形式
+	/*$.post("test2.php", "name=luo", function(response){
+		$("#div2").html(response);
+	});*/
+
+	//7：带第二个可选参数的post()操作 键值对形式  
+	/*$.post("test2.php", {name:"luo"}, function(response){
+		$("#div2").html(response);
+	});*/
+
+	//8：get() post()都有第四个可选参数 用于指定返回数据的文本格式是xml,html,script,json,text的那种
+	//一般会自动判断加载的是何种文本格式 所以一般很少用第四个参数
+	//加载XML文档 不需加第四个参数也会自动识别 返回response为object XMLDocument 
+	/*$.post("test2.xml", function(response){
+		alert($(response).find("my").find("name").text());  
+	});*/
+
+	//9：加载JSON文档 不加第四个参数也会自动识别 返回response为object JSON形式的数组
+	/*$.post("test2.json", function(response){
+		alert(response[0].my.name);  
+	});*/
+	
+	//10：getJSON() 专门用于请求JSON格式文档 无第四个参数了
+	/*$.getJSON("test2.json", function(response){
+		alert(response[0].my.name);  
+	});*/
+
+	//11：getScript() 专门用于请求js 主要用于某些特定时刻加载特定的JS以节约资源
+	// $.getScript("test2.js"); 		//一般应用中写一个参数就行了 很少写第二个可选参数回调函数
+
+});
+
+
+
+<strong>//三：$.ajax()</strong>
+//1: $.ajax()常用属性 请求test3.php 
+/*$("#btn3").click(function(){
+	$.ajax({
+		type:"POST",
+		url:"test3.php",
+		data:{name:"luo"},
+		success:function(response,status,xhr){
+			$("#div3").html(response);   
+		},
+		//下面是不常用属性
+		timeout:500,    	//如果500ms还没加载完 就取消这个ajax请求
+		error:function(xhr, errorText, errorType){  	//如果错误 就会执行这个函数
+			alert("请求失败后");
+			alert(errorText+"----"+errorType);  		//error----Not Found
+			alert(xhr.status+"---"+xhr.statusText);  	//404---Not Found
+		},
+		complete:function(){
+			alert("请求完成后，不管是否请求成功");
+		},
+		beforeSend:function(){
+			alert("发送请求前执行");
+		}
+	});
+});*/
+
+
+//2：伪造表单 实际通过ajax请求test3.php  
+/*$("#form1 input[type=button]").click(function(){
+	$.ajax({
+		type:"POST",
+		url:"test3.php",
+		data:{
+			user:$("#form1 input[name=user]").val(),
+			email:$("#form1 input[name=email]").val()
+		},
+		success:function(response){
+			$("#div4").html(response);
+		}
+	});
+});*/
+
+
+//3: 表单对象序列化方法 表单元素.serialize() 
+/*$("#form1 input[type=button]").click(function(){
+	$.ajax({
+		type:"POST",
+		url:"test3.php",
+		//如果data数据有很多个表单元素的键值对 写起来很麻烦
+		//通过serialize()对整个表单进行序列话 自动形成合适传输的数据
+		data:$("#form1").serialize(), 
+		success:function(response){
+			$("#div4").html(response);
+		}
+	});
+});*/
+
+
+//4: 表单对象.serializeArray() 形成json格式的数组
+/*$("#form1 input[name=sex]").click(function(){
+	var json = $(this).serializeArray();
+	console.log(json);   
+	$("#div4").html(json[0].name +"---"+json[0].value); //json显示的数组
+});*/
+
+
+//5: $.ajaxSetup()初始化 避免了每次写一个ajax()都设置一次
+/*$.ajaxSetup({
+	type:"POST",
+	url:"test3.php",
+	data:$("#form1").serialize()
+});
+$("#form1 input[type=button]").click(function(){
+	$.ajax({
+		success:function(response){
+			$("#div4").html(response);
+		}
+	});
+});*/
+
+
+//6: $(document).ajaxStar()  $(document).ajaxStop()  
+/*$("#form1 input[type=button]").click(function(){
+	$.ajax({
+		type:"POST",
+		url:"test3.php1111",
+		data:{
+			user:$("#form1 input[name=user]").val(),
+			email:$("#form1 input[name=email]").val()
+		},
+		success:function(response){
+			$("#div4").html(response);
+		}
+	});
+});
+$(document).ajaxStart(function(){   
+	$("#div5").show();        //开始加载就显示一行字
+}).ajaxStop(function(){
+	$("#div5").hide();        //加载完成就隐藏这行字
+});*/
+
+
+//7：obj.ajaxError() 通过它得到错误信息 主要用于get() post()这种无法写error属性的方法
+/*$("#form1 input[type=button]").click(function(){
+	$.get("xxxx.php");
+});
+$(document).ajaxError(function(event,xhr,settings,errorType){
+	alert(event.type);      //ajaxError
+	alert(event.target);    //object HTMLDocument
+	alert(settings.url);    //xxxx.php
+	alert(settings.type);   //GET
+	alert(errorType);   	//Not Found
+});*/
+
+
+//8：obj.ajaxSend()  obj.ajaxComplete()  obj.ajaxSuccess()  obj.ajaxError()
+//等同ajax()函数里的对应属性
+/*$("#form1 input[type=button]").click(function(){
+	$.get("xxxx.php");
+});  
+$(document).ajaxSend(function(){
+				alert("发送请求前执行");
+			})
+			.ajaxComplete(function(){
+				alert("请求完成后，不管是否请求成功");
+			})
+			.ajaxSuccess(function(){
+				alert("请求成功后");
+			})
+			.ajaxError(function(){
+				alert("请求失败后");
+			}); */
+
+
+//9：jqXHR对象 意思就是整个ajax()执行完毕后的返回值 也可以叫jqXHR 也可以叫XXX 
+//如果success写在ajax()内部  那success只能执行一次 之后请求别的文档写的success会覆盖前一个请求success
+//所以如下 把ajax()赋值给jqXHR对象 然后用jqXHR.success() 可以同时执行多个成功后的函数
+/*$("#btn11").click(function(){;
+	var jqXHR = $.ajax({
+		type:"POST",
+		url:"test3.php",        
+	});
+	//把整个ajax返回看成一个jqXHR对象 jqXHR对象下还能调用ajax下的success等方法
+	jqXHR.success(function(response){       
+		$("#div11").html(response);       
+	});                            
+	jqXHR.success(function(){
+		alert("xxxx");
+	});
+	//但是这样的话 后一个success函数还是会覆盖前一个 所以基本没用 用下面的.done()代替.success()
+});*/
+
+
+//10：done()取代上面的.success()  
+//第二个请求的success不覆盖第一个请求的success 
+/*var jqXHR1 = $.ajax("test1.php");   
+var jqXHR2 = $.ajax("test2.php");
+jqXHR1.done(function(response){
+	alert(response);
+});
+jqXHR2.done(function(response){     
+	alert(response);
+});*/
+
+
+//11：通过$.when() 也可以把上面的两个集成到一个函数里
+/*var jqXHR1 = $.ajax("test1.php");   
+var jqXHR2 = $.ajax("test2.php");
+$.when(jqXHR1, jqXHR2).done(function(r1, r2){  
+	alert(r1);
+	alert(r2);
+})*/
+
+
+}); 
+</pre>
+
+</body> 
+</html>    
+      
+     
+     
+     

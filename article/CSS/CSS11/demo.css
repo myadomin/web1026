@@ -1,0 +1,85 @@
+﻿*{
+	margin: 0px;
+	padding: 0px;
+}
+
+body{
+
+}
+
+ul{
+	list-style: none;
+}
+
+#box1{
+	width: 400px;
+	height: 300px;
+	background: #ddd;
+}
+#box1 .left{
+	width: 200px;
+	height: 200px;
+	background: red;
+	float: left;
+}
+#box1 .right{
+	width: 200px;
+	height: 200px;
+	background: blue;
+	float: left;
+}
+#box1 .right .inner{
+	width: 180px;
+	padding: 15px;
+}
+
+#box2{
+	width: 200px;
+	height: 100px;
+	background: #ccc;
+	margin-top: 50px;
+}
+#box2 p{
+	height: 5px;
+	background: red;
+	overflow: hidden;
+}
+
+#box3{
+	width: 200px;
+	background: #ccc;
+	margin-top: 50px;
+	overflow: hidden;
+}
+#box3 p{
+	width: 100px;
+	height: 100px;
+	background: red;
+	margin: 50px;
+}
+
+#box4{
+	width: 200px;
+	height: 100px;
+	background: #ccc;
+	margin: 50px;
+	float: left;
+	display: inline;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

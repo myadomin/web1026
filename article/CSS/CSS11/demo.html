@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>CSS兼容性总结</title>
+<link rel="stylesheet" type="text/css" href="demo.css" />
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+	
+	<div id="box1">
+		<div class="left">left</div>
+		<div class="right">
+			right
+			<p class="inner">inner</p>
+		</div>
+		p.inner左右各padding了15px(宽度变成210px) IE6下会导致父元素.right也变成210px 所以左浮不上去
+		其他浏览器不会导致父元素.right超过自身定义的200px 所以可以左浮上去
+	</div>
+
+	<div id="box2">
+		<p></p>
+		当前的这个标签(红色区域)如果高度小于19px，在IE6下就会默认给他19px的高度，解决的办法就是在这个标签上加上overflow:hidden
+	</div>
+
+	<div id="box3">
+		<p></p>
+		当前的这个标签(红色区域)maring:50px后，IE6左右上下都能margin，其他浏览器只能margin左右，
+		要让其他浏览器上下也能margin，就在父元素#box3上加overflow:hidden
+	</div>
+
+	<div id="box4">
+		IE6下，block元素在浮动后，margin左右会出现双倍值，解决办法就是设置block元素为display:inline
+	</div>
+	
+
+</body> 
+</html>    
+      
+     
+     
+     

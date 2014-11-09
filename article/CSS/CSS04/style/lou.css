@@ -1,0 +1,53 @@
+﻿#sidebar {
+	width:266px;
+	height:850px;
+	background:#fff;
+	float:left;
+	border-right:1px solid #ccc;
+}
+#sidebar embed {
+	display:block;
+	width:220px;
+	height:200px;
+	margin:0 auto;
+	margin-top:20px;
+}
+#contents {
+	width:600px;
+	height:850px;
+	background:#fff;
+	float:right;
+}
+#contents h1 {
+	background:url(../img/lou.gif) no-repeat;
+	width:127px;
+	height:26px;
+	margin-top:20px;
+	margin-left:20px;
+}
+#contents dl {
+	float:left;
+	/*！！！float的经典案例！！！！！！
+	dl下面的dt dd共六个元素按竖着成一列，
+	一个float:left就能让他们排版出来*/
+	margin-left:15px;
+	margin-top:10px;
+}
+#contents dl dt {
+	width:234px;
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	background:#eee;
+	border-bottom:1px solid #f60;
+	margin-left:8px;
+}
+#contents p{
+	clear:both;
+	text-align:center;
+	padding-top:30px;
+
+/*在p周围加个border，深刻理解下padding和margin的区别，
+此地方要移动p的文字，只能padding动。*/
+}
+

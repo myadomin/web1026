@@ -1,0 +1,86 @@
+﻿*{
+	margin:0px;
+	padding:0px;
+}
+#timer{
+	width:600px;
+	height:660px;
+	background:url(img/bg.jpg) no-repeat;
+	margin:20px 0 0 100px;
+}
+#box1{
+	width:350px;
+	height:30px;
+  	padding:108px 0 0 136px;;
+}
+#box1 span{
+	color:#ccc;
+	font-size:14px;
+	font-weight:bold;
+}
+#box1 input{
+	height:18px;
+	border:none;
+	text-align:center;
+	font-weight:bold;
+	color:#666;
+	background:none;         /*这里直接background:none;就行了 不切图了 设置opacity不行 设置到透明字也透明了。*/
+}
+#input1{
+	width:75px;
+}
+#input2{
+	width:46px;
+	margin-left:10px;
+}
+#input3{
+	width:46px;
+	margin-left:2px;
+}
+#box2{
+	height:150px;
+	width:150px;
+	background:url(img/btn_hover.jpg);
+	margin:18px 0 0 235px;
+	opacity:0;
+}
+#box3{
+	height:24px;
+	width:298px;
+	color:#ccc;
+	font-weight:bold;
+	margin:30px 0 0 165px;
+}
+#box3 span{
+	color:orange;
+}
+#box4{
+	width:500px;
+	height:80px;
+ 	margin:32px 0 0 48px;
+}
+#box4 p{
+	height:60px;
+	float:left;
+	color:lightgreen;
+	font-weight:bold;
+	font-size:54px;
+	text-align:right;
+}
+#day{
+	width:120px;
+}
+#hour{
+  width:60px;
+  margin-left:44px;
+}
+#min{
+  width:60px;
+  margin-left:72px;
+}
+#sec{
+  width:60px;
+  margin-left:42px;
+}
+
+

@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>现代事件绑定与事件委托</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+
+<p class="title">DEMO演示 现代事件绑定与事件委托</p>
+<input type="button" id="button1" value="测试传统事件绑定"/>
+<input type="button" id="button2" value="测试现代事件绑定"/>
+<input type="button" id="button3" value="测试removeEvent-1"/>
+<input type="button" id="button4" value="测试removeEvent-2"/>
+<br /><br /><br />
+
+<input type="button" id="btn1" value="事件委托 动态生成li自动具备mouseover变色事件"/>
+<ul id="ul1">
+	<li>1111</li>	
+	<li>2222</li>	
+	<li>3333</li>	
+	<li>4444</li>	
+</ul>
+
+
+<p class="title">js代码</p>
+<pre>
+//现代事件绑定与事件委托
+<strong>//一：现代事件绑定</strong>
+addEvent(window,"load",function(){
+
+	//1：使用传统的事件绑定出现的问题 后一个事件会覆盖前一个事件 所以只能打印33，
+	var oBtn1 = document.getElementById('button1');
+	oBtn1.onclick = function(){
+		alert(11);	 
+	}
+	oBtn1.onclick = function(){
+		alert(22);	 
+	}
+	oBtn1.onclick = function(){
+		alert(33);	 
+	}   
+	
+	//2:所以下面用现代绑定事件 后一个事件不会覆盖前一个事件 能依次输出11 22 33 但是IE低版本输出顺序不固定是11 22 33
+  	var oBtn2 = document.getElementById('button2');
+	addEvent(oBtn2,'click',function(){alert(11)});
+	addEvent(oBtn2,'click',function(){alert(22)});
+	addEvent(oBtn2,'click',function(){alert(33)});
+
+	//3:注意下面的两个fn函数其实不是同一个函数 都是new Function出来的新对象 不会删除事件 所以还是能弹窗11
+	var oBtn3 = document.getElementById('button3');
+	addEvent(oBtn3,'click',function(){alert(11)});
+	removeEvent(oBtn3,'click',function(){alert(11)});
+
+	//4:如果要删除上面已绑定的弹窗11函数 用下面的方法 函数复制给变量
+	var oBtn4 = document.getElementById('button4');
+	var foo = function(){alert(11)};              
+	addEvent(oBtn4,'click',foo);       
+	removeEvent(oBtn4,'click',foo);       //这样后 删除事件的函数和上面的添加的事件函数就是同一个函数了
+	
+}); 
+
+
+
+<strong>//二：现代事件绑定的深入分析</strong>
+//1：早期事件绑定中的冒泡与捕获
+//IE实现了冒泡事件流，也就是某个DOM元素触发事件后，会从这个DOM元素开始一直冒泡往父元素找是否也有定义此类事件
+//一直找到文档根元素，如果某层父元素也有定义此类事件，那这个父元素也触发此类事件。
+//而Netscape实现了捕获事件流，也就是某个DOM元素触发事件后，会从根元素一直捕获往下找直到这个DOM元素，看是否也有定义此类事件
+//如果某层元素也有定义此类事件，那这个DOM元素也触发此类事件。
+
+//2：现代事件绑定中的冒泡与捕获
+//现代标准的事件绑定同时实现了冒泡和捕获，在绑定事件时obj.addEventListener(type,fn,false); 
+//如果是false就只保留冒泡，如果是true就先捕获再冒泡，一般实际应用中只需要冒泡。
+
+//3：如何阻止冒泡
+//在实际开发中经常不希望有冒泡 所以通过本文封装的stopPropagation(ev)函数实现
+
+//4: IE现代事件绑定的问题
+//被绑定的对象this指向window，被绑定的事件不按照绑定前后顺序依次执行，解决具体见本文addEvent函数封装
+
+
+
+<strong>//三：封装函数</strong>
+//跨浏览器事件绑定，能在一个对象上同时绑定多个事件，而不是前一个被后一个事件覆盖
+function addEvent(obj, type, fn){
+	if(obj.attachEvent){				      		//IE低版本
+		obj.attachEvent('on'+type, function(){
+			//由于IE下这里的this永远指向window 所以用对象冒充让this正确指向到obj 
+			//如果fn回调函数中return flase 那就执行if里的阻止冒泡及默认事件  
+			if(false == fn.call(obj)){	
+				//阻止冒泡及默认事件   			  
+				event.cancelBubble = true;       
+				return false;    
+			}                      
+		});
+	}else{											//w3c IE高版本
+		obj.addEventListener(type, function(ev){
+			//本来w3c下直接fn 并不需要function(){fn.call(obj)}对象冒充的 
+			//如果fn回调函数中return flase 那就执行if里的阻止冒泡及默认事件 
+			if(false == fn.call(obj)){  
+				//阻止冒泡及默认事件          
+				ev.stopPropagation();
+				ev.preventDefault();
+			}
+		}, false);  
+	}
+}
+
+//跨浏览器删除事件
+function removeEvent(obj, type, fn){
+	if(obj.removeEventListener){   			//W3C
+		obj.removeEventListener(type,fn,false); 
+	}else if(obj.detachEvent){  			//兼容IE低版本
+		obj.detachEvent('on'+type,fn);
+	}
+}
+
+//阻止冒泡
+function stopPropagation(ev){  
+	var oEvent = ev || window.event;  
+	if(oEvent.stopPropagation){ 		//W3C阻止冒泡方法  
+	    oEvent.stopPropagation();  
+	}else{  
+	    oEvent.cancelBubble = true; 	//IE阻止冒泡方法  
+	}  
+}  
+
+//阻止默认行为
+function preDef(ev){
+	var oEvent = ev || event;
+	if (oEvent.preventDefault) {   		//W3C
+		oEvent.preventDefault();
+	} else {						//IE
+		oEvent.returnValue = false;		//IE
+	}
+} 
+
+
+
+<strong>//四：事件委托</strong>
+//1：什么叫事件委托:很多的li要做同一件事情，那就需要循环，直接在li的父元素ul上加上这个事件，就叫事件委托。
+//2：如果事件委托后，li及父元素ul都会进行同一个事件，我只要li进行这个事件怎么办？
+//3：那就需要找出事件源，在这里通过var target = oEvent.target||oEvent.srcElement 找出对ul操作时这里的两个事件源 ul li
+//4：target事件源就包括当前被事件元素及他下面的所有子元素，在这里就是ul li
+//5：判定事件源的nodeName，当事件源target.nodeName == 'LI'也就是li才执行操作，当事件源是ul时不操作。
+//6：这样做的好处是 不需要对li循环绑定2i次从而提高性能 后续添加的li的元素会自动拥有原来li的功能（变色）
+addEvent(window,"load",function(){
+	var oUl = document.getElementById('ul1');
+	var aLi = document.getElementsByTagName('li');
+	
+	oUl.onmouseover = function(ev){
+		var oEvent = ev||event;
+		var target = oEvent.target||oEvent.srcElement; 	//找出事件源 这里有两个 就是ul及li 前面是w3c后面兼容ie
+		if(target.nodeName == 'LI'){                   	//如果事件源target的nodeName是LI，也就是li，那就变红
+			target.style.background = 'red';
+		}else{											//否则事件源target的nodeName就会是UL 不变色		
+			target.style.background = '';
+		}
+	}
+	oUl.onmouseout = function(ev){
+		oEvent = ev||event;
+		var target = oEvent.target||oEvent.srcElement;   
+		target.style.background = '';
+	}
+	
+	//用事件委托的好处 如下动态添加的li 也能自动拥有预先定义好的事件（变色） 这点实际开发中非常有用 
+	//如果要非事件委托实现新li自动变色 那就需要将onclick再循环i次 所以每次填一个li就要多循环i次 性能不好
+	var oBtn = document.getElementById('btn1');
+	var num = 4;
+	oBtn.onclick = function(){
+		var oNewLi = document.createElement('li');
+		num++;
+		oNewLi.innerHTML = 1111*num;
+		oUl.appendChild(oNewLi);
+	}
+	
+});
+</pre>
+
+
+<p class="title">html代码</p>
+<pre>
+&ltinput type="button" id="button1" value="测试传统事件绑定"/>
+&ltinput type="button" id="button2" value="测试现代事件绑定"/>
+&ltinput type="button" id="button3" value="测试removeEvent-1"/>
+&ltinput type="button" id="button4" value="测试removeEvent-2"/>
+
+&ltinput type="button" id="btn1" value="事件委托 动态生成li自动具备mouseover变色事件"/>
+&ltul id="ul1">
+	&ltli>1111&lt/li>	
+	&ltli>2222&lt/li>	
+	&ltli>3333&lt/li>	
+	&ltli>4444&lt/li>	
+&lt/ul>
+</pre>
+
+
+</body> 
+</html>    
+      
+     
+     
+     

@@ -1,0 +1,262 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+body{
+	padding-bottom: 100px;
+}
+p{
+	height: 60px;
+	line-height: 90px;
+	clear: both;
+}
+ul{
+	list-style: none;
+}
+
+/*1: transform:rotateX(xxdeg) rotateY rotateZ*/
+#div1{
+	width: 900px;
+	height: 150px;
+	padding-top: 50px;
+	background: #ccc;
+	/*3D景深 transform-style perspective必须加在包裹元素#div1上*/
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	/*越小 变化幅度越大*/
+	-webkit-perspective: 800px;
+	perspective: 800px;
+}
+#div1 div{
+	width: 100px;
+	height: 100px;
+	background: green;
+	float: left;
+	margin: 0 100px;
+	-webkit-transition: 2s;
+	transition: 2s;
+}
+#div1:hover div:nth-child(1){
+	-webkit-transform: rotateX(180deg);
+	transform: rotateX(180deg);
+}
+#div1 div:nth-child(2){
+	/*设定rotate的基准点是left center 默认是center center*/
+	-webkit-transform-origin: left center;
+	transform-origin: left center;
+}
+#div1:hover div:nth-child(2){
+	-webkit-transform: rotateY(-180deg);
+	transform: rotateY(-180deg);
+}
+#div1:hover div:nth-child(3){
+	-webkit-transform: rotateZ(180deg);
+	transform: rotateZ(180deg);
+}
+
+
+/*2: 模仿优酷 书本折叠效果 transition结合transform*/
+#book{
+	width: 600px;
+	height: 600px;
+	background: #111;
+	position: relative;
+	/*3D景深*/
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-perspective: 800px;
+	perspective: 800px;
+}
+#book .books{
+	position: absolute;
+	width: 200px;
+	text-align: center;
+	height: 200px;
+	line-height: 200px;
+	left: 200px;
+	top: 200px;
+	cursor: pointer;
+}
+#book div:nth-child(1){
+	background: url(img/1.jpg);
+	z-index: 5;
+	transform-origin: left center;
+	-webkit-transform-origin: left center;
+	/*在js中设置transition 第三个参数决定了书本翻开的前后顺序*/
+	/*transition: 1s ease-in 0s;*/		
+}
+/*在js中设置 transform*/
+/*#book:hover div:nth-child(1){
+	transform: rotateX(180deg);		
+}*/
+#book div:nth-child(2){
+	background: url(img/2.jpg);
+	z-index: 4;
+	transform-origin: right center;
+	-webkit-transform-origin: right center;
+}
+#book div:nth-child(3){
+	background:url(img/3.jpg);
+	z-index: 3;
+	transform-origin: center top;
+	-webkit-transform-origin: center top;
+}
+#book div:nth-child(4){
+	background: url(img/4.jpg);
+	z-index: 2;
+	transform-origin: center bottom;
+	-webkit-transform-origin: center bottom;
+}
+#book div:nth-child(5){
+	background: url(img/5.jpg);
+	z-index: 1;
+}
+#close_book{
+	position: absolute;
+	width: 30px;
+	text-align: center;
+	height: 30px;
+	line-height: 30px;
+	left: 570px;
+	top: 0px;
+	cursor: pointer;
+	background: #f91;
+}
+
+
+/*3: 3D轮播图 animation结合transform*/
+#images{
+	width: 400px;
+	height: 600px;
+	margin: 20px 0 0 100px;
+	position: relative;
+	/*3D景深*/
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-perspective: 800px;
+	perspective: 800px;
+}
+#prev_image, #next_image{
+	width: 50px;
+	text-align: center;
+	height: 50px;
+	line-height: 50px;
+	position: absolute;
+	top: 125px;
+	background: #c48;
+	color: #fff;
+	border-radius: 50%;
+	font-size: 12px;
+	cursor: pointer;
+}
+#prev_image{
+	position: absolute;
+	left: -70px;
+}
+#next_image{
+	position: absolute;
+	left: 420px;
+}
+#images img{
+	width: 400px;
+	height: 300px;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	opacity: 0;
+	-webkit-transform-origin: center bottom;
+	transform-origin: center bottom;	
+}
+/*通过js 给每个img元素轮流加show或者hide class形成效果*/
+#images .show{
+	/*定义animation: show 2s linear 2s infinite alternate;*/
+	/*加了class=show的元素 1s完成show运动 forwards定格在100%状态 默认定格回0%*/
+	-webkit-animation: show 1s forwards;
+	animation: show 1s forwards;
+}
+#images .hide{
+	-webkit-animation: hide 1s forwards;
+	animation: hide 1s forwards;
+}
+/*插入关键帧*/
+@-webkit-keyframes show{
+	0% {-webkit-transform: rotateX(180deg); opacity: 0;}
+	50% {-webkit-transform:rotateX(-25deg); opacity: 1;}
+	60% {-webkit-transform:rotateX(18deg); opacity: 1;}
+	70% {-webkit-transform:rotateX(-12deg); opacity: 1;}
+	80% {-webkit-transform:rotateX(8deg); opacity: 1;}
+	90% {-webkit-transform:rotateX(-6deg); opacity: 1;}
+	100% {-webkit-transform: rotateX(0deg); opacity: 1;}
+}
+@keyframes show{
+	0% {transform: rotateX(180deg); opacity: 0;}
+	50% {transform:rotateX(-25deg); opacity: 1;}
+	60% {transform:rotateX(18deg); opacity: 1;}
+	70% {transform:rotateX(-12deg); opacity: 1;}
+	80% {transform:rotateX(8deg); opacity: 1;}
+	90% {transform:rotateX(-6deg); opacity: 1;}
+	100% {transform: rotateX(0deg); opacity: 1;}
+}
+@-webkit-keyframes hide{
+	0% {-webkit-transform: rotateX(0deg); opacity: 1;}
+	100% {-webkit-transform: rotateX(180deg); opacity: 0;}
+}
+@keyframes hide{
+	0% {transform: rotateX(0deg); opacity: 1;}
+	100% {transform: rotateX(180deg); opacity: 0;}
+}
+
+
+/*4: 折纸下拉菜单*/
+#menu_list{
+	width: 200px;
+	height: 340px;
+	position: relative;
+	/*3D景深*/
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-perspective: 800px;
+	perspective: 800px;
+}
+#menu_list h1{
+	width: 200px;
+	text-align: center;
+	height: 40px;
+	line-height: 40px;
+	background: #9ee;
+	font-size: 16px;
+	cursor: pointer;
+}
+#menu_list div{
+	width: 200px;
+	text-indent: 10px;
+	height: 40px;
+	line-height: 40px;
+	background: #ee3;
+	margin-top: 2px;
+	-webkit-transform-origin: center top;
+	transform-origin: center top;
+	-webkit-transform: rotateX(-120deg);
+	transform: rotateX(-120deg);
+	opacity: 0;
+}
+/*js中定时器设置每个div的animation*/
+/*#menu_list div:nth-child(7){
+	animation: open 1s ease-in forwards;
+}*/
+@-webkit-keyframes open{
+	0% {-webkit-transform: rotateX(-120deg); opacity: 0;}
+	100% {-webkit-transform: rotateX(0deg); opacity: 1;}
+}
+@-webkit-keyframes close{
+	0% {-webkit-transform: rotateX(0deg); opacity: 1;}
+	100% {-webkit-transform: rotateX(-120deg); opacity: 0;}
+}
+@keyframes open{
+	0% {transform: rotateX(-120deg); opacity: 0;}
+	100% {transform: rotateX(0deg); opacity: 1;}
+}
+@keyframes close{
+	0% {transform: rotateX(0deg); opacity: 1;}
+	100% {transform: rotateX(-120deg); opacity: 0;}
+}

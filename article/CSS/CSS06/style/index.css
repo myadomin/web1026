@@ -1,0 +1,263 @@
+﻿ul,li,h1,div,img,dl,dt,dd,body{
+	margin:0;
+	padding:0;
+}
+body{
+	width:900px;
+	margin:0 auto;
+	font-size:12px;
+	background:#59606b url(../img/main_01.gif) repeat-x;
+/*先加上图片main_01，他是从上到下渐变淡的一条细线，
+所以repeat-x，让他左右复制形成长方体，此长方体高度就是main_01的高度，宽度覆盖全页面。
+然后吸取最底部最淡的颜色是#596060b，给作为背景色，就形成了背景从上到下先渐变淡，再下面就是#59606b。*/
+}	
+img{
+	border:none;
+}
+li{
+	list-style-type:none;
+} 
+
+#header{
+	height:79px;
+	background:url(../img/index_5.gif) no-repeat right bottom;
+}
+
+#nav{
+	height:45px;
+	background:url(../img/index_8.jpg) no-repeat left center;
+}
+#nav ul{
+	padding-left:139px;
+}
+#nav ul li{	 
+/*li这个层其实没有一点作用，所以也可以不用ul li做  直接ul li层变成一个<div id=nav1>层也可以做*/
+}
+#nav ul li a{
+	display:block;
+	height:45px;
+	float:left; 
+	/*a必须给他定义为区块，然后才能给他加上a下面各框体的高度,原来成列的各a元素才能浮动成一行。
+	如果在li里面加框体高度，定义高度45px后，到a再到定义区块后的a，又使得框体高度变成了a下面文字的高度。*/
+	text-indent:-9999px;
+}
+#nav ul li a.aboutus{
+	width:144px;
+	background:url(../img/index_9.gif);
+}
+#nav ul li a.aboutus:hover{
+	background:url(../img/index_9_1.gif);
+}
+#nav ul li a.works{
+	width:83px;
+	background:url(../img/index_10.gif);
+}
+#nav ul li a.works:hover{
+	background:url(../img/index_10_1.gif);
+}
+#nav ul li a.news {
+	width:79px;
+	background:url(../img/index_11.gif) no-repeat;
+}
+#nav ul li a.news:hover {
+	background:url(../img/index_11_1.gif) no-repeat;
+}
+#nav ul li a.service {
+	width:89px;
+	background:url(../img/index_12.gif) no-repeat;
+}
+#nav ul li a.service:hover {
+	background:url(../img/index_12_1.gif) no-repeat;
+}
+#nav ul li a.download {
+	width:102px;
+	background:url(../img/index_13.gif) no-repeat;
+}
+#nav ul li a.download:hover {
+	background:url(../img/index_13_1.gif) no-repeat;
+}
+#nav ul li a.study {
+	width:80px;
+	background:url(../img/index_14.gif) no-repeat;
+}
+#nav ul li a.study:hover {
+	background:url(../img/index_14_1.gif) no-repeat;
+}
+#nav ul li a.contarctus {
+	width:107px;
+	background:url(../img/index_15.gif) no-repeat;
+}
+#nav ul li a.contarctus:hover {
+	background:url(../img/index_15_1.gif) no-repeat;
+}
+#nav ul li a.home {
+	width:77px;
+	background:url(../img/index_16.gif) no-repeat;
+}
+#nav ul li a.home:hover {
+	background:url(../img/index_16_1.gif) no-repeat;
+}
+
+#banner{
+	height:240px;
+	background:url(../img/index_18_right_02.jpg) no-repeat right center;
+	position:relative;
+} 
+#left{
+	width:31px;
+	height:199px;
+	background:url(../img/index_17.gif);
+	position:absolute;
+	top:-14px;  
+	left:-31px;
+	/*先定义为top:0px left:0px再正负调。！！！！对先母元素相对定位然后子元素绝对定位的理解！！！！
+	top:0px left:0px的意思就是此图片的上左对齐已设置了position:relative的banner框体的上左。
+	先设置相对定位点然后绝对定位的好处是即使网页缩放都不影响图片间的相对位置。*/
+}
+#right{
+	width:31px;
+	height:194px;
+	background:url(../img/index_19.gif);
+	position:absolute;
+	bottom:1px; 
+	right:-32px;
+	/*先定义为bottom:0px right:0px再正负调。！！！！对先母元素相对定位然后子元素绝对定位的理解！！！！
+	bottom:0px right:0px的意思就是此图片的下右对齐已设置了position:relative的banner框体的下右。
+	先设置相对定位点然后绝对定位的好处是即使网页缩放都不影响图片间的相对位置。*/
+}	
+
+#sidebar{
+	height:1100px;
+	width:181px;
+	background:url(../img/main_21_1.gif);
+	float:left;
+}
+#sidebar h1{
+	background:black;
+	color:lightgreen;
+	font-size:10px;
+	font-family:Tahoma;
+	text-indent:10px;
+	line-height:20px;	
+}
+#con{
+	padding-top:15px; 
+	padding-bottom:15px;
+}
+#con li{
+	line-height:150%;
+	text-indent:20px;
+	color:#999;
+}
+#lin{
+	padding-top:13px; 
+	padding-bottom:15px;
+	margin-left:15px;
+	width:150px;
+}
+#lin li{
+	line-height:150%;
+	color:#999;
+	background:url(../img/123.gif) no-repeat left 55%;
+	padding-left:10px;
+	padding-top:3px;
+	border-bottom:1px dotted #666;
+}
+#lin li a{
+	color:#999;
+	text-decoration:none
+}	
+#lin li a:hover{
+	color:#fff;
+	text-decoration:underline;
+}	
+#our{
+	text-indent:40px;
+	padding-top:15px;
+}
+#our	li{
+	padding:5px;
+}	
+
+#content{
+	height:1100px;
+	width:719px;
+	background:#2e313e url(../img/main_31.gif) no-repeat left bottom;
+	float:left;
+}
+#content h1{
+	width:719px;
+	height:60px;
+	background:url(../img/main_25.gif);
+}
+#dl1{
+	width:610px;
+	margin:0 auto;
+	color:#999;
+	line-height:210%;
+	margin-top:22px;
+}
+#dl1 dt{
+	font-weight:bold;	 
+}
+#dt1{
+	color:orange;
+}
+#dt2{
+	color:lightgreen;
+}		
+#line{
+	width:610px;
+	height:20px;
+	border-bottom:1px solid #666;
+	margin-bottom:16px;
+}
+#dl1 dd span{
+	color:orange;
+}
+
+#content h2{
+	font-size:12px;;
+	color:orange;
+	margin-left:50px;
+}
+#content dl.person{
+	width:250px;
+	float:left;
+	margin-top:5px;
+	margin-left:50px;
+}
+#content dl.person dt{
+	width:91px;
+	float:left;
+}
+#content dl.person dd{
+	width:230px;
+	line-height:190%;
+	text-indent:5px;
+	color:white;
+}
+/*!!!四格图文并茂块的排列方式!!!!。每个图文并茂块都是dl dt dd做，每个dl框体里用dt dd浮动排，每个dl框体间用dl浮动排。
+先设置好每个dl dt dd元素的宽度高度和外框体，方便浮动，方便通过设置宽度改变dl dt dd间的相对位置（比margin padding更好调整框体间相对位置）。
+方便用margin padding调相对位置。*/
+#content p.line1{
+	clear:both;
+	/*记得一定要解除浮动，否者就会进入到上面的dl里面去*/
+	width:610px;
+	height:20px;
+	border-bottom:1px solid #666;
+	margin-bottom:16px;
+	margin-left:50px;
+}
+	 
+#footer{
+	height:80px;
+	clear:both;
+	background:#000 url(../img/main_22.gif) repeat-x bottom;
+}
+#footer p{
+	height:40px;
+	line-height:40px;
+	color:#ccc;
+	padding-left:5px;
+}

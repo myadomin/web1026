@@ -1,0 +1,414 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>匿名函数及闭包及私有作用域</title>
+<style>
+body{
+	font-size: 16px;
+	padding-left: 100px;
+}
+</style>
+</head>
+<body>
+
+<pre>
+//匿名函数与闭包与私有作用域
+
+
+
+//----------------匿名函数与闭包-------------------------------------------------------
+
+//1：匿名函数的自我执行    (function(){xxxx})()
+var box = (function(){
+	return 'luo';
+})();
+alert(box);
+
+//2：匿名函数的自我执行 传参  (function(age){xxxx})(参数)
+var box = (function(age){
+	return age;
+})(100);
+alert(box);
+
+//3：函数内部return匿名函数 形成闭包
+function box(){
+	return function(){
+		return 'luo';
+	}
+} 
+alert(box());  			//box函数的执行结果box()就是 匿名函数function(){return 'luo'};
+alert(box()());			//box()得到匿名函数后再匿名函数自我执行 最后得到'luo' 或者如下面的写法
+var aa = box();
+alert(aa());
+
+//4：正常情况下 函数内部定义的私有变量 一进函数就会被重写赋值 而且函数内部私有变量出了函数 就被销毁了 
+function box(){
+	var age = 100;
+	age++;
+	return age;
+}
+alert(box());  			//101 每次函数执行 age都是100 然后返回的age是101
+alert(box());  			//101 所以无法进行累加
+alert(box());  			//101
+
+//5：闭包 形成累加
+function box(){
+	var age = 100;
+	return function(){
+		age++;
+		return age;
+	}
+}
+var aaa = box();  		//只执行一次box 得到执行结果box()后赋值给aaa 之后再也不执行了 这样age就不会再重置为100   
+alert(aaa());     		//101 box执行结果box()就是function(){age++; return age;} 然后这个匿名函数自我执行
+alert(aaa());     		//102
+alert(aaa());     		//103
+var aaa = box();  		//如果再执行box 那age又被重置为100了 所以下面是101
+alert(aaa());     		//101
+aaa = null;       		//运用闭包后 aaa让age常驻了内存 所以记得不用后 清空aaa 等待垃圾回收
+
+//6：循环里的匿名函数的取值问题
+function box(){
+	var arr = new Array();
+	for(var i=0; i&lt5; i++){
+		arr[i] = function(){
+			return i;
+		}
+	}
+	return arr;
+}
+var arrRes = box();  		//得到返回的数组 5个元素每个都是function(){return i;}  并且此时i=5
+alert(arrRes[1]);    		//function(){return i;} 
+alert(arrRes[1]());  		//自我执行 结果是5 因为之前box()在给5个轮流赋值的时候 i变成4 然后i++ i为5了
+for(var i in arrRes){
+	alert(arrRes[i]());  	//都是5
+}
+
+//7：通过匿名函数的及时自我执行 形成数组元素循环累加
+function box(){
+	var arr = new Array();
+	for(var i=0; i&lt5; i++){
+		arr[i] = (function(num){  //每次循环的时候 就及时的自我执行 加当前i赋值给arr[i]
+			return num
+		})(i);
+	}
+	return arr;
+}
+var arrRes = box();
+for(var i in arrRes){
+	alert(arrRes[i]);    		//0,1,2,3,4依次输出
+}
+
+//8：通过闭包 形成数组元素循环累加
+function box(){
+	var arr = new Array();
+	for(var i=0; i&lt5; i++){
+		arr[i] = (function(num){
+			return function(){
+				return num;
+			}();
+		})(i);
+	}
+	return arr;
+}
+arrRes = box();
+alert(arrRes);
+for(var i in arrRes){
+	alert(arrRes[i]);  			//0,1,2,3,4依次输出
+}
+
+//9：关于闭包函数里的this指向 不是指向当前函数对象 而是window
+var box = {
+	getThis:function(){
+		return this;
+	}
+}
+//alert(this);           		//window 因为这里的this代表全局
+//alert(box.getThis());  		//Object this代表box对象了 所以是Object
+//以上都是正常情况 如果是闭包内的this呢？看下面
+var pox = {
+	getThis:function(){
+		return (function(){  	//这里就相当于 return (function(){return this})()
+			return this;
+		})();
+	}
+}
+alert(this);            		//window 因为这里的this代表全局
+alert(pox.getThis());   		//window  我们发现闭包里的this 指向的是window
+alert(pox.getThis.call(pox));   	//使用对象冒充.call  
+
+
+
+
+//----------------形成私有作用域------------------------------------------------
+
+//1：js中没有块级作用域的概念 变量仅仅是出了函数就销毁了 但是出了for之类的语句 还是存在 还是全局的 
+function box(){
+	for(var i=0; i&lt5; i++){
+		var aa = 1111;
+	}
+	alert(aa);   		//1111 所以就算aa变量出了for块体 外部还是能访问到
+}
+box();
+
+//2：为了让变量出了for之类的块体 外部访问不到 从而形成for之类块体的私有作用域 采用如下方法
+//(function(){需要执行的for语句})(); 通过匿名函数的自我执行 功能上 还是执行的for语句 
+//但是for语句内部的变量 外部就访问不到了 形成了for块体的私有作用域
+function box(){
+	(function(){
+		for(var i=0; i&lt5; i++){
+			var aa = 1111;
+		}
+	})();
+	alert(aa);
+}
+box();
+
+//3：总结：创造私有作用域的作用
+//(function(){需要执行的语句})(); 通过匿名函数的自我执行 功能上 还是执行的这些语句 
+//但是语句内部的变量 外部就访问不到了 形成了这些语句块体的私有作用域
+//例如整个jquery文件 最外层的就是 (function(){jquery的所有语句})() 功能上等同于直接写jquery的所有语句
+//同时引入jquery文件后 jquery语句内部随便写的什么变量 都不会污染到用户的变量 因为他在自身定义的私有作用域内
+(function(){
+	//这里就是私有作用域
+	//这里定义的任何类似 var a = 0之类的(必须加var 否则还是全局变量)  a变量出了私有作用域就被销毁了
+})();
+
+//4：普通的构造函数 内部的属性和方法 外部是可以访问到了 如下
+function Box(name, age){
+	this.name = name;
+	this.age = age;
+	this.showAge = function(){
+		return this.age;
+	}
+}
+var box1 = new Box('luo', 30);
+alert(box1.name);        		//外部可以访问到构造函数的属性
+alert(box1.showAge());      		//外部可以访问到构造函数的方法
+
+//5：为了更好的封装性 我们希望只留一个公共接口 只有通过这个公共接口才能访问到内部的属性和方法 
+//而构造函数内部属性和方法外部访问不到 这时候就需要将属性和方法变成私有变量以及函数了
+function Box(name, age){
+	var name = name;            	//私有变量 直接外部访问是访问不到了 下面的函数同理
+	var age = age;
+	function showAge(){
+		return age;
+	}
+	this.publicGo = function(){
+		return name + showAge();
+	}
+}
+var box1 = new Box('luo', 30);
+alert(box1.publicGo());   		//只有通过访问唯一的公共接口 才能访问到内部的私有变量和函数
+
+//6：但是 上面的公共方法 每次在实例化出一个新对象之后 会新建立一个publicGo方法 这个方法并不是共用的 如下
+function Box(name, age){
+	var name = name;           
+	var age = age;
+	function showAge(){
+		return age;
+	}
+	this.publicGo = function(){
+		return name + showAge();
+	}
+}
+var box1 = new Box('luo', 30);
+alert(box1.publicGo());          	//luo30
+var box2 = new Box('wan', 26); 
+alert(box2.publicGo());          	//wan26
+alert(box1.publicGo());          	//还是luo30 说明每次实例化出新对象后 通过新创立了一个publicGo方法
+
+//7：为了解决上面的问题 决定将publicGo方法改成原型方法 这样每个实例化对象都共用这个方法
+function Box(theName, theAge){
+	name = theName;           		//publicGo变成原型方法提到外面后 
+	age = theAge;             		//问题 ：为了能访问到这里的name age showAge 那这些有必须变回到全局变量了
+	showAge = function(){
+		return age;
+	}
+}
+Box.prototype.publicGo = function(){
+	return name + showAge();
+}
+var box1 = new Box('luo', 30);
+alert(box1.publicGo());   
+    
+//8：为了解决上面的问题 name age showAge又变回全局变量了
+//采用形成私有作用域的方法 (function(){上面的整个语句})() 
+//让user age showAge作用域既限定在一定范围了 同时又能被原型方法访问到
+//从而创建一种介于全局和局部之间的作用域 这就是私有作用域的最大好处
+(function(){
+	var user = '';            		//这三个变量 就限定在这个私有作用域了
+	var age = '';
+	var showAge = '';
+	Box = function(TheUser, theAge){
+		user = TheUser;          
+		age = theAge;            
+		showAge = function(){
+			return age;
+		}
+	}
+	Box.prototype.publicGo = function(){
+		return user + showAge();
+	}
+})();
+var box1 = new Box('luo', 30);
+alert(box1.publicGo());   		//这样既能是原型方法的唯一公共接口
+alert(user);              		//而且外部访问不到user age showAge三个变量
+
+
+
+
+
+//------------------------------匿名函数的自我执行 然后return出对象-------------------------
+
+//1:单例就是只实例化一次 ，字面量(json)声明对象方式 就是单例
+var box = {  				
+	user:'lee',
+	run:function(){
+		return '运行中';
+	}
+}
+alert(box.run());  
+
+//2:通过匿名函数自我执行 执行结果就是return出对象{xxx}的方式 定义对外公共接口的特权方法
+//页面一加载 就进行了(function(){xxxx})()的自我执行 相当于执行了
+//function(){var user = 'lee';function run(){return '运行中';};return{publicGo:function(){return user + run();}};}
+//而上面语句的执行结果就是{xxx} xxx就是定义的公共接口 然后{xxx}赋值给了box
+//所以下面可以直接box.publicGo(); 
+var box = (function(){    
+	var user = 'lee';       		//私有变量 外部访问不到
+	function run(){         		//私有函数 外部访问不到  
+		return '运行中';
+	};
+	return{
+		publicGo:function(){
+			return user + run();
+		}
+	};
+})();
+alert(box.publicGo());
+
+//3：如果上面的return改动如下也可以
+var box = (function(){     
+	var user = 'lee';       
+	function run(){         
+		return '运行中';
+	};
+	var obj = {                 		//这个obj就是一个虚化的对象 不是一个上面实际的对象 他也等同于上面的 直接return的{}
+		publicGo:function(){    	//总之是要达到给box返回到一个对象 具体这个对象用{}表达 还是用obj表达都可以
+			return user + run();
+		}
+	};
+	return obj;
+})();
+alert(box.publicGo());
+
+//4：如果上面的例子 希望不仅仅用box.来调用特权方法，而是用自定义的desk1 desk2 desk3之类的 
+//那就先创建一个构造函数 在特权方法前面 实例化出一个deskx对象 
+//同时函数最终结果是return出这个实例化出来的deskx  deskx对象下加入这个特权方法 
+function Desk(){};              	//创建一个构造函数
+var box = (function(){      
+	var user = 'lee';       
+	function run(){         
+		return '运行中';
+	}
+	deskx = new Desk();             //实例化出一个对象
+	deskx.publicGo = function(){    //这里就不能用 deskx = {publicGP:function xxxx} 这种字面量方式了 应该deskx.了 因为deskx对象是构造函数实例化的
+		return user + run();
+	}
+	return deskx;                   //匿名函数最终自我执行的结果 (function(){})(); 就是return出这个对象
+})();
+alert(deskx.publicGo());       		//用实例化出来的deskx对象调用特权方法
+
+
+
+
+//------------------------------闭包的深入分析-------------------------
+
+//1：普通的全局型 累加
+var a = 1;
+function test(){
+	a++;
+	alert(a);
+}
+test();  //2
+test();  //3
+//问题：a是全局的 但是吧var a放到test函数内部 那就不能累加
+//所以下面创建私有作用域 (function(){xxx})() 让a不是全局的 还能累加
+
+//2：改进 模块化代码 整个bbb就是一个模块化的代码
+var bbb = (function(){
+	var a = 1;
+	function test(){
+		a++;
+		alert(a);
+	}
+	return test;
+})();
+bbb();   //2
+bbb();   //3
+//既然return test 那就可以直接return匿名函数
+
+//3：改进 形成闭包
+var bbb = (function(){
+	var a = 1;
+	return function(){
+		a++;
+		alert(a);
+	}
+})();
+bbb();   //2
+bbb();   //3
+
+//4：进一步改进2 模块化代码
+var bbb = (function(){
+	var a = 1;
+	function test1(){
+		a++;
+		alert('test1--' + a);
+	}
+	function test2(){
+		a++;
+		alert('test2--' + a);
+	}
+	return {       	//return json
+		fn1: test1,
+		fn2: test2
+	}
+})();
+bbb.fn1();   		//test1--2
+bbb.fn2();   		//test2--3
+
+
+//5：闭包初始化按钮
+function initButton(){
+	var button = null;
+	for(var i=0; i&lt 5; i++){
+		button = document.createElement('button');
+		button.innerHTML = i;
+		button.addEventListener('click', (function(j){
+			return function(ev){
+				alert(j);
+			}
+		})(i), false);
+		document.body.appendChild(button);
+	}
+
+}
+initButton();
+*/
+
+
+
+
+
+
+</pre>
+ 
+</body> 
+</html>    
+      
+     
+     
+     

@@ -1,0 +1,460 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>jQuery源码分析1--大致结构，部分实例方法</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+</head>
+<body>
+<pre>
+<p class="title">概述</p>
+本文主要介绍源码如下两个方面：
+1：源码的大致结构。
+2：初始定义的部分实例方法及属性。
+PS：(349-817)的意思就是对应源码的349行到817行，源码版本是jquery-2.0.3.js。
+
+<p class="title">JQ最外层: 匿名函数自我执行, 创建JQ私有作用域</p>
+(function( window, undefined ){	
+
+	//JQ代码。。。。。
+	//下面的这些变量及函数外部是访问不到的 这些变量及函数也不污染外部
+	var a = '我是jquery里的某个变量';
+	function showA(){
+		alert('我是jquery里的某个方法');
+	}
+	var jQuery = function(){
+		showA();
+		alert(a);
+	};
+	//然后把jQuery及$挂在外部传参进来的window下 只有通过调用jQuery或者$才能调用函数及变量
+	window.jQuery = window.$ = jQuery;
+
+})(window);		
+// showA();		//调用不到
+jQuery();		//可以调用
+$();			//可以调用
+
+为什么匿名函数的参数要接收window参数的传参？
+1：JS中查找作用域是从最内层往最外层找 window作用域是最外层作用域 所以查找window作用域是最慢的
+为了提高查找到window的速度 这里直接传入window参数 让匿名函数接收这个window参数
+之后私有作用域内使用window就直接查找匿名函数参数window 而不是去查找外部window 从而提高了查找速度
+2：利于压缩版本，压缩后匿名函数的参数window可以写成任意值 只要与私有作用域内保持一致就可以
+
+为什么匿名函数还有一个undefined参数？
+undefined在IE6-7等某些浏览器下 不是系统保留字 可以随便定义 如下
+var undefined = xxx; 在IE67下 undefined就变成xxx了 为了避免外部改变undefined然后传入JQ私有作用域
+直接在匿名函数参数中写上undefined 之后在私有作用域内部调用undefined就直接查找的是参数undefined
+
+<p class="title">JQ的大致框架</p>
+(function(){
+	
+	(21-94) 定义了一些变量和函数 包括jQuery = function(selector, context){xxx};
+	
+	(96-283) 通过jQuery.fn=jQuery.prototype={xxx}给jQuery添加一些实例方法和属性 后续调用$(xx).xxx();
+	
+	(285-347) extend : 定义jQuery及jQuery.fn的对象扩张方法extend 
+	后续扩展工具方法就用jQuery.extend({xxx}) 扩展实例方法就用jQuery.fn.extend({xxx})
+	
+	(349-817) 通过jQuery.extend({xxx}) 给jQuery扩展一些工具方法 后续调用$.xxx();
+	
+	(877-2856)  Sizzle : 复杂选择器的实现 
+	
+	(2880-3042) Callbacks : 回调对象 通过$.Callbacks = function(){return self}实现 
+	所以$.Callbacks()就等于return出来的self对象 self对象下有很多方法
+	
+	(3043 -3183) Deferred : 延迟对象 通过$.extend({Deferred:function(){return deferred}})实现
+	所以$.Deferred()就等于return出来的deferred对象 deferred对象下有很多方法
+	再通过$.extend({when:function(){return deferred.promise()}})
+	所以$.when()就等于return出来的deferred.promise()对象 所以when可以传入多个延迟对象同时操作
+	
+	(3184-3295) support : 功能检测
+	
+	(3308-3652) data() : 数据缓存
+	
+	(3653-3797) queue() : 队列方法 : 执行顺序的管理 
+	
+	(3803-4299) attr() prop() val() addClass()等 : 对元素属性的操作
+	
+	(4300-5128) on() trigger() : 事件操作的相关方法
+	
+	(5140-6057) DOM操作 : 添加 删除 获取 包装 DOM筛选
+	
+	(6058-6620) css() : 样式的操作
+	
+	(6621-7854) 提交的数据和ajax() : ajax() load() getJSON()
+	
+	(7855-8584) animate() : 运动的方法
+	
+	(8585-8792) offset() : 位置和尺寸的方法
+	
+	(8804-8821) JQ支持模块化的模式
+	
+	(8826)  window.jQuery = window.$ = jQuery;
+	
+})();
+
+<p class="title">(21-94) 初始定义的部分变量及函数</p>
+<strong>1：(21-26) var rootjQuery, readyLis,</strong>
+简写方式，等同于 var rootjQuery = null; var readyLis = null;  
+在之后定义了rootjQuery = jQuery(document); rootjQuery就是document对象。
+readyList先声明 之后会用于DOM加载。
+
+
+<strong>2：(30) core_strundefined = typeof undefined,</strong>
+typeof undefined就等同于'undefined'字符串，那为什么要定义core_strundefined = 'undefined'呢？
+因为标准浏览器中判断一个变量a是否定义，用window.a == undefined判断就可以了。
+但是在IE6-9中这个判断不准确，为了兼容统一用typeof window.a == 'undefined'来判断a是否定义。
+所以这里先定义变量core_strundefined为'undefined'字符串，后续用于判断调用。
+
+
+<strong>3：(38-41) _jQuery = window.jQuery, _$ = window.$,</strong> 
+假如在引入JQ之前我们定义了jQuery=xx1 $=xx2 这两句就把xx1预存到_jQuery xx2预存到_$
+后续还想找到xx1及xx2就去_jQuery和_$里找，具体的使用见后续的工具方法$.noConflict()。
+
+
+<strong>4：(44-58) 详细分析</strong> 
+class2type = {},
+core_deletedIds = [],
+core_version = "2.0.3",
+core_concat = core_deletedIds.concat,
+core_push = core_deletedIds.push,
+core_slice = core_deletedIds.slice,
+core_indexOf = core_deletedIds.indexOf,
+core_toString = class2type.toString,
+core_hasOwn = class2type.hasOwnProperty,
+core_trim = core_version.trim,
+代码的功能就是
+通过class2type = {} 得到core_toString = {}.toString 再通过call实现类对象具备对象toString方法
+通过core_deletedIds = [] 得到core_slice = [].slice 再通过call实现类数组具备数组slice方法
+
+
+<strong>5：(61-64) 起始入口$(xxx)</strong> 
+jQuery = function( selector, context ) {
+	return new jQuery.fn.init( selector, context, rootjQuery );
+},
+
+一般我们写面向对象构造函数的时候如下
+function jQuery(){
+
+}
+jQuery.prototype.init = function(){
+
+}
+jQuery.prototype.css = function(){
+
+}
+new jQuery().css();
+这样我们才能调用css方法
+
+假如改写如下
+function jQuery(){
+开始执行		return new jQuery.fn.init();			//(61-64)写法
+等同于			return new jQuery.prototype.init();		//见(96) 这样就执行了init方法
+然后返回对象	jQuery.prototype.init.prototype;
+等同于返回对象	jQuery.prototype;					//结合(96)(283)得到的结果
+这样就return出了jQuery.prototype原型对象 在jQuery.prototype下是有css方法的
+}
+jQuery.prototype.init = function(){
+
+}
+jQuery.prototype.css = function(){
+
+}
+真正使用JQ的时候是这样调css方法的 一旦开始执行jQuery() 进入上面的jQuery函数
+jQuery().css();   
+
+(96)(283) 如下
+jQuery.fn = jQuery.prototype; (96)
+jQuery.fn.init.prototype = jQuery.fn; (283)
+所以得到jQuery.prototype.init.prototype = jQuery.prototype
+
+
+<strong>6: (67-94)</strong>  
+core_pnum = /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source,  	数字处理
+core_rnotwhite = /\S+/g,  		将一个单词的各个字母用空格分隔开
+rquickExpr = /^(?:\s*(&lt[\w\W]+>)[^>]*|#([\w-]*))$/,  		匹配&ltp>aaa #div1等
+rsingleTag = /^&lt(\w+)\s*\/?>(?:&lt\/\1>|)$/,  匹配&ltp>&lt/p> &ltdiv>&lt/div>闭合标签
+rmsPrefix = /^-ms-/,  			IE相比下面比较特殊 -ms-margin-left要转换为MsMarginLeft形式
+rdashAlpha = /-([\da-z])/gi,  	把-webkit-margin-left等转换为webkitMarginLeft形式
+fcamelCase  	转驼峰式写法的回调函数 后面详细解释
+completed	  	DOM加载时的回调函数 后面详细解释
+
+<p class="title">(96-283) 初始定义的部分实例方法及属性。</p>
+<strong>1：大概结构</strong> 
+jQuery.fn = jQuery.prototype = {	
+	jquery: 版本,
+	constructor: 修正指向,
+	init(): 初始化和参数管理,
+	selector: 存储选择字符串,
+	length: this对象的长度,
+	toArray: 转数组,
+	get(): 返回原生对象,
+	pushStack: JQ对象的入栈,
+	cach(): 遍历集合,
+	ready(): DOM加载的接口,
+	slice(): 集合的截取,
+	first(): 元素集合的第一项,
+	last(): 元素集合的第二项,
+	eq(): 元素集合的指定项,
+	map(): 返回新集合,
+	end(): 返回集合前一个状态,
+	push(): (内部使用),
+	sort(): (内部使用),
+	splice(): (内部使用)
+}
+
+
+<strong>2：(100) constructor:jQuery, 为什么要重新修正constructor？</strong> 
+正常情况下 我们这样写构造函数 不需修正constructor
+function Aaa(){
+	 
+};
+Aaa.prototype.name = 'luo';
+var a1 = new Aaa();
+alert(a1.constructor);  	//function Aaa(){}，不许修正，正确。
+
+在下面的情况下 需要修正constructor
+function Bbb(){
+	 
+};
+Bbb.prototype = {			//这是一个对象赋值给了Bbb.prototype 所以constructor指向变化了
+	name: 'adomin',			//这种情况下就要重新指向constructor
+	//constructor: Bbb    		//如果开启这句修正后 就变回正确的function Bbb(){}
+	//所以说在100行要constructor: jQuery, 重新修正constructor为jQuery
+}
+var b1 = new Bbb();
+alert(b1.constructor);  	 
+
+
+<strong>3：(101) init: function( selector, context, rootjQuery ) {xxx}</strong> 
+通过源码的(96)(283)分析
+jQuery.fn = jQuery.prototype; (96)
+jQuery.fn.init.prototype = jQuery.fn; (283)
+所以jQuery.prototype.init.prototype = jQuery.prototype
+所以调用jQuery.prototype.init下的原型方法(101行) 就是调用jQuery下的原型方法$(xxx)
+也就是说$(xxx)就开始执行101行init定义的函数 然后$(xx) 
+
+
+<strong>4：(105-194) iinit:function(selector, context, rootjQuery){xxx}具体分析</strong>  
+if ( !selector ) {
+	// 情况1：没定义selector 返回jQuery对象
+	return this; 
+}
+if ( typeof selector === "string" ) {
+	// 情况2：selector是字符串 详见(105-174)分析 
+	return xx;
+} else if ( selector.nodeType ) {
+	// 情况3：selector是DOM节点 例如$(document)之类
+	// this = {0:selector, length:1} 然后返回this 
+	this.context = this[0] = selector;
+	this.length = 1;
+	return this;
+} else if ( jQuery.isFunction( selector ) ) {
+	// $(function(){xxx}) 调用ready方法 文档加载 
+	return rootjQuery.ready( selector );
+if ( selector.selector !== undefined ) {
+	// $($('#div1'))之类的写法 重新变回$('#div1')
+	this.selector = selector.selector;
+	this.context = selector.context;
+}
+// 最终所有其他的情况 $([xxx]) $({xxx})等情况
+// makeArray对内使用 让这些selector变成 this={0:[xxx], length:1}
+return jQuery.makeArray( selector, this );
+},
+
+
+<strong>5：(105-174) 分析情况2：字符串</strong> 
+if ( typeof selector === "string" ) {
+	if ( selector.charAt(0) === "&lt" && selector.charAt( selector.length - 1 ) === ">" && selector.length >= 3 ) {
+		// 第一个字符是&lt 最后一个字符是> 并且至少3个字符 那说明是HTML标签 
+		// 例如$('&ltli>')或者$('&ltli>1&lt/li>&ltli>2&lt/li>')等情况
+		// 情况1：$('&ltli>')。得到数组match = [ null, '&ltli>', null ]; 
+		// 情况2：$('&ltli>1&lt/li>&ltli>2&lt/li>')。得到数组match = [ null, '&ltli>1&lt/li>&ltli>2&lt/li>', null ];
+		match = [ null, selector, null ];
+
+	} else {
+		// 其他的情况 例如$('#div1')或$('.div1')或$('div')或$('#div1 div.box')或$('&ltli>hello')等
+		// (75)定义了rquickExpr = /^(?:\s*(&lt[\w\W]+>)[^>]*|#([\w-]*))$/,
+		// 意思就是匹配&lt字母一个或多个>作为第一个子项，或者#(字母一个或多个)作为第二个子项
+		// 注意最外围的(?:xxx) 所以最外围的不算作匹配结果的子项
+		// RegExp.exec(str)返回数组[a,b,c...] a是str b是匹配到的第一个子项 c是匹配到的第二个子项
+		// 情况3：$('&ltli>hello')通过exec方法后得到数组 match = ['&ltli>hello', '&ltli>', null]
+		// 情况4：$('#div1')通过exec方法后得到数组 match = ['#div1', null, 'div1']
+		// 情况5：$('.div1') $('div') $('#div1 div.box')等其他 match = null;
+		match = rquickExpr.exec( selector );
+	}
+
+	//通过上面形成的5种情况 开始if else
+	if ( match && (match[1] || !context) ) {
+		// 这个if判断 match必须存在 并且match[1]存在或者没有上下文context
+		// 那就对应下面 
+		// 情况1：$('&ltli>') match存在并且match[1]存在  
+		// 情况2：$('&ltli>1&lt/li>&ltli>2&lt/li>') match存在并且match[1]存在  
+		// 情况3：$('&ltli>hello') match存在并且match[1]存在   
+		// 情况4：$('#div1') match存在 并且没有上下文context 因为id后面肯定没上下文
+		if ( match[1] ) {
+			// 同时这里还要求match[1]存在 
+			// 情况1：$('&ltli>') match存在并且match[1]存在  
+			// 情况2：$('&ltli>1&lt/li>&ltli>2&lt/li>') match存在并且match[1]存在  
+			// 情况3：$('&ltli>hello') match存在并且match[1]存在  
+
+			// context选取
+			// $('&ltli>', document)就选取:context
+			// $('&ltli>', $(document))就选取context[0]
+			context = context instanceof jQuery ? context[0] : context;
+
+			// merge对外的方法只能两个参数都是数组 
+			// 把第二个参数数组合并到第一个参数数组里  
+			// 而这里的merge是对内方法 
+			// 对内方法可以将第二个参数jQuery.parseHTML(xx)得到的数组合并到第一个this里去
+			// 例如jQuery.merge(this, ['&ltli>1&lt/li>', '&ltli>2&lt/li>']);
+			// 最终this = {0:'&ltli>1&lt/li>', 1:'&ltli>2&lt/li>', length:2} 在147行 return this
+			jQuery.merge( this, jQuery.parseHTML(
+				// $.parseHTML工具方法的意思就是把HTML str转换成数组
+				// 情况1：$('&ltli>') match[1] = '&ltli>'
+				// 情况2：$('&ltli>1&lt/li>&ltli>2&lt/li>') match[1] = '&ltli>1&lt/li>&ltli>2&lt/li>' 
+				// 情况3：$('&ltli>hello') match[1] = '&ltli>'
+				// 假如下面的match[1] = '&ltli>1&lt/li>&ltli>2&lt/li>'
+				// 那就是jQuery.parseHTML('&ltli>1&lt/li>&ltli>2&lt/li>', document, true) = ['&ltli>1&lt/li>', '&ltli>2&lt/li>'];
+				// true的意思就是'&ltscript>&lt/script>'也有效 因为script前的/加上了转义\
+				match[1],
+				context && context.nodeType ? context.ownerDocument || context : document,
+				true
+			) );
+
+			// $('&ltli>', {title:'hi', html:'aaa'})这种情况 也满足match存在并且match[1]存在  
+			// 并且带第二个添加json属性参数{title:'hi', html:'aaa'}
+			if ( rsingleTag.test( match[1] ) && jQuery.isPlainObject( context ) ) {
+				// 遍历上面的{title:'hi', html:'aaa'}这个json
+				for ( match in context ) {
+					// 如果jQuery.html()这个方法有 那就是jQuery.html('aaa');
+					if ( jQuery.isFunction( this[ match ] ) ) {
+						this[ match ]( context[ match ] );
+
+					// 如果jQuery.title()这个方法没有 那就是jQuery.attr(title, 'hi');
+					} else {
+						this.attr( match, context[ match ] );
+					}
+				}
+			}
+
+			return this;
+
+		// 情况4：$('#div1') match存在 并且没有上下文context 但是match[1]不存在 
+		} else {
+			// id获取元素 match[2] = 'div1' elem = document.getElementById('div1');
+			elem = document.getElementById( match[2] );
+
+			// 形成this = {0:elem, length:1}最终return this
+			// if(elem && elem.parentNode)是为了兼容黑莓4.6
+			if ( elem && elem.parentNode ) {
+				this.length = 1;
+				this[0] = elem;
+			}
+
+			this.context = document;
+			this.selector = selector;
+			return this;
+		}
+
+	// 情况5：$('.div1') $('div') $('#div1 div.box')等其他 match = null; 
+	// context上下文必须未指定或者是jQuery对象
+	} else if ( !context || context.jquery ) {
+		// 通过find调用sizzle进行处理
+		// 这里context上下文必须未指定 通过!context进入这里 例如$('ul').find('li')
+		// 或者coentext是jQuery对象 通过context.jquery进入这里 例如$('ul', $(document)).find('li');
+		return ( context || rootjQuery ).find( selector );
+	//如果context上下文指定了并且不是jQuery对象 例如$('ul', document).find('li');
+	} else {
+		//那走这个else 并且把指针修正到jQuery对象然后调用find
+		return this.constructor( context ).find( selector );
+	}
+
+
+<strong>6：为什么init下最终return的this都是{0:xx, 1:xx, 2:xx..., length:xx}的json形式</strong> 
+$(xx)开始调用init方法 return的{0:xx, 1:xx, 2:xx..., length:xx}这个json就存储了各个DOM元素
+而之前已分析过$(xx)调用init也同时具备了jQuery下的原型方法 所以可以开始$(xx).css()
+开始$(xx).css() 遍历操作存储了各个DOM元素的json 给这些DOM元素进行css操作
+css等实例方法最终继续return出jQuery对象 之后又能继续连缀
+
+
+<strong>7：(202-280) 继续给jQuery.fn=jQuery.prototype添加实例方法 后续调用$(xx).xx()</strong> 
+toArray: function() {
+	//[].slice.call(this) 把this冒充为数组 并slice
+	return core_slice.call( this );
+},
+
+get: function( num ) {
+	return num == null ?
+		// 如果num参数是空 返回一个原生类数组集合 
+		// 例如$('div').get()就相当于var aDiv = document.getElementsByTagName('div')
+		this.toArray() :
+		// 如果num是-1之类的就是原生类数组集合的倒数第一个元素对象
+		// num是2之类的就是原生类数组集合的第二个原生对象
+		( num &lt 0 ? this[ this.length + num ] : this[ num ] );
+},
+
+pushStack: function( elems ) {
+	//入栈操作
+	var ret = jQuery.merge( this.constructor(), elems );
+
+	ret.prevObject = this;
+	ret.context = this.context;
+
+	return ret;
+},
+
+each: function( callback, args ) {
+	//调用each工具方法 循环
+	return jQuery.each( this, callback, args );
+},
+
+ready: function( fn ) {
+	//调用ready加载
+	jQuery.ready.promise().done( fn );
+
+	return this;
+},
+
+slice: function() {
+	//$('div').slice(2,4) 选取所有div元素的第二个第三个入栈 
+	return this.pushStack( core_slice.apply( this, arguments ) );
+},
+
+first: function() {
+	//选取第一个原生对象
+	return this.eq( 0 );
+},
+
+last: function() {
+	//选取最后一个原生对象
+	return this.eq( -1 );
+},
+
+eq: function( i ) {
+	//将第i个元素入栈 选取第i个元素对象
+	var len = this.length,
+		j = +i + ( i &lt 0 ? len : 0 );
+	return this.pushStack( j >= 0 && j &lt len ? [ this[j] ] : [] );
+},
+
+map: function( callback ) {
+	return this.pushStack( jQuery.map(this, function( elem, i ) {
+		return callback.call( elem, i, elem );
+	}));
+},
+
+end: function() {
+	//寻找刚入栈的元素的前一个入栈的元素
+	return this.prevObject || this.constructor(null);
+},
+
+push: core_push,
+sort: [].sort,
+splice: [].splice
+}; 
+
+
+</pre>
+</body>
+</html>

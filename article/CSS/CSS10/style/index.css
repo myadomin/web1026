@@ -1,0 +1,969 @@
+﻿ul,li,h1,div,img,dl,dt,dd,body,p{
+	margin:0;
+	padding:0;
+}
+body{
+	font-size:12px;
+	color:black;
+	background:#0174e9 url(../img/bg.png) repeat-x 0 -67px;
+}
+a{
+	text-decoration:none;
+}
+a:hover{
+	text-decoration:underline;
+	color:red;
+}	
+ul{
+	list-style-type:none;
+}
+img{
+	border:none;
+}
+
+#header{
+	width:900px;
+	height:96px;
+	border-top:5px solid #eee;
+	background:#fff url(../img/global.png) no-repeat 0 0;
+	margin:0 auto;
+}
+#header embed{
+	width:238px;
+	height:96px;
+	float:left;
+	/*关键是记得设置wmode="transparent" flash透明*/
+}
+#header dl{
+	background:white;
+	width:400px;
+	height:36px;
+	float:right;
+	margin-top:6px;
+}
+#header dd{
+	float:left;
+	height:22px;
+	margin-left:4px; 
+	text-indent:-9999px;
+}
+#header dd.dd1{
+	width:95px;
+	background:url(../img/global.png) no-repeat -699px -6px;
+}
+#header dd.dd2{
+	width:79px;
+	background:url(../img/global.png) no-repeat -715px -61px;
+}
+#header dd.dd3{
+	width:59px;
+	background:url(../img/global.png) no-repeat -735px -117px;
+}
+#header dd.dd4{
+	width:59px;
+	background:url(../img/global.png) no-repeat -735px -89px;
+}
+#header dd.dd5{
+	width:84px;
+	background:url(../img/global.png) no-repeat -710px -33px;
+}
+#header dd a{
+	display:block;
+	height:22px;
+	/*注意，每个ddx下面的a能继承每个ddx的宽度，却不能继承dd的高度*/
+}
+#header p{
+	background:white;
+	float:right;
+	width:386px;
+	height:28px;
+}
+#header p a:hover{
+	color:red;
+}
+#header p span{
+	color:red;	
+}
+#header ul{
+	background:white;
+	width:662px;
+	/*因为前面的embed左浮动后已经占据了左边的238px。
+	所以ul最多只能900-238=662，再长就会掉出header框体了。*/
+	height:26px;
+	float:right;
+	position:relative;
+	/*因为前面的embed左浮动后已经占据了左边的238px。
+	为了让ul向左边靠，又不会掉下去，就只有相对定位了，
+	然后左边移动。一直到对齐下面的bill附近。*/
+	left:-35px;
+}
+#header ul li{
+	float:left;
+	width:75px;
+	height:25px;
+	/*padding-top:1px;，所以height=26-1=25px。*/
+	line-height:25px;
+	font-size:12px;
+	text-align:center;
+	background:url(../img/global.png) no-repeat -516px -8px;
+	margin-left:2px;
+	padding-top:1px;
+}
+#header ul li a{
+	display:block;
+	width:75px;
+	height:26px;
+	color:black;	
+}
+#header ul li a:hover{
+	color:red;
+	font-size:14px;
+	text-decoration:none;
+	font-weight:bold;
+	background:url(../img/global.png) no-repeat -591px -8px;
+}
+
+#strip{
+	width:100%;
+	height:67px;
+	background:url(../img/bg.png) repeat-x 0 0;
+}
+#strip div{
+	width:900px;
+	height:67px;
+	margin:0 auto;
+}
+#strip div h1{
+	width:177px;
+	height:67px;
+	line-height:67px;
+	color:#fff;
+	font-size:14px;
+	padding-left:32px;
+	float:left;
+}
+#strip div select{
+	display:block;
+	float:left;
+	width:111px;
+	font-size:12px;
+	margin-top:9px;
+}
+#strip div input.in1{
+	display:block;
+	float:left;
+	width:412px;
+	height:20px;
+	margin:9px 0 0 4px;
+	border:none;
+	padding-left:20px;
+	background:#fff url(../img/global.png) no-repeat -773px -147px;
+}
+#strip div input.in2{
+	display:block;
+	float:left;
+	width:47px;
+	height:22px;
+	margin:8px 0 0 4px;
+	background:#fff url(../img/global.png) no-repeat -568px -62px;
+	border:none;
+	cursor:pointer;
+}
+#strip div a{
+	color:#fff;
+	display:block;
+	float:left;
+	margin:12px 0 0 4px;
+}
+#strip div a:hover{
+	text-decoration:none;
+}
+#strip div h2{
+	width:680px;
+	color:#fff;
+	font-size:12px;
+	font-weight:normal;
+	float:left;
+	background:url(../img/searchline.jpg) repeat-x left top;
+	margin-top:8px;
+	height:30px;
+	line-height:30px;
+	position:relative;
+	left:-2px;
+	/*由于h1 width:177px; height:67px;都定死了
+	 热门两个字向要往左移动2px，就让h2 position:relative;*/
+}
+#strip div h2 span{
+	font-weight:bold;
+} 
+
+#adver{
+	width:900px;
+	height:50px;
+	margin:0 auto;
+	background:#fff;
+}
+#adver img{
+	margin:2px 0 0 4px;
+}
+
+#main{
+	width:900px;
+	height:1263px;
+	margin:0 auto;
+	background:#fff;
+}	
+#sidebar{
+	width:200px;
+	height:1256px;
+	background:url(../img/navbg.jpg) repeat-y left top;
+	float:left;
+}
+#sidebar h1{
+	width:182px;
+	height:42px;
+	margin-left:13px;
+	text-indent:-9999px;
+}	
+#sidebar h1.login0{
+	background:url(../img/global.png) no-repeat -10px -110px;
+}
+#sidebar h1.cart0{
+	background:url(../img/global.png) no-repeat -10px -160px;
+}
+#login{
+	width:180px;
+	height:140px;
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	margin:0 0 0 13px;
+}
+#login form{
+	width:160px;
+	height:90px;
+	padding-top:10px;
+	margin-left:12px;
+}
+#login form label{
+	margin-left:3px;
+}		
+#login form input.in1{
+	width:90px;
+	height:19px;
+	border:1px solid black;
+	margin-left:2px;
+	margin-top:5px;
+}
+#login form input.in2{
+	width:73px;
+	height:25px;
+	border:none;
+	background:url(../img/global.png) no-repeat -723px -185px;
+	margin-top:11px;
+	margin-right:2px;
+}	
+#login form input.in3{
+	width:74px;
+	height:25px;
+	border:none;
+	background:url(../img/global.png) no-repeat -723px -215px;
+	margin-top:11px;
+}	
+#login p{
+	width:150px;
+	height:18px;
+	line-height:18px;
+	margin:9px 0 0 24px;
+	padding-left:18px;
+	background:url(../img/global.png) no-repeat -777px -167px;	
+}
+#login p a{
+	color:#333;
+}
+#login p a:hover{
+	color:red;
+}
+#cart{
+	width:180px;
+	height:153px;
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	margin:0 0 0 13px;
+}
+#cart p{
+	text-align:center;
+	padding-top:16px;
+	line-height:15px;
+}
+#cart p span{
+	color:red;
+}
+#cart p a{
+	color:#333;
+}
+#cart p a:hover{
+	color:red;
+}
+#cart img{
+	margin:16px 0 0 10px;
+}  	
+
+#sidebar h2{
+	width:170px;
+	height:26px;
+	border:1px solid #ccc;
+	margin:0 0 0 13px;
+	font-size:12px;
+	line-height:26px;
+	font-weight:normal;
+	padding-left:10px;
+}	
+#sidebar h2 a{
+	float:right;
+	color:#666;
+	padding-right:12px;
+}
+#sidebar h2 a:hover{
+	color:red;
+}
+#hao{
+	width:180px;
+	height:247px;
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	margin:0 0 0 13px;
+}	
+#hao dl{
+	width:70px;
+	height:110px;
+	float:left;
+	padding:5px 10px 5px 10px;
+}	
+#hao dl dt{
+	width:70px;
+	height:80px;
+}	
+#hao dl dd{
+	width:70px;
+	height:30px;
+	text-align:center;
+	color:#333;
+	padding:5px 0;
+}	  	
+#hao dl dd a{
+	color:#333;
+}  	
+#hao dl dd a:hover{
+	color:red;
+} 	
+#re{
+	width:180px;
+	height:174px;
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	margin:0 0 0 13px;
+}	
+#re dl{
+	width:165px;
+	height:45px;
+	float:left;
+	padding:8px 0 2px 10px;
+}	
+#re dl dt{
+	width:70px;
+	height:45px;
+	float:left;
+	border:1px solid #ccc;
+}	
+#re dl dd{
+	width:80px;
+	height:45px;
+	text-align:center;
+	color:#333;
+	float:left;
+	padding:10px 0 0 8px;
+}	 
+#re dl dd a{
+	color:#333;	
+} 	 
+#re dl dd a:hover{
+	color:red;
+} 		
+div#gou{
+	width:180px;
+	height:212px;
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	margin:0 0 0 13px;
+}	
+#gou ul{
+	padding:3px 0 0 0;
+}
+#gou ul li{
+	line-height:26px;
+	text-indent:9px;
+	background:url(../img/global.png) no-repeat -15px -321px;
+}	
+#gou ul li em{
+	display:block;
+	width:7px;
+	height:7px;
+	background:url(../img/global.png) no-repeat -489px -193px;
+	float:left;
+	margin-top:8px;
+	margin-left:9px;
+}	
+#gou ul li a:hover{
+	color:red;
+}	
+#shang{
+	width:180px;
+	height:133px;
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+	margin:0 0 0 13px;
+	text-align:center;
+}		
+#shang img{
+	padding:7px 5px 0 5px;
+}
+	
+#bill{
+	width:346px;
+	height:178px;
+	float:left;
+	margin-left:0px;
+}
+#affiche{
+	width:270px;
+	height:178px;
+	background:url(../img/global.png) no-repeat -205px 19px;
+	/*-150+(178-9)=19 */
+	float:left;
+	margin-left:3px;
+}
+#affiche h1{
+	background:url(../img/global.png) no-repeat -205px -110px;
+	width:270px;
+	height:30px;
+	font-size:12px;
+	line-height:30px;
+	color:blue;
+	padding-left:21px;
+}
+#affiche h1 a{
+	float:right;
+	color:#333;
+	margin-right:32px;
+	font-weight:normal;
+}
+#affiche div{
+	width:270px;
+	height:139px;
+	background:url(../img/bgline.png) repeat-y -1395px 0px;
+}
+#affiche div h2{
+	font-size:14px;
+	color:orange;
+	width:260px;
+	text-align:center;
+	height:22px;
+	line-height:22px;
+}	
+#affiche div dl{
+	width:250px;
+	height:77px;
+	padding-top:8px;
+	margin-left:9px;
+	border-bottom:1px dashed #ccc;
+}			
+#affiche div dl dt{
+	width:70px;
+	height:70px;
+	float:left;
+}	
+#affiche div dl dd{
+	width:175px;
+	height:16px;
+	float:left;
+	margin-left:5px;
+	margin-top:2px;
+}	
+#affiche div dl dd a{
+	color:#666;		
+}
+#affiche div dl dd a:hover{
+	color:red;
+}	
+#affiche div h3{
+	width:255px;
+	height:30px;
+	margin:5px 0 0 9px;
+}	
+#affiche div h3 a{	
+	display:block;
+	height:24px;
+	background:red;
+	float:left;
+	padding:1.5px;
+}
+#affiche div h3 a.a1{
+	width:58px;
+	background:url(../img/global.png) no-repeat -207px -171px;
+}
+#affiche div h3 a.a2{
+	width:49px;
+	background:url(../img/global.png) no-repeat -273px -171px;
+}
+#affiche div h3 a.a3{
+	width:61px;
+	background:url(../img/global.png) no-repeat -332px -171px;
+}
+#affiche div h3 a.a4{
+	width:70px;
+	background:url(../img/global.png) no-repeat -403px -171px;
+}
+#help{
+	width:74px;
+	height:178px;
+	float:left;
+	margin-left:3px;
+}
+#help a{
+	display:block;
+	width:74px;
+	height:39px;
+	padding:7px 0 0 0px; 
+}
+#help a.a1{
+	background:url(../img/global.png) no-repeat -512px -97px;
+}	
+#help a.a2{
+	background:url(../img/global.png) no-repeat -593px -98px;
+}	
+#help a.a3{
+	background:url(../img/global.png) no-repeat -513px -143px;
+}	
+#help a.a4{
+	background:url(../img/global.png) no-repeat -593px -143px;
+}	
+#guide{
+	width:347px;
+	height:212px;
+	background:url(../img/global.png) no-repeat -10px -47px;
+	/*-254+(212-5)=-47*/
+	float:left;
+	margin-left:0px;
+	margin-top:4px;
+}
+#guide h1{
+	width:317px;
+	height:23px;
+	background:url(../img/global.png) no-repeat -10px -212px;
+	color:#fff;
+	font-size:12px;
+	padding-top:8px;
+	padding-left:30px;
+}
+#guide div{
+	width:347px;
+	height:176px;
+	background:url(../img/bgline.png) repeat-y 0px 0;
+}	
+#guide div dl{
+	width:76px;
+	height:86px;
+	float:left;
+	padding:5px 0px 0 8px;
+/*这里可以配合padding-left以及width一起来调dl间距及dl1左边距。
+其实最开始dl width是78px，后改的76px 在dl外围加个border就更好理解了*/
+}	
+#guide div dl dt{
+	width:78px;
+	height:50px;
+}	
+#guide div dl dd{
+	width:78px;
+	height:26px;
+	text-align:center;
+	color:#666;
+	padding-top:3px;
+}	
+#guide div dl dd span{
+	color:red;
+}
+#guide div dl dd a{
+	color:#666;
+}
+#guide div dl dd a:hover{
+	color:red;
+}
+#guide div ul{
+	width:215px;
+	height:82px;
+	float:left;
+	background:white;
+	margin-left:7px;
+}	
+#guide div ul li{
+	width:211px;
+	height:21px;
+	line-height:21px;
+	background:url(../img/global.png) no-repeat -10px -326px;
+	text-indent:12px;
+}
+#guide div ul li.end{
+	height:20px;
+}	
+#guide div ul li span a{
+	color:orange;
+}
+#guide div ul li a:hover{
+	color:orange;
+}
+#guide div img.img1{
+	margin:0px 0 0 3px;
+}
+
+#special{
+	width:347px;
+	height:212px;
+	background:url(../img/global.png) no-repeat -368px -47px;
+	float:left;
+	margin-left:2px;
+	margin-top:4px;
+}
+#special h1{
+	width:317px;
+	height:23px;
+	background:url(../img/global.png) no-repeat -368px -212px;
+	color:#fff;
+	font-size:12px;
+	padding-top:8px;
+	padding-left:30px;
+}
+#special div{
+	width:339px;
+	height:176px;
+	background:url(../img/bgline.png) repeat-y -349px 0;
+	padding:0 0 0 8px;
+}		
+#special div img{
+	float:left;
+	padding:6px 5px 0 0px;
+}
+
+#newpro{
+	width:696px;
+	height:157px;
+	float:left;
+	margin-left:0px;
+	margin-top:4px;
+	background:url(../img/global.png) -10px -157px;
+	/* -305+(157-9)=-157*/
+}
+#newpro h1{
+	width:681px;
+	height:18px;/*25-7  696-15 */
+	background:url(../img/global.png) -10px -270px;
+	color:blue;
+	font-size:12px;
+	padding:7px 0 0 15px;
+}	
+#newpro div{
+	width:696px;
+	height:123px;
+	background:url(../img/bgline.png) -697px 0;
+}
+#newpro div dl{
+	width:98px;
+	height:123px;
+	float:left;
+	padding:15px 0 0 18px;
+}	
+#newpro div dl.dlx dt{
+	border:none;
+}
+#newpro div dl dt{
+	width:98px;
+	height:74px;
+	border-right:1px dashed #ccc;
+}	
+#newpro div dl dd{
+	width:90px;
+	text-align:center;
+	padding-top:3px;
+	line-height:16px;
+}	
+#newpro div dl dd span{
+	color:red;
+}
+
+#channel{
+	width:696px;
+	height:222px;
+	float:left;
+	margin-left:0px;
+	margin-top:4px;
+}
+#channel ul{
+	background:#eee;
+	width:696px;
+	height:25px;
+}	
+#channel ul li{
+	float:left;
+	width:102px;  /*102   */
+	height:25px;
+	margin-right:5px;
+}			
+#channel ul li.li1{
+	background:url(../img/channel1.png) 0 0;
+}	
+#channel ul li.li2{
+	background:url(../img/channel2.png) -102px 0;
+}	
+#channel ul li.li3{
+	background:url(../img/channel3.png) -102px 0;
+}	
+#channel ul li.li4{
+	background:url(../img/channel4.png) -102px 0;
+}	
+#channel ul li.li5{
+	background:url(../img/channel5.png) -102px 0;
+}	
+#channel ul li.li6{
+	background:url(../img/channel6.png) -102px 0;
+}	
+#channel div.c1{
+	width:696px;
+	height:108px;
+	border-top:1px solid #999;
+	border-bottom:1px dashed #ccc;
+}
+#channel div.c1 dl{
+	width:85px;
+	height:100px;
+	float:left;
+	padding:7px 0 0 13px;
+}
+/*注意！！重要！！！！！！经典例子。
+当数个dl排成一行的时候，要准确调整他们的左右位置，
+在不用到dl上层的div的margin padding的情况下。
+只用dl本身的padding及width调整即可调左右相对位置。
+具体做法是：先padding-left调准第一个dl距左边的位置。
+然后用width调整第一张图和第二张图的左右间距。*/
+#channel div.c1 dt{
+	width:72px;
+	height:65px;
+	margin-left:3px;
+}
+#channel div.c1 dd{
+	width:72px;
+	height:30px;
+	text-align:center;
+}
+#channel div.c2 dl{
+	width:207px;
+	height:80px;
+	float:left;
+	padding:8px 0 0 16px;
+}
+/*同上的方法：先padding-left调准第一个dl距左边的位置。
+然后用width调整第一张图和第二张图的左右间距。*/
+#channel div.c2 dt{
+	width:80px;
+	height:70px;
+	float:left;
+}
+#channel div.c2 dd{
+	width:110px;
+	height:70px;
+	float:left;
+	line-height:18px;
+	margin-left:10px;
+}
+
+#sortnav{
+	width:696px;
+	height:29px;
+	background:url(../img/prof.gif);
+	float:left;
+	margin-left:0px;
+	margin-top:4px;
+}
+#sortnav a{
+	display:block;
+}
+#sortnav a.a1{
+	width:100px;
+	height:26px;
+	background:url(../img/sort.gif);
+	float:left;
+}
+#sortnav a.a2{
+	width:88px;
+	height:26px;
+	background:url(../img/sort_bg1.gif);
+	float:left;
+	margin-left:3px;
+}
+#sortnav a.a3{
+	width:88px;
+	height:26px;
+	background:url(../img/sort_bg2.gif);
+	float:left;
+	margin-left:3px;
+}
+#sortnav a.a4{
+	width:94px;
+	height:15px;
+	background:url(../img/sort_x.gif);
+	float:right;
+	margin:6px 5px 0 0;
+}
+#sortnav a.a2:hover{
+	background:url(../img/sort_bg1.gif) no-repeat -91px 0;
+}	
+#sortnav a.a3:hover{
+	background:url(../img/sort_bg2.gif) no-repeat -91px 0;
+}	
+
+#sort{
+	width:694px;
+	height:440px;
+	border:1px solid #FC8F32;
+	float:left;
+	margin-left:0px;
+}
+#sort div{
+	width:347px;
+	height:110px;
+	float:left;
+}
+#sort div dl{
+	width:347px;
+	height:110px;
+	background:url(../img/sort_bgline.gif);
+	text-indent:12px;
+}	
+#sort div dl dt {
+	color:red;
+	height:35px;
+	line-height:35px;
+}		
+#sort div dl dt a{
+	color:#FE6905;
+	font-size:14px;
+	font-weight:bold;
+}	
+#sort div dl dd a{
+	color:black;		
+}	
+#sort div dl dd a:hover{
+	color:green;
+}	
+
+#sort div.qubian dl{
+	width:344px;
+}
+#sort div.yan{
+	background:#FEEFCE;
+}
+/*！！！多重选择器的经典应用！！！！！
+先做一个347*110的dl框体，然后在不移动此框体位置的情况下，把里面的文字排版好。
+上下用height及line-height左右用text-indent，这样此框体没移动过，
+就可以复制8个此dl框体，通过dl的左浮动，做出8个内部样式都一样的框体了。
+然后8个框体间的区别是：
+2 4 6 8号框体没有右边的虚线，通过设置缩短框体宽度实现。
+3 4 7 8颜色是粉色，通过设置background。所以：
+2号：<dl class="qubian"> 
+3号：<dl class="yan"> 
+4号：<dl class="qubian yan"> 
+6号：<dl class="qubian"> 
+7号：<dl class="yan"> 
+8号：<dl class="qubian yan"> 
+但是：问题出现了，在dl 3 4 7 8上设置background:#FEEFCE;
+就会覆盖掉之前在dl 3 4 7 8上已设置的右边虚线背景
+所以解决办法是在每个dl上层都加一个div，dl不做class 形成：
+2号：<div class="qubian"> 
+3号：<div  class="yan"> 
+4号：<div  class="qubian yan"> 
+6号：<div  class="qubian"> 
+7号：<div  class="yan"> 
+8号：<div  class="qubian yan"> 
+在div.yan上加粉色背景，在div.qubian dl上加宽度以去掉右边虚线背景
+此时还要注意，要对div设置宽度高度，等同于dl，同时是div左浮动，而不是dl左浮动了*/
+
+#footer{
+	clear:both;
+	width:900px;
+	height:169px;
+	background:#fff;
+	margin:0 auto;
+}
+#aa{
+	background:#f2f2f2;
+	width:890px;
+	height:93px;
+	margin-left:5px;
+}
+#aa ul{
+	width:445px;
+	height:90px;
+	float:left;
+	margin:9px 0 0 12px;
+}
+#aa ul li{
+	line-height:210%;
+	color:#666;
+}
+#footer2 form{
+	padding-top:9px;
+	margin-bottom:2px;
+}	
+#footer2 form select{
+	display:block;
+	font-size:12px;
+	width:90px;
+	float:left;
+}
+#footer2 form input.in1{
+	width:250px;
+	float:left;
+	margin-left:2px;
+	height:15px;
+}
+#footer2 form input.in2{
+	margin-left:2px;
+}
+#footer2 p{
+	float:left;
+}
+#footer2 p.p1{
+	margin:11px 0 0 0px;
+	background:url(../img/global.png) no-repeat -782px -254px;
+	padding-left:24px;
+}
+#footer2 p.p2{
+	margin:12px 0 0 0px;
+	background:url(../img/global.png) no-repeat -783px -288px;
+	padding-left:24px;
+}
+#bb{
+	margin:8px 0 0 0;
+}
+#bb h1{
+	font-size:12px;
+	font-weight:normal;
+	line-height:18px;
+	text-align:center;
+	color:#333;
+}
+#h11{
+	text-indent:-38px;
+}
+#h11 a{
+	color:orange;
+}

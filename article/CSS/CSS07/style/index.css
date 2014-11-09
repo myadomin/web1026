@@ -1,0 +1,291 @@
+﻿ul,li,h1,div,img,dl,dt,dd,body{
+	margin:0;
+	padding:0;
+}
+body{
+	width:760px;
+	background:white;
+	margin:0 auto;
+	font-size:12px;
+}
+
+#header{
+	height:190px;
+} 
+/*一张图片切成了10张，上面5张下面5张，拼成一张图。
+方法1：用table做2行5列，然后对table进行border-collapse:collapse。不推荐太麻烦。
+方法2：直接把10张img按顺序排，记得在HTML文本中img元素之间不能有文本空格，原图片如果有边框就border:none，没有就不用写。
+由于正好卡死了宽度是760，这样写下面的5张图会自己换行到下面一行去。 */ 
+
+#nav{
+	height:40px;
+} 	
+#nav a img{
+	border:none;
+}
+/*方法1：*nav图片排一行在html的img元素之间不能有任何文本空格，另外去掉img原有的边框用border:none
+方法2：做成ul列面，对li进行display:inline，太麻烦不推荐 */ 
+
+#banner{
+height:60px;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+#video{
+	width:500px;
+	height:336px;
+	float:right;
+	margin-bottom:10px;
+	background:url(../img/flv_bottom.jpg) no-repeat left bottom;
+}
+#video h1{
+	background:url(../img/flv_top.jpg) no-repeat left top;
+	height:31px;
+	line-height:31px;
+	text-align:center;
+	color:white;
+	font-size:12px;
+}
+#video div{
+	height:299px;
+	background:url(../img/flv_bg.jpg);
+	padding-left:40px;
+}
+#video div span{
+	display:block;
+	/*因为span不是区块，要先把他变成区块，然后才能设置高度宽度。*/
+	width:320px;
+	height:260px;
+	background:white;
+	float:left;
+	margin-top:10px;
+}
+#video div ul{
+	width:75px;
+	height:260px;
+	float:left;
+	padding-left:14px;
+	margin-top:10px;
+}
+#video div ul li img{
+	width:75px;
+	height:55px;
+	padding:2px;
+}
+#video div strong{
+	display:block;
+	clear:both;
+	height:20px;
+	line-height:20px;
+	text-indent:20px;
+	color:#999;
+	font-weight:normal;
+}
+/*！！！！！！！！非常重要。浮动float的经典案例。先分析act ad video的排序。
+排序条件：1：act必须在ad前面 2：act与ad的位置连续或者分开。
+所以共有三种排序方式：1：act ad video，2：video act ad，3：act video ad 排序写到HTML里，先写的会先浮动操作。
+1：按act ad video写，act必须左浮，否则video上不去。但是一旦act左浮，
+如果让ad不浮动，ad如果不浮就会进入到act里面，不行（但是如果act是占据整行的框体，那ad不浮动也会上浮到act框体里的元素的旁边，参考下面的compere div dl dt浮动！！！）
+如果让ad左浮动，ad就会上浮上去，之后的video就没办法完全上浮了。所以不行。
+结果就是 都不行。
+2：按video act ad写，video直接右浮动。
+如果让act不浮动。那ad不浮动就行，如果左浮动也没关系因为act没浮动他也上不去,如果右浮动也上不去，因为video在他之前已浮动上去卡了右边位置了。不行
+如果让act左浮动。那ad如果不浮动就会上移到act区域，如果左浮由于之前的act已浮动在他上面了卡住了上面的位置了，所以可以。
+结果就是 video右浮 act不浮 ad不浮
+   video右浮 act左浮 ad左浮 但是注意ad浮动后 下面的top必须浮动，否则就会进入到ad里面。但是下面的top是必须左浮的，否则top下面的三元素上不来。
+3：按act video ad写。act必须左浮，否则video上不去。左浮后video就右浮动然后上去。之后，
+如果ad不浮动，就会进入到act区域。不行。
+如果ad左浮动，由于之前的act已浮动在他上面了卡住了上面的位置了，所以可以。
+结果就是 act左浮 video右浮 ad左浮 但是注意ad浮动后 下面的top必须浮动，否则就会进入到ad里面。
+总结：注意html写的各元素的顺序，形象化浮动的感觉。！！！！！！！！！！！！*/
+
+#act{
+	width:250px;
+	height:226px;
+	margin-bottom:10px;
+	background:url(../img/jmd_bottom.jpg) no-repeat left bottom;
+	/*一个区块下面只能加一次background，所以jmd_top.jpg加到下面的h1作为背景。*/
+}
+#act h1{
+	background:url(../img/jmd_top.jpg) no-repeat left top;
+	height:32px;
+	line-height:32px;
+	text-align:center;
+	color:white;
+	font-size:12px;
+}
+#act div{
+	background:url(../img/jmd_bg.jpg);	
+}	 	
+#act div ul{
+	width:240px;
+	height:188px;
+	overflow:auto;
+	/*关键所在，以后不建议用html中的textarea。
+	而是直接对ul进行overflow:auto，自动回出现滚动条。*/
+	margin:0 auto;
+	scrollbar-face-color: #333; 
+	scrollbar-highlight-color: #666; 
+	scrollbar-shadow-color: #333; 
+	scrollbar-3dlight-color: #999; 
+	scrollbar-arrow-color: #999; 
+	scrollbar-track-color: #000; 
+	/*不常用 只有IE才有的CSS.*/
+}
+#act div ul li{
+	color:white;
+	text-indent:45px;
+	line-height:150%;
+	letter-spacing:1px; 
+}
+#act div ul li span{
+	color:lightgreen;	
+}
+
+#ad{
+	width:250px;
+	height:100px;
+	margin-bottom:10px;
+}
+
+#top{
+	width:250px;
+	height:340px;
+	float:left; 	
+	background:url(../img/jmd_bottom.jpg) no-repeat left bottom;
+}
+#top h1{
+	background:url(../img/jmd_top.jpg) no-repeat left top;
+	height:32px;
+	line-height:32px;
+	text-align:center;
+	color:white;
+	font-size:12px;
+}	
+#top div{
+	height:302px;
+	background:url(../img/jmd_bg.jpg);
+	color:orange;	
+}	 	
+
+#commend{
+	width:500px;
+	height:119px;
+	float:right;
+	margin-bottom:10px;
+	background:url(../img/flv_bottom.jpg) no-repeat left bottom;
+}
+#commend h1{
+	background:url(../img/flv_top.jpg) no-repeat left top;
+	height:31px;
+	line-height:32px;
+	text-align:center;
+	color:white;
+	font-size:12px;
+}
+#commend div{
+	height:82px;
+	background:url(../img/flv_bg.jpg);
+	padding-left:23px;	
+}
+#commend div a img{
+	border:none;
+	padding-left:4px;
+	margin-top:12px;
+}
+
+#compere{
+	width:500px;
+	height:140px;
+	float:right;
+	margin-bottom:10px;
+	background:url(../img/flv_bottom.jpg) no-repeat left bottom;
+}
+#compere h1{
+	background:url(../img/flv_top.jpg) no-repeat left top;
+	height:31px;
+	line-height:32px;
+	text-align:center;
+	color:white;
+	font-size:12px;
+}
+#compere div{
+	height:103px;
+	background:url(../img/flv_bg.jpg);
+}
+#compere div dl{
+	float:left;
+	margin-top:10px;
+	padding-left:15px;
+	margin-left:25px;
+}
+#compere div dl dt{
+	float:left;
+	margin-right:5px;
+}
+#compere div dl dd{
+	color:white;
+	width:80px;
+	float:left;
+}
+#compere div dl dd a{
+	text-decoration:none;
+	color:white;
+}  
+/* #compere div{
+height:103px;
+background:url(../img/flv_bg.jpg);
+}
+#compere div dl{
+border:1px solid red;
+float:left;
+}
+#compere div dl dt{
+border:1px solid blue;
+float:left;
+}
+#compere div dl dd{
+color:white;
+}
+!!!!去掉上面一段，用这段加边框的感觉下。		
+!!!!非常好的浮动例子。记得dt dd都占据了整行
+所以先dd左浮动就和dt到一行了，而不是在dt里面
+然后dl左浮动，dl1和dl2也到一行了，而不是dl2在dl1里面去*/
+
+
+#partner{
+	width:500px;
+	height:60px;
+	float:right;
+	margin-bottom:10px;
+}
+
+#footer{
+	clear:both;
+	height:120px;
+	background:url(../img/footer.gif);
+}
+#footer p{
+	text-align:center;
+} 	
+#footer .aa{
+	padding-top:13px;
+	color:#999;
+}
+#footer .aa a{
+	text-decoration:none;
+	color:#999;
+}
+#footer .aa a:hover{
+	text-decoration:underline;
+}
+#footer .bb{
+	padding-top:8px;
+	color:#666;   
+}
+/*margin 与padding的区别。
+margin是此元素的框体与周围的框体元素间相隔多少。
+padding是此元素与此元素的框体间相隔多少。*/
+
+

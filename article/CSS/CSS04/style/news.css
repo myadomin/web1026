@@ -1,0 +1,55 @@
+﻿#sidebar{
+	width:267px;
+	height:850px;
+	background:white;
+	float:left;
+}
+#sidebar embed{
+	width:220px;
+	height:200px;
+  margin-left:23px;
+  margin-top:20px;
+}
+
+#contents{
+	width:599px; 
+	/*注意这里是599+1+267=867，
+	如果大于599就会总和大于867，就浮不起来。*/
+	height:850px;
+	border-left:1px solid #ccc;
+	float:right;
+	background:white;
+}
+#contents h1{
+	width:123px;
+	height:27px;
+	background:url(../img/news.gif);
+	margin-top:20px;
+	margin-left:20px;
+}
+#contents ul{
+  margin-left:20px;
+  margin-top:10px;
+	}
+#contents ul li{ 
+  background:url(../img/ico.gif) no-repeat left center;
+  padding-left:15px; 
+  /*给每个li元素加一个背景，此背景不重复 居左 居中。
+  然后他就会和li文字部分重叠，然后padding开他们15px*/
+  line-height:180%;
+}
+ #contents ul li a{
+ 	text-decoration:none;
+} 
+ #contents ul li a:hover{
+ 	text-decoration:underline;
+ 	color:#f60;
+} 
+#contents p{
+ 	margin-left:146px;
+ 	margin-top:30px;
+}
+    
+    
+    
+    

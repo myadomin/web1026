@@ -1,0 +1,370 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>jQuery源码分析5--延迟对象$.Deferred</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+</head>
+<body>
+<pre>
+<p class="title">概述</p>
+本文主要介绍源码的延迟对象$.Deferred
+PS：(349-817)的意思就是对应源码的349行到817行，源码版本是jquery-2.0.3.js。
+
+<p class="title">$.Deferred()的应用</p>
+<strong>1: done配合resolve就相当于回调对象的fire配合add</strong>
+var dfd = $.Deferred();
+setTimeout(function(){
+	alert(11);
+	dfd.resolve();		//执行成功触发
+}, 1000);
+dfd.done(function(){	//执行成功触发的函数
+	alert(22);
+});
+
+
+<strong>2: done配对resolve fail配对reject progress配对notify</strong>
+var dfd = $.Deferred();
+setTimeout(function(){
+	alert(11);
+	dfd.notify();			//执行过程中触发
+	// dfd.resolve();		//执行成功
+	// dfd.reject();		//执行失败触发
+}, 1000);
+dfd.done(function(){
+	alert('执行成功');    	//执行成功触发的函数
+}).fail(function(){
+	alert('执行失败');		//执行失败触发的函数
+}).progress(function(){		
+	alert('执行中');		//执行过程中触发的函数
+});
+
+
+<strong>3：把上面应用到延迟进程中 比如ajax请求过程中 不需要resolve notify reject触发</strong>
+$.ajax('xxx.php')
+	.done(function(){alert('请求完毕并成功')})
+	.fail(function(){alert('请求完毕并失败')})
+	.progress(function(){alert('请求过程中')});
+
+
+<strong>4：notify会多次触发  resolve reject只会触发一次</strong>
+var dfd = $.Deferred();
+setInterval(function(){		//定时器
+	alert(11);
+	dfd.notify();			//触发多次	 
+}, 1000);
+dfd.done(function(){
+	alert('执行成功');    	//执行成功触发的函数
+}).fail(function(){
+	alert('执行失败');		//执行失败触发的函数
+}).progress(function(){		
+	alert('执行中');		//执行过程中触发的函数
+});
+
+
+<strong>5: notify resolve reject都带回调对象的"memory"功能</strong>
+//先弹11 然后如果点击了input就弹22 否则不弹
+var dfd = $.Deferred();
+setTimeout(function(){		 
+	alert(11);
+	dfd.notify();			 
+}, 1000);
+
+$('input').click(function(){
+	dfd.done(function(){
+		alert(22);    	 
+	})
+});
+
+
+<strong>6: always附加可选的一个函数 执行成功或者失败都会触发这个函数</strong>
+var dfd = $.Deferred();
+setTimeout(function(){		 
+	alert(11);
+	// dfd.resolve();	
+	dfd.reject();		 
+}, 1000);
+dfd.always(function(){
+	alert('执行成功或者失败');    //执行成功或者失败都会触发的函数
+})
+
+
+<strong>7: then附加三个函数 依次执行成功失败进行中触发这三个函数</strong>
+var dfd = $.Deferred();
+setTimeout(function(){		 
+	alert(11);
+	dfd.notify();		 
+}, 1000);
+dfd.then(function(){
+	alert('执行成功');    //相当于上面的2
+},function(){
+	alert('执行失败');
+},function(){
+	alert('执行中');
+});
+
+<p class="title">Deferred源码分析</p>
+Deferred: function( func ) {
+	var tuples = [
+			//定义一个二维数组 形成resolve对应done reject对应fail notify对应progress
+			//并且resolve及reject触发带回调对象Callbacks的once memory功能
+			//notify不带once 会反复触发  
+			[ "resolve", "done", jQuery.Callbacks("once memory"), "resolved" ],
+			[ "reject", "fail", jQuery.Callbacks("once memory"), "rejected" ],
+			[ "notify", "progress", jQuery.Callbacks("memory") ]
+		],
+		state = "pending",
+		//定义promise对象 它下面有state always then promise方法
+		promise = {
+			state: function() {
+				return state;
+			},
+			//alwas(fn)后 fn在成功及失败都会执行 等同于.done(fn).fail(fn) 
+			always: function() {
+				deferred.done( arguments ).fail( arguments );
+				return this;
+			},
+			//then(fn1,fn2,fn3)等同于done(fn1).fail(fn2).progress(fn3)
+			then: function() {
+				var fns = arguments;
+				return jQuery.Deferred(function( newDefer ) {
+					jQuery.each( tuples, function( i, tuple ) {
+						var action = tuple[ 0 ],
+							fn = jQuery.isFunction( fns[ i ] ) && fns[ i ];
+						deferred[ tuple[1] ](function() {
+							var returned = fn && fn.apply( this, arguments );
+							if ( returned && jQuery.isFunction( returned.promise ) ) {
+								returned.promise()
+									.done( newDefer.resolve )
+									.fail( newDefer.reject )
+									.progress( newDefer.notify );
+							} else {
+								newDefer[ action + "With" ]( this === promise ? newDefer.promise() : this, fn ? [ returned ] : arguments );
+							}
+						});
+					});
+					fns = null;
+				}).promise();
+			},
+			//下面会执行promise.promise(deferred); 调用这个函数从而让promise对象扩展到deferred对象
+			promise: function( obj ) {
+				return obj != null ? jQuery.extend( obj, promise ) : promise;
+			}
+		},
+		//定义deferred对象
+		deferred = {};
+
+	//promise对象下又多了个pipe方法
+	promise.pipe = promise.then;
+
+	//关键部分 遍历整个二维数组 形成$.Deferred()对象等同于$.Callbacks()对象功能
+	jQuery.each( tuples, function( i, tuple ) {
+		var list = tuple[ 2 ],
+			stateString = tuple[ 3 ];
+
+		//让promise[done|fail|progress]功能就等同于list.add 
+		//此时promise对象下又多了done fail progress三个方法
+		promise[ tuple[1] ] = list.add;
+		
+		//判断stateString状态 二维数组的第三个子数组的stateString是undefined
+		if ( stateString ) {
+			list.add(function() {
+				state = stateString;
+			}, tuples[ i ^ 1 ][ 2 ].disable, tuples[ 2 ][ 2 ].lock );
+		}
+
+		//让deferred[resolve|reject|notify]功能等同于回调对象下的fireWith
+		//并且由于上面的二维数组对应 形成resolve对应done reject对应fail notify对应progress
+		//并且deferred对象有了自己的resolve reject notify方法 因为tuple[0]就是resolve或reject或notify
+		deferred[ tuple[0] ] = function() {
+			deferred[ tuple[0] + "With" ]( this === deferred ? promise : this, arguments );
+			return this;
+		};
+		deferred[ tuple[0] + "With" ] = list.fireWith;
+	});
+
+	//到现在为止promise对象下有state always then promise done fail progress这几个方法
+	//promise方法是 promise:function(obj){return obj != null ? jQuery.extend(obj,promise ) : promise;}
+	//就是把promise对象扩张到参数obj对象上去
+	//下面调用promise对象下的promise方法 就是把promise对象下的方法全部扩张到deferred对象上去
+	//所以现在的deferred对象具备了promise对象的所有方法并且还有自身的resolve reject notify方法
+	promise.promise( deferred );
+
+	if ( func ) {
+		func.call( deferred, deferred );
+	}
+
+	//$.Deferred()的执行结果就是最终返回deferred对象
+	//所以实际应用时可以用$.Deferred调用dnoe ntify then always等等上面的所有方法 
+	return deferred;
+},
+
+<p class="title">延迟对象扩展方法 $.when()的应用</p>
+<strong>情况1: when不传参数 只会执行done里面的函数</strong>
+function aaa(){
+	var dfd = $.Deferred();
+	dfd.resolve();
+	return dfd;
+}
+function bbb(){
+	var dfd = $.Deferred();
+	dfd.reject();
+	return dfd;
+}
+$.when().done(function(){
+	alert('成功');
+}).fail(function(){
+	alert('失败');
+});
+
+
+<strong>情况2：when只传一个延迟对象参数</strong> 
+//延迟对象resolve就执行done reject就执行fail progress就执行notity
+function aaa(){
+	var dfd = $.Deferred();
+	dfd.resolve();
+	return dfd;
+}
+function bbb(){
+	var dfd = $.Deferred();
+	dfd.reject();
+	return dfd;
+}
+$.when(aaa()).done(function(){	//因为aaa()内部是resolve 所以这里指向done里的弹出成功
+	alert('成功');
+}).fail(function(){
+	alert('失败');
+});
+
+
+<strong>情况3：when传多个延迟对象参数</strong> 
+如果某个延迟对象参数有reject就执行fail 没有reject但是有notity就执行progress 也没有notify全部是reslove才执行done() 
+function aaa(){
+	var dfd = $.Deferred();
+	dfd.resolve();
+	return dfd;
+}
+function bbb(){
+	var dfd = $.Deferred();
+	dfd.reject();
+	return dfd;
+}
+function ccc(){
+	var dfd = $.Deferred();
+	dfd.notify();
+	return dfd;
+}
+$.when(aaa(), bbb(), ccc()).done(function(){	 
+	alert('成功');
+}).fail(function(){
+	alert('失败');
+}).progress(function(){
+	alert('进行中');
+});
+
+
+<strong>情况4：when部分参数是非延迟对象 忽略掉非延迟对象</strong>
+function aaa(){
+	var dfd = $.Deferred();
+	dfd.resolve();
+	return dfd;
+}
+function bbb(){
+	var dfd = $.Deferred();
+	dfd.reject();
+	return dfd;
+}
+function ccc(){
+	var dfd = $.Deferred();
+	dfd.notify();
+	return dfd;
+}
+//因为这里忽略掉了111 222 只管aaa() bbb() 所以是进行中
+$.when(aaa(), ccc(), 111, 222).done(function(){	 
+	// arguments[2]		//传入非延迟对象的唯一意义就是接收参数
+	// arguments[3]
+	alert('成功');
+}).fail(function(){
+	alert('失败');
+}).progress(function(){
+	alert('进行中');
+});
+
+<p class="title">when源码分析</p>
+when: function( subordinate /* , ..., subordinateN * ) {
+	var i = 0,
+		//arguments是when()的参数 是一个类数组 
+		//所以用core_slice.call(arguments)=[].call(arguments)变成真正的数组
+		resolveValues = core_slice.call( arguments ),
+		//记录有几个参数
+		length = resolveValues.length,
+
+		//情况1：没有参数length=0 length!==1是ture 所以remaining=length=0
+		//情况2：传入一个延迟对象length=1 
+		//subordinate && jQuery.isFunction( subordinate.promise )是true 所以remaining=length=1
+		//情况3：假如传入3个延迟对象length=3 length!==1是ture 所以remaining=length=3
+		//情况4：假如共传入4个参数length=4 length!==1是ture 所以remaining=length=4
+		remaining = length !== 1 || ( subordinate && jQuery.isFunction( subordinate.promise ) ) ? length : 0,
+
+		//情况1: 因为remaining==0 所以deferred=jQuery.Deferred()
+		//情况2: 因为remaining==1 所以deferred=subordinate 也就是第一个延迟对象参数
+		//情况3: 因为remaining==3 所以deferred=jQuery.Deferred()
+		//情况3: 因为remaining==4 所以deferred=jQuery.Deferred()
+		deferred = remaining === 1 ? subordinate : jQuery.Deferred(),
+
+		//情况4：忽略非延迟对象 remaining计数器减1
+		updateFunc = function( i, contexts, values ) {
+			return function( value ) {
+				contexts[ i ] = this;
+				values[ i ] = arguments.length > 1 ? core_slice.call( arguments ) : value;
+				if( values === progressValues ) {
+					deferred.notifyWith( contexts, values );
+				} else if ( !( --remaining ) ) {
+					deferred.resolveWith( contexts, values );
+				}
+			};
+		},
+
+		progressValues, progressContexts, resolveContexts;
+
+	//情况1：不执行这里
+	//情况2：不执行这里
+	//情况3：如果某个延迟对象参数有reject就执行fail 
+	//没有reject但是有notity就执行progress 也没有notify只有reslove才执行done()  
+	//情况4：updateFunc的时候自动过滤掉非延迟对象
+	if ( length > 1 ) {
+		progressValues = new Array( length );
+		progressContexts = new Array( length );
+		resolveContexts = new Array( length );
+		for ( ; i < length; i++ ) {
+			if ( resolveValues[ i ] && jQuery.isFunction( resolveValues[ i ].promise ) ) {
+				resolveValues[ i ].promise()
+					.done( updateFunc( i, resolveContexts, resolveValues ) )
+					.fail( deferred.reject )
+					.progress( updateFunc( i, progressContexts, progressValues ) );
+			} else {
+				--remaining;
+			}
+		}
+	}
+
+	//情况1: 执行这里 进行resloveWith
+	//情况2: 不执行这里
+	//情况3: 不执行这里
+	//情况4: 不执行这里
+	if ( !remaining ) {
+		deferred.resolveWith( resolveContexts, resolveValues );
+	}
+
+	//情况1：执行done内的函数
+	//情况2：延迟对象resolve就执行done reject就执行fail progress就执行notity
+	//情况3：如果某个延迟对象参数有reject就执行fail 
+	//没有reject但是有notity就执行progress 也没有notify只有reslove才执行done
+	//情况4：updateFunc的时候自动过滤掉非延迟对象 留下延迟对象
+	return deferred.promise();
+}
+
+
+</pre>
+</body>
+</html>

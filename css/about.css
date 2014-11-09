@@ -1,0 +1,63 @@
+#content{
+	width: 1176px;
+	min-height: 500px;
+	margin: 0px auto 0px;
+}
+#content .content_left{
+	width: 800px;
+	float: left;
+}
+#content .content_left dl{
+	width: 800px;
+	padding: 7px 0px 7px 15px;
+	margin-top: 30px;
+}
+#content .content_left dl.dl1{
+	border-left: 5px solid #FAEBCC;
+	background: #FAF8F0;
+}
+#content .content_left dl.dl1 dd a{
+	padding-right: 30px;
+}
+#content .content_left dl.dl2{
+	border-left: 5px solid #EED3D7;
+	background: #FDF7F7;
+}
+#content .content_left dl.dl3{
+	border-left: 5px solid #BCE8F1;
+	background: #F4F8FA;
+}
+#content .content_left dl dt{
+	height: 50px;
+	line-height: 50px;
+	font-size: 22px;
+}
+#content .content_left dl.dl1 dt{
+	color: #A67737;
+}
+#content .content_left dl.dl2 dt{
+	color: #B94A48;
+}
+#content .content_left dl.dl3 dt{
+	color: #3478A4;
+}
+#content .content_left dl dd{
+	height: 30px;
+}
+
+#content .content_right{
+	width: 300px;
+	height: 300px;
+	float: right;
+	border: 1px solid red;
+}
+
+/*#content不能设置死高度 因为每个页面高度不一样 那就必须用min-height或者height:auto
+下面的兄弟元素#footer必须清除浮动 所以#content是无法padding-bottom margin-bottom的
+为了让#content底部空出100px的高度 所以设置一个空div 清除浮动 然后height:100px*/
+#content .content_bottom{
+	clear: both;
+	height: 100px;
+}
+
+

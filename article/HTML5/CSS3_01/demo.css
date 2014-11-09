@@ -1,0 +1,302 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+body{
+	padding-bottom: 100px;
+}
+p{
+	height: 80px;
+	line-height: 120px;
+	clear: both;
+}
+ul{
+	list-style: none;
+}
+
+
+/*1：画圆 椭圆*/
+#div1 div{
+	float: left;
+	text-align: center;
+	background: #ccc;
+}
+#div1 div:nth-child(1){
+	width: 100px;
+	height: 100px;
+	line-height: 100px;
+	border-radius: 50%;			/*50%就是圆*/
+}
+#div1 div:nth-child(2){
+	width: 200px;
+	height: 100px;
+	line-height: 100px;
+	border-radius: 50%;			/*50%就是椭圆*/
+}
+
+
+/*2：背景渐变*/
+#div2 div{
+	width: 100px;
+	height: 100px;
+	float: left;
+	margin-right: 50px;
+}
+#div2 div:nth-child(1){		/*线性渐变*/
+	background-image: -webkit-linear-gradient(top, red, blue);
+	background-image: -moz-linear-gradient(top, red, blue);
+	background-image: -ms-linear-gradient(top, red, blue);
+}
+#div2 div:nth-child(2){		/*放射渐变*/
+	background-image: -webkit-radial-gradient(50px 50px, red, blue);
+	background-image: -moz-radial-gradient(50px 50px, red, blue);
+	background-image: -ms-radial-gradient(50px 50px, red, blue);
+}
+
+
+/*3：过渡transition*/
+#div3{
+	width: 200px;
+	height: 200px;
+	background: #ccc;
+}
+#div3 div:nth-child(1){
+	width: 100px;
+	height: 100px;
+	background: red;
+	/*transition: property duration timing-function delay; 必写duration参数 如果要特定设置某个属性 就写property*/
+	-webkit-transition: 2s linear 1s, height 9s ease-in, opacity 3s, background 2s;
+	-moz-transition: 2s linear 1s, height 9s ease-in, opacity 3s, background 2s;
+	-ms-transition: 2s linear 1s, height 9s ease-in, opacity 3s, background 2s;
+}
+#div3:hover div:nth-child(1){
+	/*过渡到的终点*/
+	width: 200px;
+	height: 200px;
+	opacity: 0.1;
+	background: blue;
+}
+
+
+/*4：模拟进度条*/
+#div4{
+	width: 300px;
+	height: 30px;
+	border: 1px solid #ccc;	
+	border-radius: 15px;	
+	/*重复线性渐变*/
+	background: -webkit-repeating-linear-gradient(10deg, green 0, green 10px, #fff 10px, #fff 20px);
+	background: -moz-repeating-linear-gradient(10deg, green 0, green 10px, #fff 10px, #fff 20px);
+	background: -ms-repeating-linear-gradient(10deg, green 0, green 10px, #fff 10px, #fff 20px);
+	transition: 3s;		
+	-webkit-transition: 3s;		
+}
+#div4:hover{
+	/*变化background-position*/
+	background-position: -300px 0;
+}
+
+
+/*5：transition配合transform进行2D转换*/
+#div5{
+	background: blue;
+	width: 1000px;
+	height: 200px;
+}
+#div5 div{
+	float: left;
+	width: 100px;
+	height: 100px;
+	margin-right: 100px;
+	background: red;
+	transition: 2s linear;
+}
+
+/*配合自身元素hover*/
+#div5 div:nth-child(1):hover{
+	transform: translate(50px,100px);
+	-webkit-transform: translate(50px,100px);
+}
+#div5 div:nth-child(2):hover{
+	transform: rotate(720deg);
+	-webkit-transform: rotate(720deg);
+}
+
+/*配合父元素hover 触发自身*/
+#div5:hover div:nth-child(3){
+	transform: scale(2, 2);
+	-webkit-transform: scale(2, 2);
+}
+
+/*直接刷新就变 然后配合hover*/
+#div5 div:nth-child(4){
+	transform: skewX(10deg);
+	-webkit-transform: skewX(10deg);
+}
+#div5 div:nth-child(4):hover{
+	transform: skew(30deg,20deg);
+	-webkit-transform: skew(30deg,20deg);
+}
+
+/*transform-origin设置2D转换基准点*/
+#div5 div:nth-child(5){
+	transition: 3s linear;
+	transform-origin: right top;
+}
+#div5:hover div:nth-child(5){
+	transform: rotate(720deg) scale(0.5);
+}
+
+
+/*6：风车效果*/
+#div6{
+	width: 200px;
+	height: 200px;
+	margin: 30px 0 0 0;
+	transition: 5s linear;	
+	-webkit-transition: 5s linear;	 
+}
+#div6:hover{	
+	transform: rotate(720deg);
+	-webkit-transform: rotate(720deg);	 
+}
+#div6 div{
+	width: 88px;
+	height: 88px;
+	margin: 5px;
+	border: 1px solid #ccc;
+	float: left;
+	background: #e8a;
+}
+#div6 div:nth-child(1), #div6 div:nth-child(4){
+	border-radius: 0 70%;			 
+}
+#div6 div:nth-child(2), #div6 div:nth-child(3){
+	border-radius: 70% 0;
+} 
+
+
+/*7：css3模拟钟表*/
+#clock{
+	position: relative;
+	width: 200px;
+	height: 200px;
+	background: #fae;
+	border-radius: 50%;
+	border: 2px solid #aaa;
+}
+#clock ul {
+	width: 200px;
+	height: 200px;
+}
+#clock ul li{
+	width: 2px;
+	height: 7px;
+	background: #000;
+	position: absolute;
+	left: 99px;
+	top: 0px;
+	/*设定旋转基准点 位置是相对这个li的 1px 100px 也就是钟表圆形位置*/
+	transform-origin: center 100px;	
+	-webkit-transform-origin: center 100px;	
+}
+
+/*分钟刻度 js动态生成60个li 按如下规律设定li的transform css*/
+/*#clock ul li:nth-child(n){	
+	transform: rotate((n-1)*6deg);
+}*/
+/*时钟刻度 第6n个li的长度略长*/
+#clock ul li:nth-child(5n+1){
+	height: 14px;
+}
+
+/*时针 分针 秒针*/
+#hour{
+	width: 6px;
+	height: 50px;
+	position: absolute;
+	left: 97px;
+	top: 50px;
+	background: red;
+	transform-origin: center 50px; 
+	-webkit-transform-origin: center 50px; 
+	/*js设定transform rotate(xxdeg) 指向当前时间*/
+	/*transform: rotate(30deg);*/
+}
+#min{
+	width: 4px;
+	height: 60px;
+	position: absolute;
+	left: 98px;
+	top: 40px;
+	background: yellow;
+	transform-origin: center 60px;
+	-webkit-transform-origin: center 60px;
+}
+#sec{
+	width: 2px;
+	height: 80px;
+	position: absolute;
+	left: 99px;
+	top: 20px;
+	background: blue;
+	transform-origin: center 80px;
+	-webkit-transform-origin: center 80px;
+}
+#center{
+	width: 14px;
+	height: 14px;
+	background: #000;
+	border-radius: 50%;
+	position: absolute;
+	left: 93px;
+	top: 93px;
+}
+
+
+/*8：扇形菜单*/
+#menu{
+	width: 250px;
+	height: 250px;
+	position: relative;
+}
+#home{
+	width: 49px;
+	height: 49px;
+	border-radius: 50%;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background: url(img/home.png) no-repeat center center;
+	z-index: 2;
+}
+#clos, #full, #open, #prev, #refresh{
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	position: absolute;
+	left: 3.5px;
+	top: 3.5px;
+	z-index: 1;
+	transition: 0.5s ease;
+	-webkit-transition: 0.5s ease;	
+}
+/*在js中 给#clos等加transform: translate(xxpx, xxpx) 形成移动*/
+#clos{
+	background: url(img/clos.png) no-repeat center center;
+}
+#full{
+	background: url(img/full.png) no-repeat center center;
+}
+#open{
+	background: url(img/open.png) no-repeat center center;
+}
+#prev{
+	background: url(img/prev.png) no-repeat center center;
+}
+#refresh{
+	background: url(img/refresh.png) no-repeat center center;
+}
+
+
+

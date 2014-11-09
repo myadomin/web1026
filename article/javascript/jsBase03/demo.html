@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>坐标及距离及窗口大小</title>
+<link rel="stylesheet" type="text/css" href="demo.css" />
+</head>
+<body>
+
+<pre>
+
+
+<h3>坐标及距离及窗口大小 BOM差异总结 持续更新</h3>
+
+
+<strong>// 一：跨浏览器获取窗口的大小 不管你是否缩放 都能准确的得到当前窗口的高度宽度</strong> 
+function getInner(){
+	if(typeof window.innerWidth){    		//高版本各浏览器 W3C标准
+		return{
+			width:window.innerWidth, 	//返回字面量形式 getInner().width = window.innerWidth
+			height:window.innerHeight
+		}
+	}else{
+		return{                     		//兼容低版本的IE
+			width:document.documentElement.clientWidth,  
+			height:document.documentElement.clientHeight
+		}
+	}
+} 
+
+
+<strong>// 二：滚动条 前面兼容非chrome 后面兼容chrome</strong>
+var scrollLeft = document.documentElement.scrollLeft||document.body.scrollLeft;  
+var scrollTop = document.documentElement.scrollTop||document.body.scrollTop;
+
+
+<strong>// 三：clientX clientY 当事件被触发时鼠标指针坐标</strong>
+document.onclick = function(ev){      		//ev参数必须要有
+		var oEvent = ev || event;     	//ev高版本浏览器(ev必须写进参数里) event支持低版本IE 
+		//alert(oEvent.clientX +','+ oEvent.clientY);
+}
+// 实际应用中 有clientX的地方 必定加上scrollLeft（就算没滚动条加上他等于加上0有没影响）
+// var oEvent = ev||event;
+// oDiv3.style.left = oEvent.clientX + scrollLeft + 'px';   
+// oDiv3.style.top = oEvent.clientY + scrollTop + 'px';
+
+
+<strong>// 四：offsetWidth offsetHeight 框体的宽度及高度 display:block才有值 包括边框 内边距</strong>
+// document.documentElement.offsetWidth 
+// document.documentElement.offsetHeight 
+
+
+
+<strong>// 五：offsetLeft offsetTop 框体左边距上边距</strong>
+// 1：框体display:block才有offsetTop none那offsetTop就是0
+
+// 2：如下布局 如果蓝色框体有position:absolute 那offsetTop都是相对某层父级postion:relative的距离
+// 如果往父级一直没找到relative就是相对整个窗口 所有浏览器保持一致 不需要兼容
+var oRed = document.getElementById('red');
+var oYellow = document.getElementById('yellow');
+var oBlue = document.getElementById('blue');
+oBlue.style.position = 'absolute';
+oBlue.style.left = '0px';
+oBlue.style.top = '50px';
+oRed.style.position = 'relative';
+alert(oBlue.offsetTop);    //50  相对relative 50
+alert(oYellow.offsetTop);  //20  相对relative 20
+alert(oRed.offsetTop);     //1070 他的父辈没有relative了 就是相对窗口的距离
+</pre>
+
+<div id="red">
+	red
+	<div id="yellow">
+		yellow
+		<div id="blue">
+			blue
+		</div>
+	</div>
+</div>
+
+<pre>
+// 3：对于同样如上的框体 如果都没有position:absolute 也不在某层级上设定relative
+// 对于非IE 6 7 8 offsetTop会一直往父级 父父级 父父父级等找relative 如果没找到就是相对整个窗口的距离  
+// 但是对于IE6 7 8 offsetTop永远是相对父级的距离
+var oRed = document.getElementById('red');
+var oYellow = document.getElementById('yellow');
+var oBlue = document.getElementById('blue');
+alert(oBlue.offsetTop);     //W3C:相对整个窗口   IE6-8:相对父级
+alert(oYellow.offsetTop);   //W3C:相对整个窗口   IE6-8:相对父级
+alert(oRed.offsetTop);      //W3C:相对整个窗口   IE6-8:相对父级
+
+// 那如何兼容 让无论任何浏览器的offsetTop在框体没定位的情况下都是相对窗口的距离
+// offsetparent获取元素的偏移容器
+// alert(oBlue.offsetParent);   			//w3c返回了HTMLBodyElement IE6返回了object(就是父级oYellow)
+// alert(oBlue.offsetParent.offsetTop); 	//w3c是0 IE6是oYellow相对父级距离
+// alert(oBlue.offsetParent.offsetParent);  //W3C HTMLBodyElement的offsetparent是null IE6返回了(oRed)
+
+// 所以可以利用上面的特性做如下的兼容
+function objTop(obj){
+	var top = 0;   		   					 
+	while(obj){               	 
+		top += obj.offsetTop;       
+		 
+		obj = obj.offsetParent;  
+	} 
+	return top;
+}
+alert(objTop(oBlue));
+</pre>
+
+ 
+</body> 
+</html>    
+      
+     
+     
+     

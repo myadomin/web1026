@@ -1,0 +1,129 @@
+﻿ul,li,h1,div,img,dl,dt,dd,body,p{
+	margin:0px;
+	padding:0px;
+}
+body{
+	font-size:12px;                   
+	font-family:瀹嬩綋;           /*阃氲绷杩欓噷璁剧疆瀛椾綋 瀛椾綋鐩存帴澶嶅埗FW閲岄溃镄勫瓧浣揿悕绉板氨琛?杩欎簺瀛椾綋宸茬粡涓嬭浇瀛桦叆鍒?window font鏂囦欢澶逛简*/         
+	width:996px;
+	margin:0 auto;
+	color:#666;
+}
+a{
+	text-decoration:none;
+	color:#666;
+}
+a:hover{
+	color:green;
+}
+ul{
+	list-style:none;
+}
+img{
+	border:none;              /*1-22琛岃繖娈靛簲璇ュ啓杩沚asic.css鍏辩敤锛屼絾鏄负浜嗗寸瀹笽E6 镓€浠ヨ繖娈靛啓杩涗简杩欓噷 钥屾病链夊啓杩沚asic*/
+}
+
+#adv{
+	width:565px;
+	height:429px;
+	float:right;
+}
+
+#top ul li a.nav1{
+	background:url(../img/top_nav_hover-1.png);
+}
+#top ul li a.nav4{
+	background:url(../img/top_nav-4.png) no-repeat 18px center;
+}
+
+#info{
+	width:383px;
+	height:140px;
+	padding-left:48px;              /*鍏煎IE6 镓€浠ョ敤padding*/
+	float:left;
+}
+#info em{
+	display:block;
+	width:52px;                     /*IE6 杩欓噷涓嶈兘鐢╤镙囩锛?/
+	height:21px;
+	background:url(../img/info_h1.jpg) no-repeat;
+	float:left;
+}
+#info a.more{
+	display:block;
+	width:38px;
+	height:12px;
+	background:url(../img/info_h2.jpg) no-repeat;
+	float:right;
+	padding-left:8px;
+}
+#info ul{
+	clear:both;
+	width:376px;
+	height:96px;
+	padding-top:10px;
+}
+#info ul li{
+	float:left;
+	width:376px;
+	height:24px;
+	line-height:24px;
+	border-bottom:1px dashed #ccc;
+}
+#info ul li a{
+	color:
+}
+#info ul li span{
+	float:right;
+}
+
+#product{
+	width:383px;
+	height:140px;
+	padding-left:48px;
+	margin-top:12px;
+	float:left;
+}
+#product em{
+	display:block;
+	width:383px;                    
+	height:22px;
+	background:url(../img/product_h1.jpg) no-repeat;
+	border-bottom:1px dashed #ccc;
+}
+#product em a{
+	display:block;
+	width:54px;
+	height:22px;
+	float:right;
+}
+#product dl{
+	float:left;
+	padding:10px 21px 0 0;
+}
+#product dl dt{
+	width:106px;
+	height:80px;
+}
+#product dl dd{
+	width:106px;
+	height:20px;
+	line-height:20px;
+}
+
+#banner{
+	width:383px;
+	height:127px;
+	padding-left:48px;
+	margin-top:10px;
+	float:left;
+}
+#banner h1{
+	width:383px;
+	height:41px;
+	background:url(../img/baner-h1.jpg);
+}
+
+
+
+

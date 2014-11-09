@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>jQuery插件开发原理</title>
+<style>
+*{
+	padding:0px;
+	margin:0px;
+}
+ul{
+	list-style: none;	
+}
+
+.list{
+	width: 500px;
+	height: 30px;
+	margin: 50px auto 150px;
+}
+.list li{
+	width: 100px;
+	text-align: center;
+	height: 30px;
+	line-height: 30px;
+	background: #ddd;
+	float: left;
+	cursor: pointer;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="../../../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="jquery.nav.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+<p class="title">DEMO演示 jQuery插件开发原理</p>
+
+<ul class="list">
+	<li>一级菜单
+		<ul class="nav">
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+		</ul>
+	</li>
+	<li>一级菜单
+		<ul class="nav">
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+		</ul>
+	</li>
+	<li>一级菜单
+		<ul class="nav">
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+		</ul>
+	</li>
+	<li>一级菜单
+		<ul class="nav">
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+		</ul>
+	</li>
+	<li>一级菜单
+		<ul class="nav">
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+			<li>二级菜单</li>
+		</ul>
+	</li>
+</ul>
+
+<p class="title">插件 jquery.nav.js</p>
+<pre>
+
+<strong>//一：jquery插件的基本结构</strong>
+/*;(function($){	//匿名函数自我执行并传参数 保证插件代码不污染其他文件js代码 同时内部能用$代替jQuery对象
+
+	//插件代码		
+
+})(jQuery);*/		//传入jQuery到参数$ 便于$在内部调用*/
+
+
+<strong>//二：jQuery.extend(obj)添加全局的方法 后续调用时 $.xxx()  
+//jQuery.fn.extend(obj)在DOM对象上添加方法 后续调用时 $('elem').xxx()</strong>
+
+
+<strong>//三：编写一个下拉菜单插件 方法名nav 调用就是$('elem').nav()</strong>
+;(function($){
+	$.fn.extend({						//局部方法 添加在jQuery.fn.extend上
+		nav: function(json){				//传入json 作为配置参数
+
+			//默认参数
+			options = {						
+				"color" : 'orange', 
+				"background" : 'red', 
+				"sec" : 1500
+			};
+
+			//配置参数覆盖默认参数
+			for(var attr in json){		
+				//json配置参数传入的key如果有就覆盖默认参数的key-value 没有就用默认参数的key-value	
+				options[attr] = json[attr];	
+			}
+
+			//功能实现
+			$('.nav').css({					
+				"display":"none"
+			}).parent().hover(function(){	
+				//多次移入移出 stop清除上一次运动
+				$(this).find('.nav').stop().slideDown(options.sec);
+			},function(){
+				$(this).find('.nav').stop().slideUp(options.sec);
+			}).find('li').css({
+				"color": options.color,
+				"background": options.background
+			});
+
+			//最终返回jQuery对象 保证链式调用方法
+			// alert(this instanceof jQuery);
+			return this;					
+		}
+	});
+})(jQuery);
+</pre>
+
+<p class="title">js代码</p>
+<pre>
+//下拉菜单
+$(function(){
+
+	//下拉菜单插件封装详情见jquery.nav.js
+	$(".nav").nav({
+		"sec": 300, 
+		"background": "black"	//选传参数
+	}).click(function(){		//保持链式调用方法
+		alert(11);
+	});		
+
+});
+</pre>
+
+<p class="title">html代码</p>
+<pre>
+&ltul class="list">
+	&ltli>一级菜单
+		&ltul class="nav">
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+		&lt/ul>
+	&lt/li>
+	&ltli>一级菜单
+		&ltul class="nav">
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+		&lt/ul>
+	&lt/li>
+	&ltli>一级菜单
+		&ltul class="nav">
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+		&lt/ul>
+	&lt/li>
+	&ltli>一级菜单
+		&ltul class="nav">
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+		&lt/ul>
+	&lt/li>
+	&ltli>一级菜单
+		&ltul class="nav">
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+			&ltli>二级菜单&lt/li>
+		&lt/ul>
+	&lt/li>
+&lt/ul>
+</pre>
+
+<p class="title">css代码</p>
+<pre>
+*{
+	padding:0px;
+	margin:0px;
+}
+ul{
+	list-style: none;	
+}
+
+.list{
+	width: 500px;
+	height: 30px;
+	margin: 50px auto 150px;
+}
+.list li{
+	width: 100px;
+	text-align: center;
+	height: 30px;
+	line-height: 30px;
+	background: #ddd;
+	float: left;
+	cursor: pointer;
+}
+</pre>
+
+
+</body>
+</html>

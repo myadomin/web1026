@@ -1,0 +1,572 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>jQuery基础知识</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+</head>
+<body>
+
+
+<p class="title">jQuery基础知识</p>
+<pre>
+//jQuery基础知识
+$(function(){
+
+/*第一部分：选择器 ------------------------------------------------------------------ 
+//jq载入js事件加载的实现
+$(document).ready(function(){    //window.onload要HTML中DOM及图片视频等全部都要加载完毕才执行 而且后一个事件覆盖前一个事件
+   alert(11);                       //用addEventListener 后一个不会覆盖前一个 可是也要等到DOM和图片等全加载完
+});                              //而js程序其实dom加载完毕就可以开始了 没必要等到图片等加载完
+$(document).ready(function(){    //所以jq中加入ready原型方法 在$(xx)传入的参数是函数 就是调用ready方法
+   alert(22);
+});
+//实际应用 如下写法 调用ready方法
+$(function(){
+   alert(11);
+});
+$(function(){
+   alert(22);
+});
+
+//普通选择器
+$("#div1,.div2,p").css(xxx);              //群组选择器 
+$("ul li a").css(xxx);                    //后代选择器  
+$("#div1").find("p").css(xxx);            //后代选择器 
+$("*").css(xxx);                          //通配选择器 
+$("#div1 p, ul li *, .div2").css(xxx);    //混合选择器 
+$("#div1>p").css("background","red");     //子选择器 注意和$("div1 p")的区别(后代选择器）
+$("#div1").children("p").css(xxx);        //等同子选择器  
+$("#div1-p");                             //next选择器  
+$("#div1").next("p");                     //同上 
+$("#div1~p");                             //与#div1同级别的 #div1后面的所有p元素 
+$("#div1").nextAll("p");                  //同上   
+$("#div1").prev("p");                     //#div1同级别的上一个节点 
+$("#div1").prevAll("p");                  //与#div1同级别的 #div1前面的所有p元素
+$("#div1").siblings("p");                 //与#div1同级别的 所有p元素
+$("#div1").nextUntil("p");                //与#div1同级别的 #div1后面的一直截止到遇到第一个p的所有元素
+$("#div1").prevUntil("p");                //与#div1同级别的 #div1往上的一直截止到遇到第一个p的所有元素
+$("a[title]").css(xxx);                   //选取有title属性的a
+$("a[title=num1]").css(xxx);              //选取title属性值为num1的a
+
+//css伪类选择器
+$("#box li:first").css(xxx);        //#box元素下 的第一个li
+$("#box li:last").css(xxx);
+$("#box li:not(.pox)").css(xxx);    //#box元素下 的除了class=pox的所有li
+$("#box li:last").css(xxx);
+$("li:even").css(xxx);              //偶数行的li
+$("li:odd").css(xxx);                  //奇数行的li
+$("li:eq(2)").css(xxx);             //li的第二个  -2就是倒数第二个
+$("li:gt(2)").css(xxx);             //li的第 （大于2） 个
+$("li:lt(2)").css(xxx);             //li的第 （小于2） 个
+$(":header").css(xxx);              //选择 h1-h6任何一种
+$(":focus").css(xxx);               //选择光标所在的元素
+//为了语义化更好 对上面常用的css伪类选择器添加了同样的JQ方法
+$("li").first().css(xxx);
+$("li").last().css(xxx);
+$("li").not(.red).css(xxx);
+$("li").eq(2).css(xxx);
+
+//内容选择器
+$("div:contain('aaaa')")      //选取含有文本aaaa的div
+$("div:empty")                //选取不含有任何文本的div
+$("div:hidden")               //选取所有隐藏的div
+$("div:visible")              //选取显示的div
+
+//子元素选择器
+$("li:first-child")           //获取每个父元素的第一个子元素 例如li有3个父元素ul 那就是每个ul下面的第一个li
+$("li:last-child")            //获取每个父元素的最后一个子元素 例如li有3个父元素ul 那就是每个ul下最后一个li
+$("li:nth-child(even)")       //获取每个父元素的偶数个子元素 例如li有3个父元素ul 那就是每个ul下面的偶数个li
+$("li:nth-child(odd)")        //获取每个父元素的奇数个子元素 例如li有3个父元素ul 那就是每个ul下面的奇数个li
+
+//判断选择器
+$(".red").is("li");           //class=red的元素是不是li元素 如果是就返回ture
+$("li").eq(2).hasClass(red);  //如果li的第二个的class是red 就返回ture 记得不能是.red
+$("li").slice(5,7);           //选择第6第7个li
+$("li").slice(5);             //选择第6个li之后的所有li
+
+//过滤选择器
+$("ul").find("li").get(1);       //返回第一个li的原生对象
+$("li").filter(".red,#box,:first,:last-child ");    //选择出.red #box ...这些元素
+$("li").filter(function(){
+   //选择出 class="red" 而且title="aaa"的li
+   return $(this).attr("class")=="red" && $(this).attr("title")=="aaa"; 
+})   
+*/
+
+
+
+/*第二部分：DOM操作 ----------------------------------------------------------------------------------------------
+$("#box").html();             //获取html文本 例如获取了&ltp>123&lt/p>
+$("#box").html(value);        //设置html文本为value 例如设置为&ltem>aaa&lt/em> 变成倾斜了的aaa
+$("#box").text();             //获取文本  例如获取了 123
+$("#box").text(value);        //设置文本  不解析html标签   
+$("#box").val();              //获取表单的文本 input里面的文本
+$("#box").val(value);         //设置表达的文本
+ 
+$("#box").attr("id");         //获取id属性值
+$("#box").attr("id","box")    //设置id属性值为box
+$("#box").attr({"id":"box,data:123,title:aaa"})   //JSON方式设置属性值
+$("#box").removeAttr("id");   //删除attr属性
+ 
+$("div").css("width");                    //获取css宽度值
+$("div").css("width","720px");            //设置css宽度值
+$("div").css({"width":"50px","height":"50px","background-color":"red"})  //json方式 一次设置多个css
+$("div").css("width",function(index,value){     //index是第几个div  value是现在div的宽度值
+   return parseInt(value) - 500 + "px";         //要做的操作是将第index个div宽度全部减500 好处是value都是局部变量了
+})
+ 
+$("div").addClass("box");                    //添加class="box"
+$("div").addClass("box bg size");            //添加class="box bg size"
+$("div").removeClass("box");                 //删除class="box"
+$("div").removeClass("box bg size");         //删除class="box bg size"
+$("div").toggleClass("box");                 //class在box与默认(空class)之间切换
+$("div").toggleClass("box","bg");            //class在box与bg之间切换
+$("div").toggleClass("box","bg",true);       //class在box和bg与默认(空class)之间切换
+
+$("div").width();                      //获取div的宽度  返回的是number
+$("div").width("500px");               //设置div的宽度  最好写字符串500px  
+$("div").height();                     //获取div的高度  返回的是number
+$("div").height("500px");
+
+$("div").innerWidth();                    //获取div的宽度(包含内边距padding) 返回的是number
+$("div").innerWidth(true);                //(包含内边距padding以及外边距margin)
+$("div").outerWidth();                    //获取div的宽度(包含内边距padding及边框) 返回的是number
+$("div").outerWidth(true);                //(包含内边距padding及边框以及外边距margin)
+ 
+$("#div1").offset().left;                 //他永远是相对于整个窗口的 
+$("#div1").offset().top;
+$("#div1").position().left;               //相对父窗口   
+$("#div1").position().top
+$(window).scrollLeft();                   //获取针对整个窗口的水平滚动条
+$(window).scrollTop();                    //获取针对整个窗口的垂直滚动条
+$(window).scrollLeft(value);              //设置针对整个窗口的水平滚动条
+$(window).scrollTop(value);               //设置针对整个窗口的垂直滚动条
+
+//添加子节点操作
+var oDiv = $("&ltdiv id='box'>节点&lt/div>")      //创建一个div节点 id是box
+$("body").append(oDiv);                            //将创建的节点 添加到body节点下
+$("div").append("&ltem>DOM&lt/em>")                //将创建的&ltem>DOM&lt/em>内容 添加到div节点下
+$(oDiv).appendTo("body")                        //将创建的节点 添加到body节点下  
+$("body").prepend(oDiv)                         //将创建的节点 添加到body节点下最前面的那个  
+$(oDiv).prependTo("body")                       //将创建的节点 添加到body节点下最前面的那个  
+
+//同级节点操作
+var oDiv = $("&ltdiv id='box'>节点&lt/div>");
+var oEm = $("&ltem>DOM&lt/em>");
+$(oDiv).after(oEm)                     //oDiv节点后面跟上oEm节点 
+$(oDiv).before(oEm)                    //oDiv节点前面跟上oEm节点 
+$(oDiv).insertAfter(oEm)               //oDiv节点插入到oEm节点后面 与after相反 
+$(oDiv).insertBefore(oEm)              //oDiv节点插入到oEm节点前面
+$(oDiv).wrap(oEm);                     //在oDiv外围添加一个父节点 oEm
+$(oDiv).unwrap();                      //在oDiv外围删除一个父节点如果连写两次 就是移除父节点再移除爷节点
+$(oDiv).wrapInner(oEm);                //在oDiv里面添加一个节点
+$(oDiv).clone().appendTo("body")       //复制一个oDiv节点 作为body的子节点
+$(oDiv).clone(true).appendTo("body")   //复制一个oDiv节点 作为body的子节点 同时也有oDiv的事件
+$(oDiv).clone(false).appendTo("body")  //复制一个oDiv节点 作为body的子节点 没有oDiv的事件
+$(oDiv).remove(oEm);                   //彻底删除oDiv下的oEm节点
+$(oDiv).detach(oEm);                   //删除oDiv下的oEm节点 但是保留事件
+$(oDiv).empty();                       //oDiv下的所有内容 但是div标签还在
+$(oDiv).replaceWith(oEm);              //将oDiv替换成oEm节点
+$(oDiv).replaceAll(oEm);               //将oDiv替换掉oEm节点 与上面正好相反
+*/
+
+
+
+/*第三部分：事件------------------------------------------------------------------------------------
+//常用事件 
+$("#div").click(function(){alert(11)});
+$("#div").dbclick(function(){alert(11)});    //双击时
+$(window).unload(function(){alert(11)});     //当页面卸载 也就是刷新页面时 执行fn
+$(window).resize(function(){alert(11)});     //当窗口大小改变的时候
+$(window).scroll(function(){alert(11)});     //当拖动滚动条的时候
+$("input").select(function(){alert(11)});    //选择文本时
+$("input").change(function(){alert(11)});    //改变文本时
+$("form").submit(function(){alert(11)});     //提交时 只能是form对象下
+$("#div").mouseover(function(){}); 
+$("#div").mouseenter(function(){});          //相比上一个 移入不会触发#div的子元素
+$("#div").mouseout(function(){});
+$("#div").mouseleave(function(){});          //相比上一个 移出不会触发#div的子元素
+$("#div").hover(function(){},function(){})   //结合mouseenter mouseleave两个函数
+$("input").focus(function(){});              //光标激活
+$("input").blur(function(){});               //光标消失
+$("#div").focusin(function(){});             //光标激活 可以在父元素上加
+$("#div").focusout(function(){});            //光标消失 可以在父元素上加
+ 
+//事件对象 ev
+$("input").bind("click",function(ev){
+   alert(ev);                    //object 
+   alert(ev.type);               //click
+   alert(ev.target);             //获取事件源 比如一个div区域绑定了点击事件 内部包括一个span区域 点div就返回div对象 点span就返回span对象
+   alert(ev.currentTarget);      //绑定的谁 就得到谁的对象 等于this 例如上面例子 被绑定的div对象 就算点span也是返回div对象 
+   alert(ev.relatedTarget);      //获取移入移出目标点离开或进入的那个dom元素 
+}) 
+
+//data参数 可选 可以是数字 字符串 变量 数字 json 函数等
+$("input").bind("click",123,function(ev){    
+   alert(ev.data);
+}) 
+$("input").bind("click",{user:"lee",age:100},function(ev){
+   alert(ev.data.user); 
+}) 
+$("input").bind("click",function(){alert(11)},function(ev){
+   ev.data();                                          
+}) 
+$(document).bind("click",function(ev){            
+   alert(ev.pageY+"||"+ev.screenY+"||"+ev.clientY);   
+}
+$("input").bind("click",function(ev){
+   alert(ev.timeStamp);            //获取当前时间戳                             
+})                                               
+$("input").bind("mousedown",function(ev){    
+   alert(ev.which);               //判断你用的是哪个鼠标键 1左边 2右键 3中间                            
+})
+
+$("input").bind("keyup",function(ev){     
+   alert(ev.which);               //判断你用的是哪个键盘键                    
+})
+
+$("input").bind("click",function(ev){     
+   alert(ev.ctrlKey);             //如果点击的时候按下了ctrl就返回ture 没有就返回false  
+   alert(ev.altKey);             
+   alert(ev.shiftKey);                   
+})
+
+//阻止冒泡行为  ev.stopPropagation();  
+$("input").click(function(ev){     
+   ev.stopPropagation();             
+   alert("input");
+})
+$("div").click(function(){         
+   ev.stopPropagation();           
+   alert("div");
+})
+$(document).click(function(){
+   alert("document");
+})
+
+//阻止默认行为  ev.preventDefault();
+$("a").click(function(ev){        
+   ev.preventDefault();            
+   alert("1111");
+})
+
+//同时阻止默认行为和冒泡  return false;
+$("a").click(function(ev){                 
+   alert("input");                    //如果加上这句 就不会冒泡了 只会弹出input了
+   return false;                      //而且阻止了a的默认行为 
+   alert(ev.isDefaultPrevented());    //是否有阻止过默认行为 如果有返回true
+   alert(ev.isPropagationStopped());  //是否有阻止过冒泡行为 如果有返回true
+})
+$("div").click(function(){         
+   ev.stopPropagation();            
+   alert("div");
+})
+$(document).click(function(){
+   alert("document");
+})
+
+//主动触发事件 trigger triggerHandler 
+$("input").bind("click",{user:"lee"},function(ev,data1,data2,data3){
+   alert(data1 +"|"+ data2 +"|"+ data3.name +"|"+ ev.data.user); 
+//不需要点击 系统自动触发点击事件 abc|1,2,3|luo|lee    
+}).trigger("click",["abc",[1,2,3],{name:"luo"}]);     
+
+//trigger主动触发主要用于自定义事件 如下
+$("input").bind("AAA",function(){   
+   alert("自定义事件");
+//主动触发自定义事件 其实也就相当于一个函数自我执行 (function(){alert("自定义事件")})();
+}).trigger("AAA");                  
+//triggerHandler与trigger的区别
+//1：triggerHandler会阻止默认行为 所以就不需要自己在函数里面加上阻止默认行为语句了
+//2：triggerHandler会阻止冒泡行为 所以就不需要自己在函数里面加上阻止冒泡行为语句了
+//3：triggerHandler返回的不再是$(Jquery)对象，所以无法连缀
+
+//命名空间
+$("div").bind("click.box",function(){    //click.box命名空间                 
+   alert("aaa");
+})
+$("div").bind("click.pox",function(){                    
+   alert("bbb");
+})
+//只移除click.box这个点击绑定 如果没有命名空间的换 只能解绑所有的click事件
+$("div").unbind("click.box")              
+
+//事件委托 解除委托
+$("#box").delegate(".button","click",function(){ 
+//假如有2000个button 不可能用bind()一个个去绑定 用delegate事件委托给他们父元素#box 而且能动态的给新创建的button自动绑定事件  
+   $(this).clone().appendTo("#box");              
+})                                         
+$("#box").undelegate(".button","click");
+
+//以上的bind delegate全部统一到新方法on  以上的unbind undelegate全部统一到off
+//用on替代bind
+$(".button").on("click",function(ev){
+   ev.stopPropagation();
+   ev.preventDefault();
+   alert("11");
+   return false;
+})
+$(".button").on("click",{user:"luo"}.function(ev){
+   alert("11"+ev.data.user);
+})
+$(".button").on("mouseover mouseout",function(){
+      alert("一次同时绑定移入移除，移入移出都执行这个函数");
+})
+$(".button").on({
+   mouseover:function(){
+      alert("移入");
+   }  
+   mouseout:function(){
+      alert("移出");
+   }
+})
+
+//用on替代delegate
+$("#box").on("click",".button",function(){  
+   $(this).clone().appendTo("#box");
+})
+
+//用off替代unbind
+$(".button").off("click");
+$(".button").off("click",fn);       //移除函数 这个函数有函数名 fn就是函数名
+$(".button").off("click.aaa")       //移除函数 这个函数有用命名空间
+
+//用off替代undelegate
+$("#box").off("click",".button");
+
+//one 意思就是只执行一次on
+$(".button").one("click",function(){         //类似只执行一次bind
+   alert(11);
+})
+$("#box").one("click",".button",function(){     //类型只执行一次delegate
+   alert(22);
+})
+*/
+
+
+
+/*第四部分：动画 -------------------------------------------------------------- 
+//show() hide() toggle()
+$(".show").click(function(){     
+   $("#box").show();                   //显示  
+})
+$(".hide").click(function(){
+   $("#box").hide();                   //消失 
+});
+
+$(".show").click(function(){              //第一个可选参数(时间)，毫秒数或者slow noraml fast
+   $("#box").show(1000,function(){
+      alert("显示完成了");               //第二个可选参数(函数)，执行完show后就执行这个函数
+   });         
+})
+$(".hide").click(function(){
+   $("#box").hide(1000,function(){
+      alert("隐藏完成了");
+   });
+});
+
+//队列动画
+$(".show").click(function(){      
+   $(".test").eq(0).show(1000,function(){
+      $(".test").eq(1).show(1000,function(){
+         $(".test").eq(2).show(1000,function(){
+            $(".test").eq(3).show(1000);
+         });
+      });
+   });         
+})
+
+//上面如果1000个就麻烦了 所以做如下改进 回调
+$(".show").click(function(){ 
+   $(".test").first().show(400,function testShow(){
+      $(this).next().show(400,testShow);            
+   })
+})
+$(".hide").click(function(){
+   $(".test").last().hide(400,function testHide(){ 
+      $(this).prev().hide(400,testHide);   
+   })
+})
+
+//toggle()
+$(".toggle").click(function(){
+   $("#box").toggle("normal");           
+})
+
+//slideUp slideDown slideToggle
+$(".slideUp").click(function(){
+   $("#box").slideUp(200);              //上拉
+})
+$(".slideDown").click(function(){
+   $("#box").slideDown("slow");         //下拉
+})
+$(".slideToggle").click(function(){
+   $("#box").slideToggle("fast");       //上拉下拉自动切换
+})
+
+//fadeIn fadeOut fadeToggle fadeTo
+$(".aa").click(function(){
+   $("#box").fadeIn(5000);             //淡入
+})
+$(".bb").click(function(){
+   $("#box").fadeOut("slow");          //淡出
+})
+$(".cc").click(function(){
+   $("#box").fadeToggle("slow");       //淡入淡出自动切换
+})
+$(".dd").click(function(){
+   $("#box").fadeTo(2000,0.2);         //第一个参数同show()等方法 第二个参数fadeTo特有(透明度到什么数值)
+})
+
+//animate 列队动画 
+$(".animate").click(function(){
+   $("#box").animate({              //第一个参数{}json 用于放各种属性 这些属性能同时变化
+      width:"300px",
+      height:"400px",
+      opacity:0.5,
+      left:"600px",           
+      top:"100px"
+   },2000,function(){               //第二个参数 2000 完成这些变化需要的时间 
+      $("#box").animate({           //第三个参数 列队动画fn 
+         left:"200px",
+         top:"200px"
+      },"fast");
+   })                 
+});
+
+//用连缀实现列队动画  
+$(".animate").click(function(){
+   $("#box")
+      .animate({width:"300px"},"fast")
+      .animate({height:"300px"})
+      .animate({opacity:"0.1"},2000)
+      .animate({height:"0px"},2000)      //通过改变高度 实现上拉效果
+      .animate({height:"200px"},1000)    //为了下面的slideUp height不能为0 再把高度设为200px
+      .slideUp("slow")
+      .slideDown(1000)                   //先上拉 再下拉
+      .queue(function(next){                 
+      //css一执行函数就开始变色 所以使用queue方法 让他进入动画队列
+      $(this).css("background","orange");   
+         //由于queue方法后续不能再连缀 说以传参next 在执行next() 就能连缀后面的hide了
+          next();                              
+      })
+      .hide("slow");     
+});
+
+//clearQueue function(){$(this).clearQueue()}
+$(".animate").click(function(){
+   $("#box").animate({width:"300px"},"fast");
+   $("#box").animate({height:"300px"});
+   $("#box").animate({opacity:"0.1"},2000);
+   //执行clearQueue()方法 队列执行到这里就停止了
+   $("#box").animate({height:"0px"},2000,function(){$(this).clearQueue()});
+   $("#box").animate({height:"200px"},1000);    
+   $("#box").slideUp("slow");
+   $("#box").slideDown(1000);                   
+   $("#box").queue(function(next){                 
+    $(this).css("background","orange");   
+     next();                               
+  });
+   $("#box").hide("slow");     
+});
+
+//delay()  动画的延迟执行 
+$(".animate").click(function(){
+   $("#box").delay(1000)                                 //延迟三秒后再执行下一个动画
+          .animate({left:"500px"},1000).delay(2000)     //执行完毕这个动画后 延迟两秒再执行下一个动画
+          .animate({top:"200px"},"slow")
+          .animate({opacity:"0.1"},1000)
+          .animate({height:"300px"},1000)               //通过改变高度 实现上拉效果
+});
+
+//stop()  动画的强制停止
+$(".stop").click(function(){
+   $("#box").stop();            //如果不传参数 马上停止当前在执行的动画 立即跳到下一次动画  
+   $("#box").stop(true);        //如果一个ture 马上停止当前在执行的动画 后面的动画全部清除    
+   $("#box").stop(true,true);   //如果两个true 正在执行的动画立即执行到此动画终点 后面的动画全部清除
+})
+
+//:animated  查找正在动画的对象
+$(".ani").click(function(){
+   //:animated就是选取正在动画的对象(在delay的时候不算正在动画) 改变这个对象的颜色为蓝色
+   $(":animated").css("background","blue");  
+})
+
+//动画的帧数变化 关闭动画效果
+//jQuery.fx.interval = 200;    //改变动画的帧数 也就是200秒才刷新一次对象的位置 默认是13比较流畅
+//jQuery.fx.off = true;        //关闭所有动画效果 每次动画直接从起点跳到终点
+
+//设置匀速动画还是缓冲动画 以上都是默认的匀速动画
+$(".animate").click(function(){
+   $("#box").animate({left:"800px"},2000,"swing",function(){      //swing
+    $(this).html("&ltp>我是缓冲运动&lt/p>");
+   })  
+});
+$(".animate").click(function(){
+   $("#pox").animate({left:"800px"},2000,"linear",function(){     //linear
+     $(this).html("我是匀速运动，默认就是我");
+   })  
+});*/
+
+
+
+/*第五部分：插件 -------------------------------------------------------------- 
+//添加全局方法 后续调用时$.xxx()  
+jQuery.extend({方法名:function(){xxx}})
+
+//添加局部方法 后续调用时$('elem').xxx()
+jQuery.fn.extend({方法名:function(){xxx}}) 
+
+//示例 下拉菜单插件 添加局部方法 方法名nav 后续调用就是$('elem').nav()
+;(function($){
+   $.fn.extend({                    //局部方法 添加在jQuery.fn.extend上
+      nav: function(json){          //传入json 作为配置参数
+
+         //默认参数
+         options = {                
+            "color" : 'orange', 
+            "background" : 'red', 
+            "sec" : 1500
+         };
+
+         //配置参数覆盖默认参数
+         for(var attr in json){     
+            //json传入的key如果有color就覆盖默认参数的color 没有就用默认参数的color   
+            options[attr] = json[attr];   
+         }
+
+         //功能实现
+         $('.nav').css({               
+            "display":"none"
+         }).parent().hover(function(){ 
+            $(this).find('.nav').slideDown(options.sec);
+         },function(){
+            $(this).find('.nav').stop().slideUp(options.sec);
+         }).find('li').css({
+            "color": options.color,
+            "background": options.background
+         });
+
+         //最终返回jQuery对象 保证链式调用方法
+         // alert(this instanceof jQuery);
+         return this;               
+      }
+   });
+})(jQuery);
+
+//为什么要(function(){xxx})(jQuery)？
+//匿名函数自我执行 创建私有作用域 不污染其他的js变量及函数*/
+
+
+
+})
+</pre>
+
+   
+</body> 
+</html>    
+      
+     
+     
+     

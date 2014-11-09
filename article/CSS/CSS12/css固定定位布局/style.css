@@ -1,0 +1,64 @@
+﻿*{
+	margin:0;
+	padding:0;
+	}
+body{
+	margin:10px;
+	}
+	
+#header{
+	border:1px solid black;
+	width:600px;
+	height:60px;
+	margin:0 auto;
+	text-align:center;
+	line-height:60px;
+	}
+ #header h1{
+	font-size:16px;
+	}
+	
+#body{
+	border:1px solid black;
+	width:600px;
+	margin:0 auto;
+	position:relative;  
+	/*使用BODY的相对定位，设置BODY的左上角为基准0坐标，
+	在此基础上调其他元素的绝对定位坐标。*/
+	 
+	}
+ #nav{
+ 	width:100px;
+ 	height:300px;
+ 	background:orange;
+ 	margin-bottom:10px;
+ 	}
+ #nav2{
+ 	width:100px;
+ 	height:300px;
+ 	background:yellow;
+ 	margin-bottom:10px;
+ 	position:absolute;
+ 	top:0px;
+ 	left:100px;
+ 	}
+ 	#main{
+ 	width:400px;
+ 	height:300px;
+ 	background:red;
+ 	margin-bottom:10px;
+ 	position:absolute;
+ 	top:0px;
+ 	left:200px;
+ 	 
+ 	}
+	
+	
+#footer{
+	border:1px solid black;
+	width:600px;
+	height:30px;
+	margin:0 auto;
+	text-align:center;
+	line-height:30px;
+	}

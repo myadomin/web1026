@@ -1,0 +1,375 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>苹果官网弹性菜单</title>
+<style>
+body,ul,li,div,img,a{
+	margin:0px;
+	padding:0px;
+	font-size:14px;
+}
+a{
+	color:#999;
+	text-decoration:none;
+}
+a:hover{
+	color:#333;
+}
+ul{
+	list-style:none;
+}
+#apple{
+	width:980px;
+	height:185px;
+	border:1px solid #ccc;
+	margin:30px auto;
+} 
+#img_frame{
+	width:840px;
+	height:155px;
+	margin:0 auto;
+	overflow:hidden;
+} 
+#img_ul{
+	width:1680px;
+	height:155px;
+	position:relative;
+}
+#img_ul li{
+	float:left;
+	width:140px;
+	height:155px;
+	text-align:center;
+	left:0px;
+}
+#img_ul li img{
+	display:block;
+	width:130px;
+	height:130px;
+	margin:0 auto;
+}
+#bottom{
+	width:980px;
+	height:30px;
+	background:url(img/nav_bg.png);
+	position:relative;
+}
+#bottom a{
+	display:block;
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	float:left;
+}
+#bottom a.btn_color{
+	color:#333;
+	cursor:default;
+}
+#prev{
+	width:60px;
+	margin-left:390px;
+}
+#next{
+	width:110px;
+	margin-left:50px;
+}
+#active{
+	display:block;
+	width:13px;
+	height:8px;
+	background:url(img/caret_active.png);
+	position:absolute;
+	left:413px;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="../../../js/move.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+
+<p class="title">DEMO演示 苹果官网弹性菜单</p>
+
+<div id="apple">
+	<div id="img_frame">
+		<ul id="img_ul">
+			<li><a href="#"><img src="img/1.jpg"/>iPod shuffle</a></li>
+			<li><a href="#"><img src="img/2.jpg"/>iPod nano</a></li>
+			<li><a href="#"><img src="img/3.jpg"/>iPod classic</a></li>
+			<li><a href="#"><img src="img/4.jpg"/>iPod touch</a></li>
+			<li><a href="#"><img src="img/5.jpg"/>Apple TV</a></li>
+			<li><a href="#"><img src="img/6.jpg"/>Accessories</a></li>
+			<li><a href="#"><img src="img/7.jpg"/>Download iTunes 10</a></li>
+			<li><a href="#"><img src="img/8.jpg"/>iTunes Gift Cards</a></li>
+			<li><a href="#"><img src="img/9.jpg"/>Nike + iPod</a></li>
+			<li><a href="#"><img src="img/10.jpg"/>(PRODUCT) RED</a></li>
+			<li><a href="#"><img src="img/11.jpg"/>MobileMe</a></li>
+			<li><a href="#"><img src="img/12.jpg"/>In-Ear Headphones</a></li>
+		</ul>
+	</div>
+	<div id="bottom">
+		<a id="prev" class="btn_color" href="#">Products</a>
+		<a id="next" href="#">iTunes and more</a>
+		<span id="active"></span>
+	</div>
+</div>
+
+<p class="title">js代码</p>
+<pre>
+//苹果官网弹性菜单
+//学习浮动转定位布局 elaMove运动函数的应用
+window.onload = function(){
+	var aLi = document.getElementById("img_ul").getElementsByTagName("li");
+	var nextBtn = document.getElementById("next");
+	var prevBtn = document.getElementById("prev");
+	var disX = aLi[0].offsetWidth;
+	var oSpan = document.getElementById("active");
+ 	
+
+ 	//所有的li都是float left布局形成了一行 后续要运动操作li就必须变成absolute而且样式依然不变 如下操作进行这个变化
+ 	//首先设置li的的left值为他的offsetLeft 
+	for(var i=0 ; i&ltaLi.length ; i++){                 
+		aLi[i].style.left = aLi[i].offsetLeft + "px";
+	}
+	//li都得到left以后（必须都得到之后） 将所有li设置为绝对定位 所以下面和上个循环不能写进一个循环里
+	//这样布局没有任何变化 由原来的左浮变成了li绝对定位（相对父级是ul）便于后续运动 ul父级div负责溢出隐藏一半li   
+	for(var i=0 ; i&ltaLi.length ; i++){          
+		aLi[i].style.position = "absolute";       
+	}                                                     
+
+
+	//左移动 先依次移动ul前半部分的li 过了800毫秒后再依次移动后半部分                                                   
+	nextBtn.onclick = function(){                    
+		var fristLiLeft = parseInt(getStyle(aLi[0],"left")); 
+
+		//除非第一个li在位置0 那点击nextBtn才有效 elaMove可能会在很短的几个瞬间处于0位置 但是时间非常短 所以不会出问题 
+		//这样moveToLeftHalf moveToRightHalf函数中的各自定时器才能不同时开启 如果同时开启就会混乱
+		//如果让定时器timer变为全局变量 两个函数共有 一进moveToLeftHalf函数就清除time也不行 那6张图片的某张还没开始移动就清除time了 所以只有这种办法
+	  	if(fristLiLeft != 0){                  
+	  		return;                              
+	  	}   
+
+	  	//从第0张到第aLi.length/2张图片(ul前半部分)开始依次运动
+	    moveToLeftHalf(0);  
+
+	    //800ms后第aLi.length/2张到aLi.length/2张(ul后半部分)开始依次运动                           
+		setTimeout(function(){               
+			moveToLeftHalf(aLi.length/2);
+		},800);
+	  	
+	  	//底部小按钮的运动
+		elaMove(oSpan,{"left":553});
+		this.className = "btn_color";
+		prevBtn.className = "";  	
+	}
+		
+
+	//右移动 先依次移动ul前半部分的li 过了800毫秒后再依次移动后半部分  
+	prevBtn.onclick = function(){                     
+		var lastLiLeft = parseInt(getStyle(aLi[11],"left"));
+
+	  	if(lastLiLeft != (aLi.length/2-1)*disX){       
+	  		return;																			
+	  	}
+	  	
+	    moveToRightHalf(aLi.length-1);
+
+		setTimeout(function(){
+			moveToRightHalf(aLi.length/2-1);
+		},800);
+		
+		elaMove(oSpan,{"left":413});
+		this.className = "btn_color";
+		nextBtn.className = "";
+	}
+
+
+	//左移动 让第firstImgIndex张到firstImgIndex+aLi.length/2张图片 依次每隔100毫秒开始移动
+	function moveToLeftHalf(firstImgIndex){               
+	  var i = firstImgIndex;
+		var timer = setInterval(function(){
+			//利用封装好的elaMove弹性运动函数
+			elaMove(aLi[i],{"left":(i-aLi.length/2)*disX});
+			i++;	
+			if(i >= (firstImgIndex + aLi.length/2)){
+				clearInterval(timer);
+			};
+		},100);	
+	}
+	
+
+	//右移动 让第firstImgIndex张到firstImgIndex-aLi.length/2张图片 依次每隔100毫秒开始移动
+	function moveToRightHalf(firstImgIndex){              
+	  var i = firstImgIndex;
+		var timer = setInterval(function(){
+			elaMove(aLi[i],{"left":(i)*disX});
+			i--;	
+			if(i &lt= (firstImgIndex - aLi.length/2)){
+				clearInterval(timer);
+			};	
+		},100);	  	
+	}; 
+
+}
+
+
+/* 弹性运动 
+ * obj 运动对象
+ * json 运动目标属性 如{"left":"800px","top":"50px"}  
+ * fn 回调函数
+ * 由于弹性运动会过界目标点 所以height opacity等不能为负值的属性不能用弹性运动
+ */
+function elaMove(obj,json,fn){
+	clearInterval(obj.timer);                     
+	var iCur = 0;
+	var iSpeed = 0;
+	var iTarget = 0;       
+	                              
+	obj.timer = setInterval(function(){
+		var bStop = true;  
+		
+		for(attr in json){
+			if(attr != "opacity"){
+				iCur = parseFloat(getStyle(obj,attr));          	//由于每次循环iSpeed会形成小数 所以这里获取iCur用parseFloat
+				iTarget = parseInt(json[attr]);
+			    iSpeed += (iTarget - iCur)/5;                        	//冲击速度 改变这个5 越大就冲的越慢
+			    iSpeed *= 0.7;                                       	//模拟摩擦力 改变这个0.7 越大说明摩擦力越小 摆动的幅度越大 如果为1 那就是永动钟摆运动了
+		
+			    if( Math.abs(iSpeed)&lt1 && Math.abs(iCur - iTarget)&lt1){ 	//当速度绝对值小于1而且目标点与最终位置小于1就停下
+			    	obj.style[attr] = iTarget + "px";                	//停下可能有1px误差 强行定住
+			    }else{	 	 
+		    		obj.style[attr] = iCur + iSpeed + "px";  
+		    		bStop = false;                 		      
+				}		 
+				document.title = iTarget +"||"+ iSpeed +"||"+ (iCur - iTarget);
+			}
+		}	
+		
+		if(bStop){       						//只要有任意一个还没到达终点 bStop会被变成false 不停止定时器
+			clearInterval(obj.timer);                   		//当所有属性值都到达终点后 bStop不会变false 还是原来的true 停止定时器         
+			if(fn){                                                    
+				fn();                                                  
+			}
+		}	
+	},30)
+}	
+</pre>
+
+<p class="title">html代码</p>
+<pre>
+&ltdiv id="apple">
+	&ltdiv id="img_frame">
+		&ltul id="img_ul">
+			&ltli>&lta href="#">&ltimg src="img/1.jpg"/>iPod shuffle&lt/a>&lt/li>
+			&ltli>&lta href="#">&ltimg src="img/2.jpg"/>iPod nano&lt/a>&lt/li>
+			&ltli>&lta href="#">&ltimg src="img/3.jpg"/>iPod classic&lt/a>&lt/li>
+			&ltli>&lta href="#">&ltimg src="img/4.jpg"/>iPod touch&lt/a>&lt/li>
+			&ltli>&lta href="#">&ltimg src="img/5.jpg"/>Apple TV&lt/a>&lt/li>
+			&ltli>&lta href="#">&ltimg src="img/6.jpg"/>Accessories&lt/a>&lt/li>
+			&ltli>&lta href="#">&ltimg src="img/7.jpg"/>Download iTunes 10&lt/a>&lt/li>
+			&ltli>&lta href="#">&ltimg src="img/8.jpg"/>iTunes Gift Cards&lt/a>&lt/li>
+			&ltli>&lta href="#">&ltimg src="img/9.jpg"/>Nike + iPod&lt/a>&lt/li>
+			&ltli>&lta href="#">&ltimg src="img/10.jpg"/>(PRODUCT) RED&lt/a>&lt/li>
+			&ltli>&lta href="#">&ltimg src="img/11.jpg"/>MobileMe&lt/a>&lt/li>
+			&ltli>&lta href="#">&ltimg src="img/12.jpg"/>In-Ear Headphones&lt/a>&lt/li>
+		&lt/ul>
+	&lt/div>
+	&ltdiv id="bottom">
+		&lta id="prev" class="btn_color" href="#">Products&lt/a>
+		&lta id="next" href="#">iTunes and more&lt/a>
+		&ltspan id="active">&lt/span>
+	&lt/div>
+&lt/div>
+</pre>
+
+<p class="title">css代码</p>
+<pre>
+body,ul,li,div,img,a{
+	margin:0px;
+	padding:0px;
+	font-size:14px;
+}
+a{
+	color:#999;
+	text-decoration:none;
+}
+a:hover{
+	color:#333;
+}
+ul{
+	list-style:none;
+}
+#apple{
+	width:980px;
+	height:185px;
+	border:1px solid #ccc;
+	margin:30px auto;
+} 
+#img_frame{
+	width:840px;
+	height:155px;
+	margin:0 auto;
+	overflow:hidden;
+} 
+#img_ul{
+	width:1680px;
+	height:155px;
+	position:relative;
+}
+#img_ul li{
+	float:left;
+	width:140px;
+	height:155px;
+	text-align:center;
+	left:0px;
+}
+#img_ul li img{
+	display:block;
+	width:130px;
+	height:130px;
+	margin:0 auto;
+}
+#bottom{
+	width:980px;
+	height:30px;
+	background:url(img/nav_bg.png);
+	position:relative;
+}
+#bottom a{
+	display:block;
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	float:left;
+}
+#bottom a.btn_color{
+	color:#333;
+	cursor:default;
+}
+#prev{
+	width:60px;
+	margin-left:390px;
+}
+#next{
+	width:110px;
+	margin-left:50px;
+}
+#active{
+	display:block;
+	width:13px;
+	height:8px;
+	background:url(img/caret_active.png);
+	position:absolute;
+	left:413px;
+}
+</pre>
+
+ 
+</body> 
+</html>    
+      
+     
+     
+     

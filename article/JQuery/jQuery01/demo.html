@@ -1,0 +1,506 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>仿网易TabSwtich</title>
+<style type="text/css">
+*{
+	margin:0px;
+	padding:0px;
+}
+a{
+	text-decoration:none;
+	color:#000;
+}
+a:hover{
+	font-weight:bold;
+	color:#b12238;
+}
+img{
+	border:none;              /*某些ie版本默认img是有边框的 先去掉边框*/
+}
+	
+#tab{
+	 /*border覆盖技巧，.tab的border是没法覆盖内部li的左及上边框的 可以通过.tab改动宽高覆盖上li的右及下border(两者border同色)*/
+	width:302px;             
+	margin:30px 0 0 0;
+	border:1px solid #ddd;
+	font-size:14px;
+}
+.index{
+	list-style:none;
+	width:303px;
+	height:30px;
+}
+.index li{
+	width:100px;
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	background:#F7F7F7;
+	border-right:1px solid #ddd;
+	border-bottom:1px solid #ddd;
+	float:left;
+	cursor:pointer;
+}
+.index li.active{
+	background:#fff;
+	border-bottom:1px solid #fff;
+}
+.index li a{
+	display:block;
+	width:100px;
+	height:30px;
+}
+.content{
+	width:303px;
+	height:471px;
+	position:relative;
+}
+.content div{
+	left:0px;
+	top:0px;
+	color:#666;
+	display:none;
+	clear:both;
+}
+.content div.weibo{
+	display:block;
+}
+.content div.weibo dl{       /* (46+1)*7+141=470  */
+	width:302px;
+	height:46px;
+	border-bottom:1px solid #ddd;
+	overflow:hidden;
+}
+.content div.weibo dl.click_weibo{
+	height:141px;
+}
+.content div.weibo dl dt{     /* (46+1)+60+34=141  */
+	width:280px;
+	height:46px;
+	line-height:40px;
+	margin:0 auto;
+}
+.content div.weibo dl dd p{
+	width:280px;
+	height:60px;
+	line-height:20px;
+	font-size:13px;
+	margin:0 auto;
+}
+.content div.weibo dl dd a{
+	display:block;
+	width:300px;
+	height:34px;
+	line-height:30px;
+	text-indent:235px;
+	font-size:13px;
+}
+.content div.life img{
+	display:block;	
+	width:270px;
+	height:130px;
+	margin:0 auto;
+	padding-top:10px;         /*这里不要用margin-top  用了的话就撑大最外围的div*/
+}
+.content div.life dl{
+	width:270px;
+	margin:0 auto;
+	padding-top:10px;
+}
+.content div.life dl dt{
+	width:50px;
+	text-align:center;
+	height:22px;
+	line-height:22px;
+	margin-bottom:7px;
+	background:#ccc;
+	color:#fff;
+}
+.content div.life dl dd{
+	height:25px;
+	line-height:25x;
+}
+.content div.life dl dd a:hover{
+	font-weight:normal;
+	text-decoration:underline;
+}
+.content div.girl{
+	width:284px;
+	height:444px;
+	padding-top:13px;       /*这里不要用margin-top  用了的话就撑大最外围的div*/
+	margin:0 auto;          
+}
+.content div.girl img{
+	display:block;
+	float:left;
+	margin:6px;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="../../../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+   
+<p class="title">DEMO演示 仿网易TabSwtich</p>
+
+<div id="tab">
+	<ul class="index">
+		<li class="active"><a href="#">微博</a></li>
+		<li><a href="#">爱生活</a></li>
+		<li><a href="#">爱搭配</a></li>
+	</ul>
+	<div class="content">
+		<div class="weibo">
+			<dl class="click_weibo">
+				<dt><a href="#">卞仲耘丈夫拒宋彬彬道歉斥其虚伪</a></dt>
+				<dd><p>北京师范大学女附中当年被批斗致死的校长卞仲耘的丈夫王晶垚，近日发声明痛斥宋彬彬道歉虚伪，拒绝接受...</p></dd>
+				<dd><a href="#">去看看&gt&gt</a></dd>
+			</dl>
+		  <dl>
+				<dt><a href="#">新来的快递员 “他”叫无人机</a></dt>
+				<dd><p>一架无人机，飞落在深圳万基商务大厦的阳台上，“收件人”兴奋地割下“神秘包裹”并合影留念...</p></dd>
+				<dd><a href="#">去看看&gt&gt</a></dd>
+			</dl>
+			<dl>
+				<dt><a href="#">初一上百中国人包邮轮游南极</a></dt>
+				<dd><p>遥远、美丽、孤独、神秘的南极洲，不仅是科学考察圣地，也是人们向往的旅游天堂...</p></dd>
+				<dd><a href="#">去看看&gt&gt</a></dd>
+			</dl>
+			<dl>
+				<dt><a href="#">张鸣：娇惯会让越是作恶的孩子越牛逼</a></dt>
+				<dd><p>娇惯是育儿最大的杀手，孩子会从小开始比谁更被娇惯，谁对娇惯他们的人更不好，结果是越作恶的孩子越牛逼....</p></dd>
+				<dd><a href="#">去看看&gt&gt</a></dd>
+			</dl>
+			<dl>
+				<dt><a href="#">毕淑敏：真正的成功是种内心的感受</a></dt>
+				<dd><p>一个人在争取成功的过程中，享受到了精神的高度和心境的愉悦，那最终的成败已不重要，因为你已经成功了...</p></dd>
+				<dd><a href="#">去看看&gt&gt</a></dd>
+			</dl>
+			<dl>
+				<dt><a href="#">庭前月色：嫖娼是男人很好的减压方式</a></dt>
+				<dd><p>天下无数的小姐，为无数挣扎奋斗中的男人减轻了压力，放松了身心，让多少男人少得很多疾病，真是善莫大焉...</p></dd>
+				<dd><a href="#">去看看&gt&gt</a></dd>
+			</dl>
+			<dl>
+				<dt><a href="#">杨支柱：把孩子当负担是对人断章取义</a></dt>
+				<dd><p>把孤儿当作负担，跟把所有孩子当作负担一样，是对人的一生断章取义、瞎子摸象...</p></dd>
+				<dd><a href="#">去看看&gt&gt</a></dd>
+			</dl>
+			<dl>
+				<dt><a href="#">丁东：一个“更”字拉正了江青的地位</a></dt>
+				<dd><p>毛泽东把江青讲的“我的话也不听”改成“我的话更不听”。知情者评论，一字之改，“一下字就把江青的地位拉正了...</p></dd>
+				<dd><a href="#">去看看&gt&gt</a></dd>
+			</dl>   
+		</div>
+		<div class="life">
+			<a href="#"><img src="img/1.jpg"/></a>
+			<dl>
+				<dt>段子</dt>
+				<dd><a href="#">风息神泪：有些人大年初一该吃药</a></dd>
+				<dd><a href="#">非我非非我：你这样子你妈知道吗</a></dd>
+				<dt>娱乐</dt>
+				<dd><a href="#">田亮：看完春晚森碟迷上了转圈</a></dd>
+				<dd><a href="#">李艾：一句玩笑惹得大男人不爽</a></dd>
+				<dt>情感</dt>
+				<dd><a href="#">坏蓝眼睛：人迟钝一点确实有福气</a></dd>
+				<dd><a href="#">清水一歌：偏执是女人最大的敌人</a></dd>
+				<dt>美食</dt>
+				<dd><a href="#">美食教堂：春节做芒果蛋挞犒劳自己</a></dd>
+				<dd><a href="#">游走厨师：分享年菜万马奔腾年年高</a></dd>
+			</dl>
+		</div>	
+		<div class="girl">
+			<a href="#"><img src="img/2.jpg"/></a>
+			<a href="#"><img src="img/3.jpg"/></a>
+			<a href="#"><img src="img/4.jpg"/></a>
+			<a href="#"><img src="img/5.jpg"/></a>
+		</div>		
+	</div>	
+</div> 
+   
+<p class="title">js代码</p>
+<pre>
+//仿网易TabSwtich
+$(function(){
+	var iNow = 0;
+	var time = null;
+	var tabNum = $(".index li").size();
+	
+	//当前被mouseover的li的index给到iNow 进行变化 
+	$(".index li").mouseover(function(){   
+		iNow = $(this).index();             
+		setTimeout(tabSwitch, 50);         
+	});
+	
+	//自动播放
+	time = setInterval(autoPlay,2000);  
+	
+	//hover开关定时器
+	$("#tab").hover(function(){      		 
+		clearInterval(time);
+	},function(){
+		time = setInterval(autoPlay,2000);   
+	});
+
+	//微博标签页效果
+	$(".content div.weibo dl").hover(function(){
+		$(this)
+			.stop(true)                     		//快速移动鼠标，也就是快速改变dl对象的时候，上一次的dl立即结束动画 
+	      		.animate({height:"141px"},200)      		//当前被放上鼠标的dl开始展开到高度141px
+	      		.css("background","#F7F7F7")       
+	      		.find("dt a").css("font-weight","bold")
+	      		.parent().parent()  				//返回this节点
+			.siblings()                            		//this节点的兄弟节点 也就是其他的7个dl
+	      		.stop(true)                        		//快速切其他7个dl 就要立刻结束7个dl之前的动画
+			.animate({height:"46px"},200)          		//其他7个dl全部向46高度收缩
+			.find("dt a").css("font-weight","");   		//其他7个dl的标题全部还原为不加粗  
+	},function(){
+		$(this).css("background","#fff");
+	});	
+
+	//根据不同的全局变量iNow进行标签切换
+  	function tabSwitch(){
+		$(".index li").attr("class","").eq(iNow).attr("class","active");
+		$(".content div").hide().eq(iNow).show();
+	}
+	
+	//定时循环变化iNow
+	function autoPlay(){
+		iNow++;                             
+		if(iNow == tabNum){ 
+			iNow =0;
+		}
+		tabSwitch();
+	}
+
+	//微博标签页效果方法二：
+	//把布局改一下，每个dl下一个dt一个dd，当鼠标放上某个dl后，所有的dd全部slideUp，当前被放上鼠标的dd slideDowm
+
+});
+</pre>
+
+<p class="title">html代码</p>
+<pre>
+&ltdiv id="tab">
+	&ltul class="index">
+		&ltli class="active">&lta href="#">微博&lt/a>&lt/li>
+		&ltli>&lta href="#">爱生活&lt/a>&lt/li>
+		&ltli>&lta href="#">爱搭配&lt/a>&lt/li>
+	&lt/ul>
+	&ltdiv class="content">
+		&ltdiv class="weibo">
+			&ltdl class="click_weibo">
+				&ltdt>&lta href="#">卞仲耘丈夫拒宋彬彬道歉斥其虚伪&lt/a>&lt/dt>
+				&ltdd>&ltp>北京师范大学女附中当年被批斗致死的校长卞仲耘的丈夫王晶垚，近日发声明痛斥宋彬彬道歉虚伪，拒绝接受...&lt/p>&lt/dd>
+				&ltdd>&lta href="#">去看看&gt&gt&lt/a>&lt/dd>
+			&lt/dl>
+		  	&ltdl>
+				&ltdt>&lta href="#">新来的快递员 “他”叫无人机&lt/a>&lt/dt>
+				&ltdd>&ltp>一架无人机，飞落在深圳万基商务大厦的阳台上，“收件人”兴奋地割下“神秘包裹”并合影留念...&lt/p>&lt/dd>
+				&ltdd>&lta href="#">去看看&gt&gt&lt/a>&lt/dd>
+			&lt/dl>
+			&ltdl>
+				&ltdt>&lta href="#">初一上百中国人包邮轮游南极&lt/a>&lt/dt>
+				&ltdd>&ltp>遥远、美丽、孤独、神秘的南极洲，不仅是科学考察圣地，也是人们向往的旅游天堂...&lt/p>&lt/dd>
+				&ltdd>&lta href="#">去看看&gt&gt&lt/a>&lt/dd>
+			&lt/dl>
+			&ltdl>
+				&ltdt>&lta href="#">张鸣：娇惯会让越是作恶的孩子越牛逼&lt/a>&lt/dt>
+				&ltdd>&ltp>娇惯是育儿最大的杀手，孩子会从小开始比谁更被娇惯，谁对娇惯他们的人更不好，结果是越作恶的孩子越牛逼....&lt/p>&lt/dd>
+				&ltdd>&lta href="#">去看看&gt&gt&lt/a>&lt/dd>
+			&lt/dl>
+			&ltdl>
+				&ltdt>&lta href="#">毕淑敏：真正的成功是种内心的感受&lt/a>&lt/dt>
+				&ltdd>&ltp>一个人在争取成功的过程中，享受到了精神的高度和心境的愉悦，那最终的成败已不重要，因为你已经成功了...&lt/p>&lt/dd>
+				&ltdd>&lta href="#">去看看&gt&gt&lt/a>&lt/dd>
+			&lt/dl>
+			&ltdl>
+				&ltdt>&lta href="#">庭前月色：嫖娼是男人很好的减压方式&lt/a>&lt/dt>
+				&ltdd>&ltp>天下无数的小姐，为无数挣扎奋斗中的男人减轻了压力，放松了身心，让多少男人少得很多疾病，真是善莫大焉...&lt/p>&lt/dd>
+				&ltdd>&lta href="#">去看看&gt&gt&lt/a>&lt/dd>
+			&lt/dl>
+			&ltdl>
+				&ltdt>&lta href="#">杨支柱：把孩子当负担是对人断章取义&lt/a>&lt/dt>
+				&ltdd>&ltp>把孤儿当作负担，跟把所有孩子当作负担一样，是对人的一生断章取义、瞎子摸象...&lt/p>&lt/dd>
+				&ltdd>&lta href="#">去看看&gt&gt&lt/a>&lt/dd>
+			&lt/dl>
+			&ltdl>
+				&ltdt>&lta href="#">丁东：一个“更”字拉正了江青的地位&lt/a>&lt/dt>
+				&ltdd>&ltp>毛泽东把江青讲的“我的话也不听”改成“我的话更不听”。知情者评论，一字之改，“一下字就把江青的地位拉正了...&lt/p>&lt/dd>
+				&ltdd>&lta href="#">去看看&gt&gt&lt/a>&lt/dd>
+			&lt/dl>   
+		&lt/div>
+		&ltdiv class="life">
+			&lta href="#">&ltimg src="img/1.jpg"/>&lt/a>
+			&ltdl>
+				&ltdt>段子&lt/dt>
+				&ltdd>&lta href="#">风息神泪：有些人大年初一该吃药&lt/a>&lt/dd>
+				&ltdd>&lta href="#">非我非非我：你这样子你妈知道吗&lt/a>&lt/dd>
+				&ltdt>娱乐&lt/dt>
+				&ltdd>&lta href="#">田亮：看完春晚森碟迷上了转圈&lt/a>&lt/dd>
+				&ltdd>&lta href="#">李艾：一句玩笑惹得大男人不爽&lt/a>&lt/dd>
+				&ltdt>情感&lt/dt>
+				&ltdd>&lta href="#">坏蓝眼睛：人迟钝一点确实有福气&lt/a>&lt/dd>
+				&ltdd>&lta href="#">清水一歌：偏执是女人最大的敌人&lt/a>&lt/dd>
+				&ltdt>美食&lt/dt>
+				&ltdd>&lta href="#">美食教堂：春节做芒果蛋挞犒劳自己&lt/a>&lt/dd>
+				&ltdd>&lta href="#">游走厨师：分享年菜万马奔腾年年高&lt/a>&lt/dd>
+			&lt/dl>
+		&lt/div>	
+		&ltdiv class="girl">
+			&lta href="#">&ltimg src="img/2.jpg"/>&lt/a>
+			&lta href="#">&ltimg src="img/3.jpg"/>&lt/a>
+			&lta href="#">&ltimg src="img/4.jpg"/>&lt/a>
+			&lta href="#">&ltimg src="img/5.jpg"/>&lt/a>
+		&lt/div>		
+	&lt/div>	
+&lt/div> 
+</pre>
+
+<p class="title">css代码</p>
+<pre>
+*{
+	margin:0px;
+	padding:0px;
+	font-size:14px;
+}
+a{
+	text-decoration:none;
+	color:#000;
+}
+a:hover{
+	font-weight:bold;
+	color:#b12238;
+}
+img{
+	border:none;              /*某些ie版本默认img是有边框的 先去掉边框*/
+}
+	
+#tab{
+	 /*border覆盖技巧，.tab的border是没法覆盖内部li的左及上边框的 可以通过.tab改动宽高覆盖上li的右及下border(两者border同色)*/
+	width:302px;             
+	margin:30px 0 0 0;
+	border:1px solid #ddd;
+}
+.index{
+	list-style:none;
+	width:303px;
+	height:30px;
+}
+.index li{
+	width:100px;
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	background:#F7F7F7;
+	border-right:1px solid #ddd;
+	border-bottom:1px solid #ddd;
+	float:left;
+	cursor:pointer;
+}
+.index li.active{
+	background:#fff;
+	border-bottom:1px solid #fff;
+}
+.index li a{
+	display:block;
+	width:100px;
+	height:30px;
+}
+.content{
+	width:303px;
+	height:471px;
+	position:relative;
+}
+.content div{
+	left:0px;
+	top:0px;
+	color:#666;
+	display:none;
+	clear:both;
+}
+.content div.weibo{
+	display:block;
+}
+.content div.weibo dl{       /* (46+1)*7+141=470  */
+	width:302px;
+	height:46px;
+	border-bottom:1px solid #ddd;
+	overflow:hidden;
+}
+.content div.weibo dl.click_weibo{
+	height:141px;
+}
+.content div.weibo dl dt{     /* (46+1)+60+34=141  */
+	width:280px;
+	height:46px;
+	line-height:40px;
+	margin:0 auto;
+}
+.content div.weibo dl dd p{
+	width:280px;
+	height:60px;
+	line-height:20px;
+	font-size:13px;
+	margin:0 auto;
+}
+.content div.weibo dl dd a{
+	display:block;
+	width:300px;
+	height:34px;
+	line-height:30px;
+	text-indent:235px;
+	font-size:13px;
+}
+.content div.life img{
+	display:block;	
+	width:270px;
+	height:130px;
+	margin:0 auto;
+	padding-top:10px;         /*这里不要用margin-top  用了的话就撑大最外围的div*/
+}
+.content div.life dl{
+	width:270px;
+	margin:0 auto;
+	padding-top:10px;
+}
+.content div.life dl dt{
+	width:50px;
+	text-align:center;
+	height:22px;
+	line-height:22px;
+	margin-bottom:7px;
+	background:#ccc;
+	color:#fff;
+}
+.content div.life dl dd{
+	height:25px;
+	line-height:25x;
+}
+.content div.life dl dd a:hover{
+	font-weight:normal;
+	text-decoration:underline;
+}
+.content div.girl{
+	width:284px;
+	height:444px;
+	padding-top:13px;       /*这里不要用margin-top  用了的话就撑大最外围的div*/
+	margin:0 auto;          
+}
+.content div.girl img{
+	display:block;
+	float:left;
+	margin:6px;
+}
+</pre>
+   
+ 
+</body> 
+</html>    
+      
+     
+     
+     

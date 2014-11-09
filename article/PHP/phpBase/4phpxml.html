@@ -1,0 +1,88 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PHP XML基本操作</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+</head>
+<body>
+
+
+<p class="title">PHP XML操作</p>
+<pre>
+//1：单引号和双引号的区别
+$_a = 5;
+$_string1 = 'this is $_a';
+$_string2 = "this is $_a";
+echo $_string1;    //this is $_a 单引号不能解析变量
+echo '&ltbr/>';      //单引号 双引号 都可以解析HTML标签
+echo $_string2;    //this is 5  双引号可以解析变量
+
+
+//2：用simplexml生成my.xml(注意_xml这四个单词的前后不能有任何空格)
+$_xml = &lt&lt&lt_xml
+&lt?xml version="1.0" encoding="utf-8"?>
+&ltroot>
+	&ltversion>1.0&lt/version>
+	&ltinfo>xml解析测试&lt/info>
+	&ltuser>
+		&ltname>瓢城Web俱乐部&lt/name>
+		&lturl>http://www.yc60.com&lt/url>
+		&ltauthor sex="男">李炎恢&lt/author>
+	&lt/user>
+	&ltuser>
+		&ltname>北风网&lt/name>
+		&lturl>http://www.ibeifeng.com&lt/url>
+		&ltauthor sex="女">谁谁谁&lt/author>
+	&lt/user>
+	&ltuser>
+		&ltname>电驴&lt/name>
+		&lturl>http://www.verycd.com&lt/url>
+		&ltauthor sex="男">姓黄的&lt/author>
+	&lt/user>
+&lt/root>
+_xml;
+
+$_sxe = new SimplexmlElement($_xml);   	//创建一个simplexml对象，传入xml字符串
+$_sxe->asXML("my.xml");              	//这样就再磁盘中创建了一个my.xml文件 
+
+
+//3：用simplexml读取XML文档
+$_sxlf = simplexml_load_file("my.xml"); //载入则个xml文档
+echo $_sxlf->asXML();                 	//在浏览器中输出 asXML()中不传参数就可以 文本形式
+echo "&ltbr/>&ltbr/>";
+print_r($_sxlf);                        //数组形式
+echo "&ltbr/>&ltbr/>";
+var_dump($_sxlf);                       //对象形式
+
+
+//4：用simplexml读取XML节点内容
+$_sxlf = simplexml_load_file("my.xml");			//载入XML文档
+echo $_sxlf->version[0] . "&ltbr/>";			
+echo $_sxlf->user[1]->url[0] . "&ltbr/>";
+echo $_sxlf->user[2]->author[0]->attributes(); 		//获取节点属
+
+
+//5：利用Xpath 读取XML节点内容
+$_sxlf = simplexml_load_file("my.xml");
+$_version = $_sxlf->xpath("/root/version");  	//获得类数组
+echo $_version[0];
+$_name = $_sxlf->xpath("/root/user/name");   	//获取类数组 取得所有的name标签节点
+echo $_name[1];
+$_author = $_sxlf->xpath("/root/user/author");  //获取类数组 取得所有的author标签节点
+echo $_author[1] -> attributes()
+
+
+//6：利用DOMDocument 读取XML节点 了解
+$_doc = new DOMDocument();
+$_doc->load("my.xml");
+$_version = $_doc->getElementsByTagName("version");
+echo $_version->item(0)->nodeValue;
+$_name = $_doc->getElementsByTagName("name");
+echo $_name ->item(1)-> nodeValue; 
+</pre>
+
+
+<body> 
+<html>    
+ 

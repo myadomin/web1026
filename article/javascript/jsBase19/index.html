@@ -1,0 +1,225 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>模块化开发--seajs进行模块化开发</title>
+<style>
+*{
+	margin: 0px;
+	padding: 0px;
+}
+#div1{
+	width: 200px;
+	height: 200px;
+	background: red;
+	border: 1px solid #999;
+	position: relative;
+	display: none;
+}
+#div2{
+	width: 20px;
+	height: 20px;
+	background: orange;
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+	cursor: pointer;
+}
+#div3{
+	width: 100px;
+	height: 100px;
+	background: green;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+}
+#name{
+	position: absolute;
+	left: 600px;
+	top: 50px;
+	font-size: 20px;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script src="sea/sea.js"></script>
+<script src="js/index.js"></script>
+</head>
+<body>
+
+<input type="button" value="弹窗" id="input1" />
+<div id="div1">
+	拖拽我的左下角
+	<div id="div2"></div>
+</div>
+
+<div id="div3">我是限制拖拽</div>
+
+<div id="name"></div>
+
+<p class="title">概述</p>
+<pre>
+
+1：本文主要介绍如何使用seajs这个工具进行模块化开发。
+2：官网下载seajs开发包，找到xxx/dist/sea.js文件，script src到自己项目中。
+3：7个常用API请参考 https://github.com/seajs/seajs/issues/266。
+4: 多人同时开发，每个人写项目的某个部分形成一个js文件，这个文件就是模块。
+为了避免命名冲突，可能会使用命名空间等办法。但是js模块文件依赖只能手动解决。
+5：本文的示例DEMO主要实现绿块限制为当前窗口的拖拽，红块拖拽右下角放大并限制放大范围。
+6：本文的示例DEMO的js文件功能及依赖关系如下：
+index.js 	主js程序 		调用主模块 			假设为程序员A开发
+main.js 	主模块			调用拖拽模块,放大模块		假设为程序员A开发
+drag.js 	拖拽模块 		调用限制取值模块		假设为程序员B开发
+scale.js 	拖动放大模块 		调用限制取值模块		假设为程序员C开发
+range.js 	限制取值范围模块   	无				假设为程序员D开发
+开始介绍如何使用seajs等模块开发工具，更方便的解决命名冲突及模块文件依赖问题。
+</pre>
+
+<p class="title">主js程序index.js 调用主模块main.js</p>
+<pre>
+
+window.onload = function(){
+
+	var oName = document.getElementById('name');
+
+	//调用主模块(main.js) './js/main.js'是main.js针对sea.js文件的相对路径，必须用./ 不能用../
+	//引用main.js 然后main.js引用drag.js','scale.js','range.js 这3个模块文件
+	seajs.use('./js/main.js', function(arg){
+		oName.innerHTML = '当前调用模块是：' + arg.name;
+	});
+
+}
+</pre>
+
+<p class="title">主模块main.js 调用drag及scale子模块</p>
+<pre>
+
+define(function(require, exports, module){
+	
+	var oInpnut = document.getElementById('input1');
+	var oDiv1 = document.getElementById('div1');
+	var oDiv2 = document.getElementById('div2');
+	var oDiv3 = document.getElementById('div3');
+
+	// 引入drag模块 调用drag方法
+	// 调用require方法时 无论drag.js相对当前这个main.js文件是怎样的相对路径 都统一用./drag.js调用
+	require('./drag.js').drag(oDiv3);
+
+	oInpnut.onclick = function(){
+		oDiv1.style.display = 'block';
+		// 引入scale模块 调用scale方法 统一./scale.js调用
+		require('./scale.js').scale(oDiv1, oDiv2);
+	}
+
+	//exports name属性 供外部调用
+	exports.name = '主模块1';
+
+});
+</pre>
+
+<p class="title">拖拽子模块drag.js 调用range子模块</p>
+<pre>
+
+define(function(require, exports, module){
+
+	//exports drag方法 供外部调用
+	exports.drag = function(obj){
+		obj.onmousedown = function(ev){
+			var oEvent = ev || window.event;
+			var disX = ev.clientX - obj.offsetLeft;
+			var disY = ev.clientY - obj.offsetTop;
+
+			document.onmousemove = function(ev){
+				var oEvent = ev || window.event;
+				var maxLeft = document.documentElement.clientWidth - obj.offsetWidth;
+				var maxTop = document.documentElement.clientHeight - obj.offsetHeight;
+				var l = ev.clientX - disX;
+				var t = ev.clientY - disY
+
+				//引入range模块 调用range方法 限制拖拽范围
+				l = require('./range.js').range(l, maxLeft, 0);
+				t = require('./range.js').range(t, maxTop, 0);
+				
+				obj.style.left = l + 'px';
+				obj.style.top = t + 'px';
+			}
+
+			document.onmouseup = function(){
+				document.onmousemove = null;
+				document.onmouseup = null;
+			}
+
+			return false;
+		}
+	}
+
+	// 查看当前模块对象 
+	// console.log(module);
+});
+</pre>
+
+<p class="title">拖动放大子模块scale.js 调用range子模块</p>
+<pre>
+
+define(function(require, exports, module){
+
+	//exports scale方法 供外部调用
+	exports.scale = function(obj1, obj2){
+		obj2.onmousedown = function(ev){
+			var oEvent = ev || window.event;
+			var downX = ev.clientX;
+			var downY = ev.clientY;
+			var downWidth = obj1.offsetWidth;
+			var downHeight = obj1.offsetHeight;
+
+			document.onmousemove = function(ev){
+				var oEvent = ev || window.event;
+				var w = ev.clientX - downX + downWidth;
+				var h = ev.clientY - downY + downHeight;
+
+				//引入range模块 调用range方法 限制拖动放大范围
+				w = require('./range.js').range(w, 400, 100);
+				h = require('./range.js').range(h, 400, 100)
+
+				obj1.style.width = w + 'px';
+				obj1.style.height = h + 'px';
+			}
+
+			document.onmouseup = function(){
+				document.onmousemove = null;
+				document.onmouseup = null;
+			}
+		}
+	}
+
+});
+</pre>
+
+<p class="title">限制取值范围子模块range.js</p>
+<pre>
+
+define(function(require, exports, module){
+
+	//exports range方法 供外部调用
+	exports.range = function(value, max, min){
+		if(value > max){
+			return max;
+		}else if(value < min){
+			return min;
+		}else{
+			return value;
+		}
+	}
+
+});
+</pre>
+
+<p class="title">总结及问题提出</p>
+<pre>
+
+总结：通过在每个模块文件内部exports出模块，然后其他模块在文件内require调用其他模块，就解决了命名冲突及文件依赖的问题了。
+问题：如果使用模块化开发，虽然保证了每个程序员拥有各自独立空间开发自己的模块，但是一下子就形成了多个文件。
+用户访问就会有多个HTTP请求，拖慢了web访问速度。下一章将介绍如何使用Grunt结合seajs解决这个问题。
+</pre>
+
+</body>
+</html>

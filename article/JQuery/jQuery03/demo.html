@@ -1,0 +1,292 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>仿淘宝无缝图片轮播</title>
+<style type="text/css">
+*{
+	margin:0px;
+	padding:0px;
+}
+ul{
+	list-style:none;
+}
+#wrap{
+	width:520px;
+	height:280px;
+	border:1px solid #ccc;
+	margin:50px auto;
+	position:relative;
+	overflow:hidden;
+}
+#imgs{
+	height:280px;
+	position:absolute;
+}
+#imgs li{
+	width:520px;
+	height:280px;
+	float:left;
+}
+
+#buttons{
+	width:150px;
+	height:20px;
+	position:absolute;
+	left:185px;
+	top:250px;
+}
+#buttons li{
+	width:20px;
+	text-align:center;
+	height:20px;
+	line-height:20px;
+	background:#eee;
+	float:left;
+ 	margin:0 5px 0 5px;
+ 	cursor:pointer;
+}
+#buttons li.active{
+	background:orange;
+}
+
+#wrap span{
+	width:60px;
+	text-align:center;
+	height:60px;
+	line-height:60px;
+	color:#ccc;
+	font-size:60px;
+	font-weight:bold;
+	position:absolute;
+	top:110px;
+	cursor:pointer;
+	display:none;
+}
+#wrap span.next{
+	left:460px;
+}
+#wrap span.prev{
+	left:0px;
+}
+#mark{
+	width:520px;
+	height:26px;
+	line-height:26px;
+	text-align:center;
+	position:absolute;
+	background:#eee;
+	opacity:0.3;
+} 
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="../../../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+<p class="title">DEMO演示 仿淘宝无缝图片轮播</p>
+
+<div id="wrap">
+	<ul id="imgs">
+		<li><a href="#"><img src="img/1.jpg" title="这是第一张图片"/></a></li>
+		<li><a href="#"><img src="img/2.jpg" title="这是第二张图片"/></a></li>
+		<li><a href="#"><img src="img/3.jpg" title="这是第三张图片"/></a></li>
+		<li><a href="#"><img src="img/4.jpg" title="这是第四张图片"/></a></li>
+		<li><a href="#"><img src="img/5.jpg" title="这是第五张图片"/></a></li>
+	</ul> 
+	<ul id="buttons">
+		<li class="active">1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+	</ul> 
+	<span class="next">&gt</span>
+	<span class="prev">&lt</span>
+	<div id="mark">这是第一张图片</div>
+</div> 
+   
+<p class="title">js代码</p>
+<pre>
+//仿淘宝无缝图片轮播
+$(function(){
+	var nImgLiWidth = $("#wrap").innerWidth();
+	var nImgLiNum = $("#imgs li").size();    //5
+	var nImgUlWidth = 2*nImgLiNum*nImgLiWidth;     //10*XX 为了无缝滚动 ul为2倍原ul
+ 	var iNow = 0;
+ 	var timer = null;
+ 	
+ 	//动态设置ul宽度 然后为了无缝滚动复制一个ul出来
+	$("#imgs").css("width", nImgUlWidth+"px").html($("#imgs").html() + $("#imgs").html()); 
+
+ 	//点击1 2 3..变化iNow 形成轮播 
+  	$("#buttons li").click(function(){
+  		iNow = $(this).index();            	 
+		scroll();
+  	})
+
+	//点击左右按键轮播  
+	$(".next").click(function(){
+		scrollLeft();
+	}); 
+	$(".prev").click(function(){
+		scrollRight();
+	}); 
+ 	
+ 	//自动轮播
+	timer = setInterval(scrollLeft,2000);
+
+	//hover启动停止自动轮播
+	$("#wrap").hover(function(){
+		clearInterval(timer);
+		$("span").show();
+	},function(){
+		timer = setInterval(scrollLeft,2000);    
+		$("span").hide();
+	}); 
+
+	//通过iNow++ 向左边轮播
+	function scrollLeft(){						  
+		if(iNow == nImgLiNum){   
+			//准备移到第6张的时候 迅速用第0张替换           
+			$("#imgs").css("left",0+"px");  	
+			iNow = 0;
+		}
+		iNow++;                  					
+		scroll();
+	} 
+	
+	//通过iNow-- 向右边轮播
+	function scrollRight(){
+		if(iNow == 0){
+			//准备移到第0张的时候 迅速用第6张替换 
+			$("#imgs").css("left",-(nImgUlWidth/2)+"px"); 
+			iNow = nImgLiNum;
+		}
+		iNow--;													
+		scroll();
+	} 
+	
+	//根据iNow 轮播
+	function scroll(){
+		$("#mark").html($("img").eq(iNow).attr("title"));
+		$("#buttons li").attr("class","").eq(iNow).attr("class","active");
+		$("#imgs").animate({left:-iNow*nImgLiWidth},300,"swing");
+		//对于scrollLeft 会出现iNow = 5 此时没有eq(5) 将其换成eq(0)加上button颜色class   
+		if(iNow == nImgLiNum){  
+			$("#buttons li").eq(0).attr("class","active");   
+		}
+	}	
+
+});
+</pre>
+   
+<p class="title">html代码</p>
+<pre>
+&ltdiv id="wrap">
+	&ltul id="imgs">
+		&ltli>&lta href="#">&ltimg src="img/1.jpg" title="这是第一张图片"/>&lt/a>&lt/li>
+		&ltli>&lta href="#">&ltimg src="img/2.jpg" title="这是第二张图片"/>&lt/a>&lt/li>
+		&ltli>&lta href="#">&ltimg src="img/3.jpg" title="这是第三张图片"/>&lt/a>&lt/li>
+		&ltli>&lta href="#">&ltimg src="img/4.jpg" title="这是第四张图片"/>&lt/a>&lt/li>
+		&ltli>&lta href="#">&ltimg src="img/5.jpg" title="这是第五张图片"/>&lt/a>&lt/li>
+	&lt/ul> 
+	&ltul id="buttons">
+		&ltli class="active">1&lt/li>
+		&ltli>2&lt/li>
+		&ltli>3&lt/li>
+		&ltli>4&lt/li>
+		&ltli>5&lt/li>
+	&lt/ul> 
+	&ltspan class="next">&gt&lt/span>
+	&ltspan class="prev">&lt&lt/span>
+	&ltdiv id="mark">这是第一张图片&lt/div>
+&lt/div> 
+</pre>
+
+<p class="title">css代码</p>
+<pre>
+*{
+	margin:0px;
+	padding:0px;
+}
+ul{
+	list-style:none;
+}
+#wrap{
+	width:520px;
+	height:280px;
+	border:1px solid #ccc;
+	margin:50px auto;
+	position:relative;
+	overflow:hidden;
+}
+#imgs{
+	height:280px;
+	position:absolute;
+}
+#imgs li{
+	width:520px;
+	height:280px;
+	float:left;
+}
+
+#buttons{
+	width:150px;
+	height:20px;
+	position:absolute;
+	left:185px;
+	top:250px;
+}
+#buttons li{
+	width:20px;
+	text-align:center;
+	height:20px;
+	line-height:20px;
+	background:#eee;
+	float:left;
+ 	margin:0 5px 0 5px;
+ 	cursor:pointer;
+}
+#buttons li.active{
+	background:orange;
+}
+
+#wrap span{
+	width:60px;
+	text-align:center;
+	height:60px;
+	line-height:60px;
+	color:#ccc;
+	font-size:60px;
+	font-weight:bold;
+	position:absolute;
+	top:110px;
+	cursor:pointer;
+	display:none;
+}
+#wrap span.next{
+	left:460px;
+}
+#wrap span.prev{
+	left:0px;
+}
+#mark{
+	width:520px;
+	height:26px;
+	line-height:26px;
+	text-align:center;
+	position:absolute;
+	background:#eee;
+	opacity:0.3;
+} 
+</pre>
+   
+ 
+</body> 
+</html>    
+      
+     
+     
+     

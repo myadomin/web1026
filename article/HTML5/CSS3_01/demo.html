@@ -1,0 +1,526 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>css3--2D操作</title>
+<link rel="stylesheet" href="demo.css">
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+<p class="title">DEMO演示 css3--2D操作 IE9+ firebox chrome</p>
+
+<p>1：画圆 椭圆</p>
+<div id="div1">
+	<div>圆</div>
+	<div>椭圆</div>
+</div>
+
+<p>2: 背景渐变</p>
+<div id="div2">
+	<div></div>
+	<div></div>
+</div>
+
+<p>3: 过渡transition</p>
+<div id="div3">
+	<div></div>
+</div>
+
+<p>4: transition配合渐变 模拟进度条</p>
+<div id="div4"></div>
+
+<p>5: transition配合transform进行2D转换</p>
+<div id="div5">
+	<div>translate</div>
+	<div>rotate</div>
+	<div>scale</div>
+	<div>skew</div>
+	<div>transform-origin</div>
+</div>
+
+<p>6: rotate应用 鼠标放上风车效果</p>
+<div id="div6">
+	<div></div>
+	<div></div>
+	<div></div>
+	<div></div>
+</div>
+
+<p>7: rotate应用 css3模拟钟表 当前时间</p>
+<div id="clock">
+	<ul id="ul1">
+		<!-- <li></li>
+		<li></li>
+		<li></li>
+		<li></li> -->
+	</ul>
+	<div id="hour"></div>
+	<div id="min"></div>
+	<div id="sec"></div>
+	<div id="center"></div>
+</div>
+
+<p>8: translate应用 扇形菜单 点图标展开菜单</p>
+<div id="menu">
+	<div id="home"></div>
+	<div id="clos"></div>
+	<div id="full"></div>
+	<div id="open"></div>
+	<div id="prev"></div>
+	<div id="refresh"></div>
+</div>
+
+
+<p class="title">css3代码</p>
+<pre>
+*{
+	margin: 0px;
+	padding: 0px;
+}
+body{
+	padding-bottom: 100px;
+}
+p{
+	height: 80px;
+	line-height: 120px;
+	clear: both;
+}
+ul{
+	list-style: none;
+}
+
+
+<strong>/*1：画圆 椭圆*/</strong>
+#div1 div{
+	float: left;
+	text-align: center;
+	background: #ccc;
+}
+#div1 div:nth-child(1){
+	width: 100px;
+	height: 100px;
+	line-height: 100px;
+	border-radius: 50%;			/*50%就是圆*/
+}
+#div1 div:nth-child(2){
+	width: 200px;
+	height: 100px;
+	line-height: 100px;
+	border-radius: 50%;			/*50%就是椭圆*/
+}
+
+
+<strong>/*2：背景渐变*/</strong>
+#div2 div{
+	width: 100px;
+	height: 100px;
+	float: left;
+	margin-right: 50px;
+}
+#div2 div:nth-child(1){		/*线性渐变*/
+	background-image: -webkit-linear-gradient(top, red, blue);
+	background-image: -moz-linear-gradient(top, red, blue);
+	background-image: -ms-linear-gradient(top, red, blue);
+}
+#div2 div:nth-child(2){		/*放射渐变*/
+	background-image: -webkit-radial-gradient(50px 50px, red, blue);
+	background-image: -moz-radial-gradient(50px 50px, red, blue);
+	background-image: -ms-radial-gradient(50px 50px, red, blue);
+}
+
+
+<strong>/*3：过渡transition*/</strong>
+#div3{
+	width: 200px;
+	height: 200px;
+	background: #ccc;
+}
+#div3 div:nth-child(1){
+	width: 100px;
+	height: 100px;
+	background: red;
+	/*transition: property duration timing-function delay; 必写duration参数 如果要特定设置某个属性 就写property*/
+	-webkit-transition: 2s linear 1s, height 9s ease-in, opacity 3s, background 2s;
+	-moz-transition: 2s linear 1s, height 9s ease-in, opacity 3s, background 2s;
+	-ms-transition: 2s linear 1s, height 9s ease-in, opacity 3s, background 2s;
+}
+#div3:hover div:nth-child(1){
+	/*过渡到的终点*/
+	width: 200px;
+	height: 200px;
+	opacity: 0.1;
+	background: blue;
+}
+
+
+<strong>/*4：模拟进度条*/</strong>
+#div4{
+	width: 300px;
+	height: 30px;
+	border: 1px solid #ccc;	
+	border-radius: 15px;	
+	/*重复线性渐变*/
+	background: -webkit-repeating-linear-gradient(10deg, green 0, green 10px, #fff 10px, #fff 20px);
+	background: -moz-repeating-linear-gradient(10deg, green 0, green 10px, #fff 10px, #fff 20px);
+	background: -ms-repeating-linear-gradient(10deg, green 0, green 10px, #fff 10px, #fff 20px);
+	transition: 3s;		
+	-webkit-transition: 3s;		
+}
+#div4:hover{
+	/*变化background-position*/
+	background-position: -300px 0;
+}
+
+
+<strong>/*5：transition配合transform进行2D转换*/</strong>
+#div5{
+	background: blue;
+	width: 1000px;
+	height: 200px;
+}
+#div5 div{
+	float: left;
+	width: 100px;
+	height: 100px;
+	margin-right: 100px;
+	background: red;
+	transition: 2s linear;
+}
+
+/*配合自身元素hover*/
+#div5 div:nth-child(1):hover{
+	transform: translate(50px,100px);
+	-webkit-transform: translate(50px,100px);
+}
+#div5 div:nth-child(2):hover{
+	transform: rotate(720deg);
+	-webkit-transform: rotate(720deg);
+}
+
+/*配合父元素hover 触发自身*/
+#div5:hover div:nth-child(3){
+	transform: scale(2, 2);
+	-webkit-transform: scale(2, 2);
+}
+
+/*直接刷新就变 然后配合hover*/
+#div5 div:nth-child(4){
+	transform: skewX(10deg);
+	-webkit-transform: skewX(10deg);
+}
+#div5 div:nth-child(4):hover{
+	transform: skew(30deg,20deg);
+	-webkit-transform: skew(30deg,20deg);
+}
+
+/*transform-origin设置2D转换基准点*/
+#div5 div:nth-child(5){
+	transition: 3s linear;
+	transform-origin: right top;
+}
+#div5:hover div:nth-child(5){
+	transform: rotate(720deg) scale(0.5);
+}
+
+
+<strong>/*6：风车效果*/</strong>
+#div6{
+	width: 200px;
+	height: 200px;
+	margin: 30px 0 0 0;
+	transition: 5s linear;	
+	-webkit-transition: 5s linear;	 
+}
+#div6:hover{	
+	transform: rotate(720deg);
+	-webkit-transform: rotate(720deg);	 
+}
+#div6 div{
+	width: 88px;
+	height: 88px;
+	margin: 5px;
+	border: 1px solid #ccc;
+	float: left;
+	background: #e8a;
+}
+#div6 div:nth-child(1), #div6 div:nth-child(4){
+	border-radius: 0 70%;			 
+}
+#div6 div:nth-child(2), #div6 div:nth-child(3){
+	border-radius: 70% 0;
+} 
+
+
+<strong>/*7：css3模拟钟表*/</strong>
+#clock{
+	position: relative;
+	width: 200px;
+	height: 200px;
+	background: #fae;
+	border-radius: 50%;
+	border: 2px solid #aaa;
+}
+#clock ul {
+	width: 200px;
+	height: 200px;
+}
+#clock ul li{
+	width: 2px;
+	height: 7px;
+	background: #000;
+	position: absolute;
+	left: 99px;
+	top: 0px;
+	/*设定旋转基准点 位置是相对这个li的 1px 100px 也就是钟表圆形位置*/
+	transform-origin: center 100px;	
+	-webkit-transform-origin: center 100px;	
+}
+
+/*分钟刻度 js动态生成60个li 按如下规律设定li的transform css*/
+/*#clock ul li:nth-child(n){	
+	transform: rotate((n-1)*6deg);
+}*/
+/*时钟刻度 第6n个li的长度略长*/
+#clock ul li:nth-child(5n+1){
+	height: 14px;
+}
+
+/*时针 分针 秒针*/
+#hour{
+	width: 6px;
+	height: 50px;
+	position: absolute;
+	left: 97px;
+	top: 50px;
+	background: red;
+	transform-origin: center 50px; 
+	-webkit-transform-origin: center 50px; 
+	/*js设定transform rotate(xxdeg) 指向当前时间*/
+	/*transform: rotate(30deg);*/
+}
+#min{
+	width: 4px;
+	height: 60px;
+	position: absolute;
+	left: 98px;
+	top: 40px;
+	background: yellow;
+	transform-origin: center 60px;
+	-webkit-transform-origin: center 60px;
+}
+#sec{
+	width: 2px;
+	height: 80px;
+	position: absolute;
+	left: 99px;
+	top: 20px;
+	background: blue;
+	transform-origin: center 80px;
+	-webkit-transform-origin: center 80px;
+}
+#center{
+	width: 14px;
+	height: 14px;
+	background: #000;
+	border-radius: 50%;
+	position: absolute;
+	left: 93px;
+	top: 93px;
+}
+
+
+<strong>/*8：扇形菜单*/</strong>
+#menu{
+	width: 250px;
+	height: 250px;
+	position: relative;
+}
+#home{
+	width: 49px;
+	height: 49px;
+	border-radius: 50%;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background: url(img/home.png) no-repeat center center;
+	z-index: 2;
+}
+#clos, #full, #open, #prev, #refresh{
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	position: absolute;
+	left: 3.5px;
+	top: 3.5px;
+	z-index: 1;
+	transition: 0.5s ease;
+	-webkit-transition: 0.5s ease;	
+}
+/*在js中 给#clos等加transform: translate(xxpx, xxpx) 形成移动*/
+#clos{
+	background: url(img/clos.png) no-repeat center center;
+}
+#full{
+	background: url(img/full.png) no-repeat center center;
+}
+#open{
+	background: url(img/open.png) no-repeat center center;
+}
+#prev{
+	background: url(img/prev.png) no-repeat center center;
+}
+#refresh{
+	background: url(img/refresh.png) no-repeat center center;
+}
+</pre>
+
+<p class="title">js代码</p>
+<pre>
+//2D操作 IE9+ firebox chorme
+window.onload = function(){
+
+
+	<strong>//第一部分：css3模拟钟表</strong>
+	var oClock = document.getElementById('clock');
+	var oUl1 = document.getElementById('ul1'); 
+
+	//动态生成60个li 
+	for(var i=0; i&lt60; i++){
+		var oLi = document.createElement('li');
+		oUl1.appendChild(oLi);
+	}
+
+	//画分钟刻度 设定60个li的css transform: rotate(xxxdeg) 
+	var aLi = oUl1.getElementsByTagName('li');
+	for(var i=0; i&ltaLi.length; i++){
+		aLi[i].style.transform = 'rotate(' + 6*i + 'deg)';
+		aLi[i].style.webkitTransform = 'rotate(' + 6*i + 'deg)';	 
+	}
+
+	//每秒循环
+	showTime();
+	setInterval(function(){
+		showTime();
+	}, 1000);
+	//设定时分秒针 根据当前电脑时间 设定css transform: rotate(xxxdeg) 
+	function showTime(){
+		var nHour = new Date().getHours();
+		var nMin = new Date().getMinutes();
+		var nSec = new Date().getSeconds();
+		var oHour = document.getElementById('hour');
+		var oMin = document.getElementById('min');
+		var oSec = document.getElementById('sec');
+		oHour.style.transform = 'rotate(' + 30*(nHour+nMin/60) + 'deg)';
+		oMin.style.transform = 'rotate(' + 6*(nMin+nSec/60) + 'deg)';
+		oSec.style.transform = 'rotate(' + 6*nSec + 'deg)';
+		oHour.style.webkitTransform = 'rotate(' + 30*(nHour+nMin/60) + 'deg)';
+		oMin.style.webkitTransform = 'rotate(' + 6*(nMin+nSec/60) + 'deg)';
+		oSec.style.webkitTransform = 'rotate(' + 6*nSec + 'deg)';
+	}
+	
+
+
+	<strong>//第二部分：扇形菜单</strong>
+	var oHome = document.getElementById('home');
+	var aMenuList = document.getElementById('menu').getElementsByTagName('div');
+	var menuFlag = true;
+
+	oHome.onclick = function(){
+		if(menuFlag){	//展开
+			//改变后面5个div的css transform: translate(xxpx, xxpx)
+			for(var i=1; i&ltaMenuList.length; i++){
+				//假设5个菜单平均分配在半径为200的圆轨迹的0度到90度 得出如下left top值
+				var nLeft = 200*Math.cos(22.5*(i-1)*Math.PI/180);
+				var nTop = 200*Math.sin(22.5*(i-1)*Math.PI/180);
+				if(i == 5){		//在较低版本的chorme firefox浏览器中 cos90度不是0 而是无限接近0
+					nLeft = 0;	//就会造成translate(0px, 200px)不能正确运动 所以这里强制设置为0
+				}
+				aMenuList[i].style.transform = 'translate('+ nLeft +'px, '+ nTop +'px)';
+				aMenuList[i].style.webkitTransform = 'translate('+ nLeft +'px, '+ nTop +'px)';
+			}
+		}else{		//收缩
+			for(var i=1; i&ltaMenuList.length; i++){
+				aMenuList[i].style.transform = 'translate(0px, 0px)';
+				aMenuList[i].style.webkitTransform = 'translate(0px, 0px)';
+			}
+		}
+		menuFlag = !menuFlag;
+	}
+
+
+}
+</pre>
+
+<p class="title">html代码</p>
+<pre>
+&ltp>1：画圆 椭圆&lt/p>
+&ltdiv id="div1">
+	&ltdiv>圆&lt/div>
+	&ltdiv>椭圆&lt/div>
+&lt/div>
+
+&ltp>2: 背景渐变&lt/p>
+&ltdiv id="div2">
+	&ltdiv>&lt/div>
+	&ltdiv>&lt/div>
+&lt/div>
+
+&ltp>3: 过渡transition&lt/p>
+&ltdiv id="div3">
+	&ltdiv>&lt/div>
+&lt/div>
+
+&ltp>4: transition配合渐变 模拟进度条&lt/p>
+&ltdiv id="div4">&lt/div>
+
+&ltp>5: transition配合transform进行2D转换&lt/p>
+&ltdiv id="div5">
+	&ltdiv>translate&lt/div>
+	&ltdiv>rotate&lt/div>
+	&ltdiv>scale&lt/div>
+	&ltdiv>skew&lt/div>
+	&ltdiv>transform-origin&lt/div>
+&lt/div>
+
+&ltp>6: rotate应用 鼠标放上风车效果&lt/p>
+&ltdiv id="div6">
+	&ltdiv>&lt/div>
+	&ltdiv>&lt/div>
+	&ltdiv>&lt/div>
+	&ltdiv>&lt/div>
+&lt/div>
+
+&ltp>7: rotate应用 css3模拟钟表 当前时间&lt/p>
+&ltdiv id="clock">
+	&ltul id="ul1">
+		&lt!-- &ltli>&lt/li>
+		&ltli>&lt/li>
+		&ltli>&lt/li>
+		&ltli>&lt/li> -->
+	&lt/ul>
+	&ltdiv id="hour">&lt/div>
+	&ltdiv id="min">&lt/div>
+	&ltdiv id="sec">&lt/div>
+	&ltdiv id="center">&lt/div>
+&lt/div>
+
+&ltp>8: translate应用 扇形菜单 点图标展开菜单&lt/p>
+&ltdiv id="menu">
+	&ltdiv id="home">&lt/div>
+	&ltdiv id="clos">&lt/div>
+	&ltdiv id="full">&lt/div>
+	&ltdiv id="open">&lt/div>
+	&ltdiv id="prev">&lt/div>
+	&ltdiv id="refresh">&lt/div>
+&lt/div>
+</pre>
+
+
+</body> 
+</html>    
+      
+     
+     
+     

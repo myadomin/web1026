@@ -1,0 +1,603 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>jQuery源码分析3--工具方法</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+</head>
+<body>
+<pre>
+<p class="title">概述</p>
+本文主要介绍源码定义的工具方法
+PS：(349-817)的意思就是对应源码的349行到817行，源码版本是jquery-2.0.3.js。
+
+<p class="title">(349-817) 扩展一些工具方法 $.xxx</p>
+<strong>1：工具方法不仅可以给$对象用 也可以给jQuery内部用</strong>
+所以可以说工具方法是构建整个jQuery的基石 
+而且工具方法还可以给原生JS对象用 工具方法就相当于定义的全局函数
+
+
+<strong>2：(349-817) 大致结构</strong>
+jQuery.extend({
+	expando: 生成唯一的JQ字符串(内部)
+	noConflict()：防止$ jQuery冲突
+	isReady：DOM是否加载完毕(内部)
+	readyWait：等待多少文件的加计数器(内部)
+	holdReady()：推迟DOM触发
+	ready()：贮备DOM触发
+	isFunction()：是否为函数
+	isWindow()：是否为window
+	isNumeric()：是否为数字
+	type()：判断数据类型
+	isPlainObject()：是否为对象字面量{}
+	isEmptyObject(): 是否为空对象
+	error()：抛出异常
+	parseHTML()：解析HTML节点
+	parseJSON()：解析JSON
+	parseXML()：解析XML
+	noop()：空函数
+	globalEval()：全局解析JS
+	camelCase()：转驼峰
+	nodeName()：是否为指定节点名(内部)
+	each()：遍历集合
+	trim()：去前后空格
+	makeArray()：类数组转真数组
+	inArray()：数组版indexOf
+	merge(): 合并数组
+	grep()：过滤新数组
+	map()：映射新数组
+	guid：唯一标识符(内部)
+	proxy()：改变this指向
+	access(): 多功能值操作(内部)
+	now()：当前时间
+	swap()：css交换(内部)
+});
+
+
+<strong>3：(351) expando:"jQuery" + ( core_version + Math.random() ).replace( /\D/g, "" )</strong>
+core_version=2.0.30，Math.random()=0.9954942357181062，replace( /\D/g, "" )去掉小数点 .
+最终$.expando形成唯一的字符串 jQuery203009954942357181062 
+
+
+<strong>4：(353-363) noConflict 卸载$或者jQuery</strong>
+假如在引入jQuery之前定义了var $ = 123; var jQuery = 456; 然后引入jQuery 
+如果var aaa = noConflict() 那卸载$ 之后调用jQuery方法是aaa().css(xxx) $依然是之前定义的123
+如果var aaa = noConflict(true) 那卸载$ 之后调用jQuery方法是aaa().css(xxx) jQuery依然是之前定义的456
+noConflict: function( deep ) {
+	//如果aaa = noConflict()  
+	if ( window.$ === jQuery ) {
+		//之前已通过_$ = window.$预存了$ 这里提取预存的$
+		window.$ = _$;
+	}
+	//如果aaa = noConflict(true)
+	if ( deep && window.jQuery === jQuery ) {
+		//之前已通过_jQuery = window.jQuery预存了jQuery
+		window.jQuery = _jQuery;
+	}
+	//返回值就是可以调用实例方法的对象
+	return jQuery;
+}
+
+
+<strong>5：jQuery中的DOM加载</strong>
+原生window.onload=function(){xx} 除了DOM加载完毕以外图片等也必须加载完毕了才触发函数
+JQ中通过$(function(){xxx})实现DOM的加载 只要DOM加载完毕就能触发函数 提高了加载速度
+
+$(function(){xxx})后执行如下代码(184)
+else if ( jQuery.isFunction( selector ) ) {
+	return rootjQuery.ready( selector );
+}
+也就是return出$(document).ready(function(){xxx}); 参考(866) rootjQuery = jQuery(document);
+
+执行$(document).ready(function(){xxx});
+就执行(240)的ready方法(注意这个ready方法是实例方法 不是(382)的ready工具方法)
+ready: function( fn ) {
+	jQuery.ready.promise().done( fn );
+	return this;
+},
+
+执行jQuery.ready.promise()就调用(819)
+jQuery.ready.promise = function( obj ) {
+	//readyList之前未定义 进入if后就定义了if 保证if内部代码只执行一次
+	if ( !readyList ) {
+		//定义readyList为延迟对象
+		readyList = jQuery.Deferred();
+		//如果document已加载完毕了
+		if ( document.readyState === "complete" ) {
+			//直接调用(382)的工具方法jQuery.ready()
+			setTimeout( jQuery.ready );
+		//如果DOM没有加载完毕
+		} else {
+			//绑定DOMContentLoaded load事件 触发completed回调函数 最终执行382行的工具方法jQuery.ready();
+			document.addEventListener( "DOMContentLoaded", completed, false );
+			window.addEventListener( "load", completed, false );
+		}
+	}
+	return readyList.promise( obj );
+};
+
+completed回调函数
+completed = function() {
+	//如果DOMContentLoaded事件先触发 进入后就会取消掉load事件的绑定 
+	//总之DOMContentLoaded或load只触发其中一个事件
+	document.removeEventListener( "DOMContentLoaded", completed, false );
+	window.removeEventListener( "load", completed, false );
+	jQuery.ready();
+};
+
+执行(382)的工具方法jQuery.ready();
+ready: function( wait ) {
+	//对(373)的holdReady()方法处理 通过--jQuery.readyWait推迟DOM的加载
+	if ( wait === true ? --jQuery.readyWait : jQuery.isReady ) {
+		return;
+	}
+	jQuery.isReady = true;
+	if ( wait !== true && --jQuery.readyWait > 0 ) {
+		return;
+	}
+	//调用deferred.resolveWith(context,[args]) 触发延迟对象执行
+	readyList.resolveWith( document, [ jQuery ] );
+	//对$(document).on('ready', function(){xxx})写法的支持
+	if ( jQuery.fn.trigger ) {
+		jQuery( document ).trigger("ready").off("ready");
+	}
+}
+
+(373) 推迟DOM加载的方法
+holdReady: function( hold ) {
+	//如果写$.holdReady(true) 那就jQuery.readyWait++ 推迟DOM的加载
+	if ( hold ) {
+		jQuery.readyWait++;
+	//之后再写$.holdReady(flase) 那就jQuery.ready( true ) 把之前推迟的DOM加载释放出来
+	} else {
+		jQuery.ready( true );
+	}
+},
+ 
+
+<strong>6: (409-466) 类型判断</strong>
+isFunction: function( obj ) {
+	//是否为函数
+	return jQuery.type(obj) === "function";
+},
+
+isArray: Array.isArray,		//是否为数组
+
+isWindow: function( obj ) {
+	//如果obj是null或者undefined obj.window必定会报错 
+	//所以下面写上obj != null && 可以屏蔽掉后面的报错 而null和undefined都等于null 所以返回flase
+	//例如：alert((function(){return null === null.window})()); 报错
+	//alert((function(){return null != null && null === null.window})()); 不报错 正常返回flase
+	//如果obj不是null也不是undefined也不是window 那返回的是true&&false 最终返回false
+	//如果obj是window window===window.window成立 返回true&&true 最终返回true
+	return obj != null && obj === obj.window;
+},
+
+isNumeric: function( obj ) {
+	//原生的typeof NaN时也返回number 所以这里做了改进
+	return !isNaN( parseFloat(obj) ) && isFinite( obj );
+},
+
+type: function( obj ) {
+	if ( obj == null ) {
+		return String( obj );
+	}
+	//原生的typeof数组 日期等都会返回object 这里做了改进 
+	//$.type([1,2,3]);就返回array,  $.type(new Date());就返回date
+	//class2type[ core_toString.call(obj) ] 返回array date regExp等原生typeof判断不了的类型
+	return typeof obj === "object" || typeof obj === "function" ?
+		class2type[ core_toString.call(obj) ] || "object" :
+		typeof obj;
+},
+
+上面的class2type[ core_toString.call(obj) ] 通过如下实现 
+因为core_toString = class2type.toString, 所以core_toString.call(obj)就是class2type.toString.call(obj)
+如果obj是Date对象那就返回[object Date] 然后下面(844行)进行遍历 class2type[object Date]就转换为date了
+jQuery.each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function(i, name) {
+	class2type[ "[object " + name + "]" ] = name.toLowerCase();
+});
+
+为何可以通过class2type.toString.call(obj)来返回[object Date] 从而判断date等类型？
+数组对象.toString扩充作用域到obj 就可以返回obj的详细类型 
+就类似instanceof或者constructor判断类型(但是这两张方法有一定兼容性问题 toString完全没有)
+var arr = [1,2,3];
+var obj = new Date();
+alert(arr.toString.call(obj))		//[object Date]
+
+isPlainObject: function( obj ) {
+	//isPlainObject判断是否为对象字面量 (通过"{}"或者"new Object"创建的)
+	//如果type不是object 或者是DOM元素 或者是window 都不算对象字面量
+	if ( jQuery.type( obj ) !== "object" || obj.nodeType || jQuery.isWindow( obj ) ) {
+		return false;
+	}
+	
+	//array date等对象 type也是object 可他们不算对象字面量
+	//window.location等window下的对象 也不算对象字面量
+	try {
+		if ( obj.constructor &&
+				!core_hasOwn.call( obj.constructor.prototype, "isPrototypeOf" ) ) {
+			return false;
+		}
+	} catch ( e ) {
+		return false;
+	}
+
+	//除了以上都是对象字面量
+	return true;
+},
+
+isEmptyObject: function( obj ) {
+	//isEmptyObject判断是否为空对象 
+	//例如数组或{}或构造函数内部无定义的属性或方法 这些都不能for in 所以都返回true
+	var name;
+	for ( name in obj ) {
+		return false;
+	}
+	return true;
+},
+
+camelCase: function( string ) {
+	//通过rmsPrefix = /^-ms-/, 把ms-转为-ms- 
+	//然后通过rdashAlpha = /-([\da-z])/gi, fcamelCase = function( all, letter ) {return letter.toUpperCase();}
+	//转驼峰式写法
+	return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
+},
+
+nodeName: function( elem, name ) {
+	//判断name是不是elem的节点名称
+	//nodeName(document.documentElement, 'html') 返回true
+	return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
+},
+
+
+<strong>7：(561-608) each工具方法</strong>  
+$.each([1,2,3], function(key,value){xxx}); 注意和实例方法$(xx).each(function(){xx})区别
+each: function( obj, callback, args ) {
+	var value,
+		i = 0,
+		length = obj.length,
+		isArray = isArraylike( obj );
+	
+	//如果有第三个参数args 那就是内部调用
+	if ( args ) {
+		if ( isArray ) {
+			for ( ; i < length; i++ ) {
+				value = callback.apply( obj[ i ], args );
+
+				if ( value === false ) {
+					break;
+				}
+			}
+		} else {
+			for ( i in obj ) {
+				value = callback.apply( obj[ i ], args );
+
+				if ( value === false ) {
+					break;
+				}
+			}
+		}
+
+	//如果没有第三个参数args 就是外部调用 我们使用的就是这种外部调用
+	} else {
+		//如果是数组 类数组等
+		if ( isArray ) {
+			//用for循环执行callback回调函数
+			for ( ; i < length; i++ ) {
+				//callback(i, arr[i])
+				value = callback.call( obj[ i ], i, obj[ i ] );
+				//循环完毕 退出
+				if ( value === false ) {
+					break;
+				}
+			}
+		} else {
+			//如果不是数组 是json等 for in
+			for ( i in obj ) {
+				//callback(key, value)
+				value = callback.call( obj[ i ], i, obj[ i ] );
+				//循环完毕 退出
+				if ( value === false ) {
+					break;
+				}
+			}
+		}
+	}
+
+	return obj;
+},
+
+在上面工具方法$.each的基础上 再封装一层 形成了实例方法$(xx).each (236)
+each: function( callback, args ) {
+	//调用$.each obj是this
+	return jQuery.each( this, callback, args );
+},
+
+
+<strong>8：(615-706) 数组操作</strong> 
+merge合并数组或者类数组 例如merge([1,2,3], [a,b,c]) 返回[1,2,3,a,b,c]
+merge: function( first, second ) {
+	var l = second.length,
+		i = first.length,
+		j = 0;
+	if ( typeof l === "number" ) {
+		//如果是第二个参数是数组(数组就有.length) 那for循环 第二个数组元素逐一添加到第一个数组
+		for ( ; j < l; j++ ) {
+			first[ i++ ] = second[ j ];
+		}
+	} else {
+		//如果第二个参数是类数组 用while逐一添加
+		while ( second[j] !== undefined ) {
+			first[ i++ ] = second[ j++ ];
+		}
+	}
+	first.length = i;
+	//最终返回合并好的第一个数组
+	return first;
+},
+
+
+利用上面的merge方法 形成(615-630)$.makeArray 类数组及字符串等转数组
+例如 $.makeArray(document.getElementsByTagName('div')) 类数组转为数组
+makeArray: function( arr, results ) {
+	//results内部调用参数 外部不需要 ret初始是数组
+	var ret = results || [];
+	if ( arr != null ) {
+		//如果是类数组或者字符串等 通过merge把arr合并到最终返回的ret数组上
+		if ( isArraylike( Object(arr) ) ) {
+			//如果arr是字符串 就直接变成[arr]数组
+			jQuery.merge( ret, typeof arr === "string" ? [ arr ] : arr);
+		} else {
+			core_push.call( ret, arr );
+		}
+	}
+
+	return ret;
+},
+
+
+inArray 例如 $.iArray(2, [1,2,3]) 查询2是数组[1,2,3]的第几个元素 不是就返回-1
+inArray: function( elem, arr, i ) {
+	//core_indexOf = core_deletedIds.indexOf = [].indexOf (55行)
+	//[].indexOf.call( arr, elem, i )
+	return arr == null ? -1 : core_indexOf.call( arr, elem, i );
+},
+
+
+grep 筛选数组 组成新数组
+//例如$.grep( [0,1,2], function(n,i){return n > 0;} ); 返回[1,2]
+//例如$.grep( [0,1,2], function(n,i){return n > 0;} , true); 返回[0]
+grep: function( elems, callback, inv ) {
+	var retVal,
+		ret = [],
+		i = 0,
+		length = elems.length;.
+		//假如参数inv没有写 也就是undifined 经过!!变为false
+		inv = !!inv;
+
+	for ( ; i < length; i++ ) {
+		//执行回调函数 结果给到retVal retVal就是ture或者false
+		retVal = !!callback( elems[ i ], i );
+		//假如参数inv没有定义或者是false 而且上面回调函数结果retVal又是true
+		if ( inv !== retVal ) {
+			//那就会把当前循环得到的elem[i]push到结果数组ret里 最终返回ret
+			ret.push( elems[ i ] );
+		}
+	}
+
+	return ret;
+},
+
+
+$.map  根据回调callback修改原数组elems 记得区别于$().map
+例子1  $.map( [0,1,2], function(n){return n + 4;});  返回[4, 5, 6]
+例子2  $.map( [0,1,2], function(n){return n > 0 ? n + 1 : null;});  返回[1,2]
+例子3  $.map( [0,1,2], function(n){return [ n, n + 1 ];});  返回[0, 1, 1, 2, 2, 3]
+map: function( elems, callback, arg ) {		//第三个参数arg内部使用才需要写
+	var value,
+		i = 0,
+		length = elems.length,
+		isArray = isArraylike( elems ),
+		ret = [];
+
+	//如果是数组 用for
+	if ( isArray ) {
+		for ( ; i < length; i++ ) {
+			//value等于此次循环执行callback的结果 如例子1
+			value = callback( elems[ i ], i, arg );
+			//如果结果不是null就把value push到最终返回数组ret
+			//如果是null 如例子2 这个value就不push进去
+			if ( value != null ) {
+				//相当于push
+				ret[ ret.length ] = value;
+			}
+		}
+
+	//如果是类数组 用for in
+	} else {
+		for ( i in elems ) {
+			value = callback( elems[ i ], i, arg );
+
+			if ( value != null ) {
+				ret[ ret.length ] = value;
+			}
+		}
+	}
+
+	//避免形成多维数组 例如例子3最终返回还是一维数组
+	return core_concat.apply( [], ret );
+},
+
+
+<strong>9：(713-738) proxy</strong> 
+用法1：变更作用域 show1函数的作用域从window变到document
+function show1(){
+	alert(this);
+}
+// $.proxy(show1, document)();			//所以这里弹出object HTMLDocument 而不是window了
+
+用法2：变更作用域并且传入参数
+function show2(n1, n2){
+	alert(this);
+	// alert(n1);
+	// alert(n2);
+}
+// $.proxy(show2, document)(1, 2);		//写法1 弹出object HTMLDocument 1 2
+// $.proxy(show2, document, 1)(2);		//写法2 弹出object HTMLDocument 1 2
+
+用法3：变更作用域 show2作用域从document变成obj
+obj = {
+	show3: function(){
+		alert(this);
+	}
+}
+// $(document).click(obj.show3);				//直接调用obj.show3 由于click事件 所以弹出objectHTMLDocument
+// $(document).click($.proxy(obj.show3, obj));	//proxy变更作用域到obj 弹出object Object
+// $(document).click($.proxy(obj, 'show3'));	//上面的简写方式
+
+
+(713-738) proxy的源码实现
+proxy: function( fn, context ) {
+	var tmp, args, proxy;
+
+	//对应上面的用法3的简写方式 把$.proxy(obj, 'show3')转换回$.proxy(obj.show3, obj)
+	if ( typeof context === "string" ) {
+		//tmp = obj.show3
+		tmp = fn[ context ];
+		//context = obj
+		context = fn;
+		//fn = obj.show3
+		fn = tmp;
+	}
+
+	//fn如果不是函数 
+	if ( !jQuery.isFunction( fn ) ) {
+		return undefined;
+	}
+
+	//对应用法2的写法2情况 转换为写法1 见下面的详细分析
+	args = core_slice.call( arguments, 2 );
+	proxy = function() {
+		return fn.apply( context || this, args.concat( core_slice.call( arguments ) ) );
+	};
+
+	//唯一标示符guid 保证解绑事件等操作时 解绑唯一对应的对象事件
+	proxy.guid = fn.guid = fn.guid || jQuery.guid++;
+
+	return proxy;
+},
+
+上面用法2的写法2是如何转换为写法1的？
+args = core_slice.call( arguments, 2 );
+对于上面的这句 通过54行core_slice = core_deletedIds.slice 以及47行core_deletedIds = []
+得到args = [].slice.call(arguments, 2); 
+通过alert(args)看出切出的就是写法2的第三个参数[1]
+那为什么不直接args = arguments.slice(2); 而非要args = [].slice.call(arguments, 2);
+因为arguments是类数组 不能执行.slice方法 所以需要[]冒充对象到arguments任何.slice(2)
+proxy = function() {
+	// 注意这里的arguments就变成了[2]的类数组 不是上面的[show2, document, 1]的类数组了
+	// 因为这里这里再次定义proxy函数 他的argument是$.proxy(show2, document, 1)(arguments) 
+	// 可以在源码中alert(arguments[0])看出是[2] 所以core_slice.call( arguments )是[2]
+	// 然后下面fn.apply(context||this, [1].concat([2])) 最终写法2就等同于写法1 $.proxy(show2, document)(1, 2)
+	return fn.apply( context || this, args.concat( core_slice.call( arguments ) ) );
+};
+
+
+<strong>10: (742-793)access 只用于源码内部使用</strong>
+情况1：$('#div1').css('width'); 获取
+情况2：$('#div1').css('width', '200px'); 设置
+情况3：$('#div1').css({'width':'200px', 'height':'300px'}); 设置多个值
+在css attr等方法中 经常会有上面的三种情况 在源码中将这三种情况的共性提取出来 统一到access方法中
+便于在构建css等实例方法的时候 调用这个工具方法access
+
+access源码分析
+access: function( elems, fn, key, value, chainable, emptyGet, raw ) {
+	var i = 0,
+		length = elems.length,
+		bulk = key == null;
+
+	//如果是情况3：$('#div1').css({'width':'200px', 'height':'300px'}); 设置多个值
+	if ( jQuery.type( key ) === "object" ) {
+		chainable = true;
+		for ( i in key ) {
+			//回调
+			jQuery.access( elems, fn, i, key[i], true, emptyGet, raw );
+		}
+
+	//如果是情况2：$('#div1').css('width', '200px'); 设置
+	} else if ( value !== undefined ) {
+		chainable = true;
+
+		if ( !jQuery.isFunction( value ) ) {
+			raw = true;
+		}
+
+		//没有key的情况
+		if ( bulk ) {
+			// Bulk operations run against the entire set
+			if ( raw ) {
+				fn.call( elems, value );
+				fn = null;
+
+			//有key的情况
+			} else {
+				bulk = fn;
+				fn = function( elem, key, value ) {
+					return bulk.call( jQuery( elem ), value );
+				};
+			}
+		}
+
+		if ( fn ) {
+			for ( ; i < length; i++ ) {
+				//循环调用
+				fn( elems[i], key, raw ? value : value.call( elems[i], i, fn( elems[i], key ) ) );
+			}
+		}
+	}
+
+	return chainable ?
+		elems :
+
+			//如果是情况1：$('#div1').css('width'); 获取
+			bulk ?
+			fn.call( elems ) :
+			length ? fn( elems[0], key ) : emptyGet;
+},
+
+
+<strong>11: (798-817) swap  源码内部使用</strong>
+假如#div1的css是display:none 那原生JS获取他的width offsetTop等是获取不到的
+但是在平常写jquery的时候 直接$('div1').width()又能获取到width 那是为什么？
+因为在调用$('#div1').width()等方法的时候 
+源码内部通过swap()瞬间将css从display:none变成了display:block;visiblility:hidden
+这样就可以获取到width了 获取完width后 又瞬间把css变回到display:none
+所以swap在源码内部的作用就是旧css交换为新css 获取某些属性值 获取完再交换回旧css
+
+swap方法的源码分析
+swap: function( elem, options, callback, args ) {
+	var ret, name,
+		old = {};
+
+	//存储旧css 改成新css
+	for ( name in options ) {
+		old[ name ] = elem.style[ name ];
+		elem.style[ name ] = options[ name ];
+	}
+
+	//获取需要的属性值
+	ret = callback.apply( elem, args || [] );
+
+	//改回旧css
+	for ( name in options ) {
+		elem.style[ name ] = old[ name ];
+	}
+
+	//返回需要的属性值
+	return ret;
+}
+
+
+</pre>
+</body>
+</html>

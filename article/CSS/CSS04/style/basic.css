@@ -1,0 +1,73 @@
+﻿ul,div,img,dl,dt,dd,body{
+	margin:0;
+	padding:0;
+}
+body{
+	width:867px;
+	margin:0 auto;
+	font-size:12px;
+	color:#666;
+	background:#2c383e url(../img/bgindex.jpg) repeat-x;
+}
+ul{
+	list-style-type:none;
+}
+img{
+	border:0;
+}
+
+#header{
+	height:323px; 
+}
+#header embed{
+	height:323px; 
+	width:867px;
+}
+
+#nav{
+	height:51px; 
+	background:url(../img/linkbg.jpg);
+}
+#nav ul{
+	text-align:center;
+	line-height:51px;
+}
+#nav ul li{
+	display:inline;
+	padding:36px;
+	background:url(../img/linkr.gif) no-repeat right center;
+}
+#nav ul li.aa{   
+	/* li.aa才行 li .aa不行*/ 
+	background:none;
+}
+#nav ul li a{  
+	color:white;
+	display:inline-block;
+	text-decoration:none;
+}
+#nav ul li a:hover{   
+	color:yellow;
+	text-decoration:underline;
+	font-size:14px;
+	font-weight:bold;
+}
+
+
+#footer{
+height:110px; 
+clear:both;
+background:url(../img/bg.gif);
+/* 清楚footer框体周边的浮动，否者footer就不见了*/
+}
+#footer img{
+margin-top:10px;
+}
+#footer p{
+text-align:right;
+color:#ccc;
+padding-right:10px;
+padding-top:10px;
+font-size:12px;
+}
+ 

@@ -1,0 +1,382 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>变量及函数及作用域</title>
+<style>
+body{
+	font-size: 16px;
+	padding-left: 100px;
+}
+</style>
+</head>
+<body>
+
+<pre>
+//变量类型及作用域及函数
+
+
+
+
+/*一：--------------------------变量类型----------------------------------------------------------------------------------------------------
+
+//1：基本类型及引用类型
+//基本类型，Number String Blooean Undefined Null ，任何的类型对他进行typeof都是其中之一（特例：typeof Null是Object typeof 函数是Function） 
+//引用类型，Array Function Date Math RegExp Obejct(其实他们都是Obejct类型)，typeof都是Object，主要用instanceof检测他们，例如 alert(aa instanceof Array)看输出的布尔值
+
+//2：基本类型不能被添加属性和方法  引用类型可以给添加属性和方法
+var num = 555;
+num.name = 'lee';
+num.showName = function(){
+		alert(this.name);
+}
+alert(num.name);  		//基本类型不可以被添加属性和方法
+num.showName();   		//基本类型不可以被添加属性和方法
+
+var box = new Object();
+box.name = 'lee';
+box.showName = function(){
+		alert(this.name);
+}
+alert(box.name);  		//lee  说明引用类型可以被添加属性和方法
+box.showName();   		//lee  说明引用类型可以被添加属性和方法
+
+//3：基本类型 引用类型 =号的区别
+var num1 = 'lee';
+alert(num1);      		//lee
+var num2 = num1;  		//把num1赋值给了num2
+var num2 = 'luo'; 		//然后修改了num2的值
+alert(num1);      		//lee  虽然num2的值变化了 num1还是没变 两者独立
+//说明基本类型内容都在栈内存里 相对独立 num2变化不会影响num1
+var box1 = new Object();
+box1.name = 'lee'
+alert(box1.name);   	//lee
+box2 = box1;        	//把box1赋值给了box2
+box2.name = 'luo';  	//然后修改了box2的值
+alert(box1.name);   	//luo  box2.name的值变化了 box1.name的值也变化了
+//说明引用类型在栈内存中只是保存了指针 内容都保存在另外的堆内存中
+//一旦box2 = box1;  就是栈内存中的box1和box2的指针都指向了同一个堆内存
+//所以修改了box2.name那么box1.name也自动被修改了
+//所以  arr1 = arr2 这类数组=号后  改变任何一个数组 都会互相影响 数组也是Object也是引用类型之一
+
+//4：基本包装类型
+//对于Number String Blooean这三个基本类型 由于在他们上可以调用系统内置方法（但是不能自建方法和属性，因为他们是基本类型 不是引类型） 
+//所以他们被加方法以后 他们就被变成了类似引用类型的对象 此时他们被称作基本包装类型 如下例子
+//var box = 'mrluo';
+//alert(typeof box);    			//string  所以是字符串类型
+//alert(box.substring(2));  		//luo  被切掉了字符串前两位后 就是字符串 luo  只能用系统内置方法
+//alert('mrluo'.substring(2)); 		//luo 一旦后面加了方法 系统自动将box或者'mrluo'变成了类似引用类型的对象 此时我们称他们为基本包装类型
+//box.name = luo;
+//box.showNumber = function(){
+//		return 100;
+//}
+//alert(box.name);          		//undefined 打印不出来
+//alert(box.showNumber());  		//出错 没有这个函数  说明基本类型不能自建方法和属性  
+var num = 1030;
+alert(typeof num);    //number
+alert(typeof toString(num));  		//string  toString()方法  系统内置的方法 此时num就被称为基本包装类型
+
+//5：一些string类型的系统内置方法 indexOf(),lastIndexOf(),charAt()找到具体哪个字母的位置
+var box = 'Mr Lee is Lee lose';
+var char = box.charAt(1)      		//r 第二个是r
+var arr = [];
+var pos = box.indexOf('L')    		//区分大小写  找到L在box字符串中的位置索引号 如果有L就输出索引号 没有就输出-1
+while(pos>-1){                		//如果有L(如果没有L，box.indexOf('xxx') = -1)
+		arr.push(pos);            	//将pos输出的索引号入栈到数组
+		pos = box.indexOf('L',pos+1);  //对box字符串 从pos+1位置开始再搜索L 以输出索引号
+}
+alert(arr);   //3 10  因为区分大小写 所以14的l不算
+
+
+//6：四种类型判断的方法 判断aaa是否为数组 
+alert(typeof [1, 2, 3]);							 
+alert([1, 2, 3] instanceof Array);
+alert([1, 2, 3].constructor == Array);
+alert(Object.prototype.toString());			//Object Object  
+alert(Object.prototype.toString.call([1, 2, 3]));	//Object Array 最完美的判断
+alert(Object.prototype.toString.call(1));		//Object Number
+*/
+
+
+
+
+
+/*二：-----------------------------变量作用域--------------------------------------------------------------------
+
+//1 局部变量和全局变量        
+//以后任何变量 尽量先声明变量 让他固定在某个函数作用域里面 尽量 var color =  以避免全局变量污染全局
+//只有函数才有块级作用域概念 也就是只有在函数内加了var的变量 出了函数就会被销毁  其他for之类的加var变量出了也不会被销毁
+var color = 'blue';
+function changeColor(){
+		if(color === 'blue'){
+			color = 'red';      	//如果不加var 这个color就是全局变量 出了函数还是有color = 'red'并覆盖了原来的color='blue' 所以结果是red
+			//var color = 'red';  	//如果加var 这个color就是局部变量 出了函数就没有 color = 'red'  所以还是原来全局的color='blue' 所以结果是blue
+		}else{
+			color = 'green';
+		}
+}
+changeColor();
+alert(color);
+//但是要注意的是 只有函数有块级作用域的概念（也就是var变量出了函数就被销毁了）
+//其他任何块体（比如下面的if块体）没有块体作用域概念（也就是var变量出了块体也没被销毁）
+var color = 'blue';
+		if(color === 'blue'){
+			color = 'red';  		//加不加var 他最终出了if块体 都不会销毁 所以最终打印结果总是red  
+		}else{
+			color = 'green';
+		}
+alert(color);
+
+//2 变量作用域
+//只能访问并行作用域及上级作用域的变量，从并行开始一直往上级找。找到后，开始按顺序往下执行函数
+var color = 'blue';
+function changeColor(){
+		var anotherColor = 'red';
+		function swapColor(){
+				var tempColor = anotherColor;
+			  	anotherColor = color;
+				color = tempColor;
+				alert(tempColor);    	//red    //能访问并行作用域anotherColor变量 
+				alert(anotherColor); 	//blue   //及上级作用域anotherColor变量 
+				alert(color);        	//red    //及再上级作用域color变量 
+		}
+		swapColor();
+		//alert(tempColor);    			//未定义    
+		alert(anotherColor);   			//blue  //只能访问并行作用域anotherColor变量 
+		alert(color);          			//red	//及上级作用域color变量 
+}
+changeColor(4);
+//alert(tempColor);    		//未定义    
+//alert(anotherColor); 		//未定义       
+alert(color);   			//red 只能访问并行作用域color变量 访问后函数一直执行到color = tempColor;如果是var color = tempColor; 那最后还是他的全局变量定义的blue
+
+//3 查询标示符  先查询最内部 没有再往上级查询
+var color = 'blue';
+function getColor(){
+		return color;
+}
+alert(getColor());   		//blue 首先进入getColor1函数查询到标示符没有color 然后return color再往上级查询标示符color 查到了color = 'blue' 所以打印就是blue
+
+function getColor1(){
+		color = 'red';
+		return color;
+}
+alert(getColor1());   		//red  首先进入getColor1函数查询到标示符 color = 'red' 然后return出来的标示符color就是 red
+
+
+//4：定义局部变量和全局变量的多种写法
+function s1(){
+	var a = b = 10;				//b是全局变量
+	// var a = 10; b = 10;		//b是全局变量
+	// var a = 10, b = 10;		//b是局部变量
+}
+s1();
+// alert(b);	 				//10
+
+
+//5：如何理解作用域链查找？
+//程序一运行 无论是否异步 所有的变量都开始声明var bbbb=null bbbb=null 但是赋值还是按照执行顺序来赋值
+var s2 = 10;
+function fn2(){
+	//先从内部找局部变量var aaaa，找到了声明var bbbb=null但是还没开始赋值，所以弹出undefined
+	alert(s2);		
+	var s2 = 20;
+
+	//如果这样写 那先从内部找var 没找到就去外部找var 找到并且预先定义了10 所以是弹出10		
+	// s2 = 20;	
+
+	//如果s2作为参数传进来了 等同于在函数内定义了局部变量var s2 = 10 所以弹出也是10
+}
+//fn2();
+*/
+
+
+
+
+
+
+
+/*三：--------------------------------------------关于函数--------------------------------------------------------
+
+//1：理解 函数是对象 函数名是指针  函数名就是变量
+function box(num1, num2) {    		//普通的函数声明
+　　	return num1+ num2;
+}
+var box= function(num1, num2) {    	//变量初始化 函数声明  所以说函数时对象 函数名就是变量 就是一个指针而已
+	return num1 + num2;　
+}; 
+
+//2：把函数执行完后的结果 作为参数传递给另外一个函数
+function box(sum,num){
+		return sum + num;
+}
+function sum(num){
+		return num + 10;
+}
+var result = box(sum(10),10);   	//sum(10) = 20  所以这里就相应 box(20,10) 所以30
+alert(result);    //30
+
+//3：把函数本身 作为参数传递给另外一个函数（因为函数名就是一个变量） 这样就实现了函数套函数
+function box(sum,num){
+		return sum(1);           //sum作为函数（变量）已经传递到了box函数，所以在box函数里面 可以执行sum函数 sum(1)=11 所以box执行完以后是11
+}
+function sum(num){
+		return num + 10;
+}
+var result = box(sum,10);    		//这里是将sum函数本身（因为sum就是一个变量） 做为参数传递给box函数
+alert(result);   //11
+
+//4：阶乘与递归 函数内部套自身函数
+function sum(num){
+		if(num<=1){
+				return 1;
+		}else{
+				return num*sum(num-1);   //函数内部 调用自身函数
+		}  
+}
+alert(sum(4));     //4*3*2*1 = 24
+
+//5：但是上面的函数有一些问题，如果自身调用了自身函数1000次，如果修改了sum函数名 那必须修改1000次自身函数名 否则就不行了
+//所以js给了我们一个调用自身函数的方法 arguments.callee
+function sum(num){
+		if(num<=1){
+				return 1;
+		}else{
+				return num*arguments.callee(num-1);   //假如函数名sum变化成sum1了 也没问题
+		}  
+}
+alert(sum(3));     		//4*3*2*1 = 24
+
+//6：关于this  在全局作用域下的this就代表window对象
+//var color = 'red';		//全局变量
+//alert(window.color);  	//red  说明任何全局变量 其实就是window对象下的属性
+//alert(this.color);    	//red  说明在全局作用域下 this就代表了window
+window.color = 'red';   	//这个就等同于 var color = 'red'  声明了全局变量color
+alert(color);           	//red
+
+//7:当前作用域下的this就是代表的当前作用域对象
+var color = 'red';      	//相对于window.color
+//var box ={              	//以字面量的方式创建对象  
+//		color:'blue',
+//		sayColor:function(){
+//				alert(this.color);
+//		}
+//}
+function Box(){
+		this.color = 'blue';
+		this.sayColor = function(){
+				alert(this.color);
+		}
+}
+box = new Box();    	//实例化box  以构造函数构造对象Box 这个对象实例化给box 让box是个实例的对象
+box.sayColor();     	//blue  执行box对象下的方法 这个方法是打印this.color this代表当前作用域box对象 所以就是box.color 所以blue
+alert(this.color);  	//red   这里的this代表全局作用域的对象window  就是打印window.color 所以red
+
+//8：通过=号直接传递方法 ，构造函数形式 传递给Box的原型方法 然后实例化出box测试  
+var color = 'red';
+function sayColor(){
+		alert(this.color);
+}
+sayColor();   //red
+
+function Box(){
+		this.color = 'blue';
+}
+Box.prototype.sayColor= sayColor  	//相对于直接给Box构造函数加上了原型方法sayColor
+
+box = new Box();
+box.sayColor();  					//blue  实例化出box后 box上也有了sayColor方法 就是打印this.color 
+
+//9：通过=号直接传递方法 ，字面量形式 
+var color = 'red';
+function sayColor(){
+		alert(this.color);
+}
+sayColor();
+
+var box = {
+		color:'blue',
+}
+box.sayColor = sayColor;   		//直接将sayColor方法 给到了box对象下
+box.sayColor();  //blue
+
+//10：函数下的属性 box.length  
+function box(num1,num2){
+	alert(arguments[0]);      	//arguments[0]指的是当前函数下 被传进来的第一个参数是什么
+	alert(arguments.length);  	//arguments.length指的是当前函数下 被传进来的参数有多少个
+}
+box(1,2,3,4,5);             	// 1   5    //就算box函数本身写好了两个参数 你也可以不传或者传多个函数进去
+alert(box.length);          	// box.length的意思是box函数本身写好的参数有几个
+
+//11：通过call apply 对象冒充 改变指向的对象 以改变作用域
+var color = 'red';  //全局作用域下
+var name = 'luo';
+box = {
+		color:'blue',     		//box对象作用域下
+		name:'lee',
+		sayName:function(){
+				alert(this.name);
+		}
+}
+function sayColor(){
+		alert(this.color);
+}
+//sayColor();              		//red 本身sayColor函数的作用域就是全局window this.color是red 
+//sayColor.call(window);   		//red 本身sayColor函数的作用域就是全局window 所以再扩充到window 也是red
+//sayColor.call(box);      		//blue 将sayColor的作用域缩小到box对象下 所以this.color是blue  缩小作用域常用 用于后续的构造函数的子函数继承父函数属性 
+box.sayName();      			//lee  因为是box作用域下的name 所以this.name是lee
+box.sayName.call(window);  		//luo  将作用域扩展到了window  所以this.name是luo
+
+//12：原函数通过call apply改变原函数的作用域为本函数自身作用域(this) ,在这个前提下本函数被复制了原函数的执行结果
+function yuanBox(num1,num2){
+		return num1+num2;
+}
+function benBox(num1,num2){
+		return yuanBox.call(this,num1,num2);     	//原函数通过call改变原函数作用域为本函数自身作用域(也就是this)，在这前提下被复制了原函数的内容num1+num2
+		//return yuanBox.apply(this,[num1,num2]);	//apply和call的区别只是 后面传递参数用数组形式 其他没区别
+		//return yuanBox.apply(this,arguments);  	//既然是参数数组 直接可以用arguments代替
+}
+alert(benBox(2,5));    //benBox函数也获得了 num1+num2的方法 所以输出7
+
+//13：类比上面的例子，构造函数子函数属性继承父函数的原理就是
+//function Person(name,age){      		//父函数 构造函数
+//		this.name = name;		//父函数的属性
+//		this.age = age;
+//}
+//function Worker(name,age,job){     		//子函数
+//		Person.call(this,name,age);    	//父函数通过.call改变Person父函数的作用域为子函数自身左右域(this)，其他不变， 
+//		this.job = job;                	//最终子函数作用域还是本身作用域 属性也完全继承了父函数执行后的结果(Person())
+//}
+//Person.call(this,name,age); 这个函数的理解方法 
+//首先作用域指向当前this 然后执行Person(name.age)得到this.name = name  this.age = age
+
+
+//14：如何理解参数只是引用？
+var s3 = 10;
+//参数xx只是一个引用 s3是普通类型存在栈内层中 xx重新赋值为13 原来的s3还是10 所以弹出10
+function fn3(xx){
+	xx += 3;
+}
+fn3(s3);
+// alert(s3);
+
+var s4 = [1,2,3];
+//参数xx是引用 把对象类型数组s4传进来后 xx数组和原s4数组指向同一片堆内存 xx变成[1,2,3,4] 所以s4也变成[1,2,3,4]
+function fn4(xx){
+	xx.push(4);
+}
+fn4(s4);
+alert(s4);
+*/
+
+
+
+
+</pre>
+ 
+</body> 
+</html>    
+      
+     
+     
+     

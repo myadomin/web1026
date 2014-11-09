@@ -1,0 +1,103 @@
+﻿#top{
+	width:996px;
+	height:152px;
+	background:url(../img/top_bg.jpg) no-repeat;
+}
+#top h1{
+	width:126px;
+	height:82px;
+	background:url(../img/top_log.jpg) no-repeat right bottom;
+	padding:26px 0 0 42px;
+	float:left;
+}
+#top ul{
+	width:792px;
+	height:40px;
+	background:url(../img/top_nav_bg.jpg) no-repeat 0 4px;
+	float:right;
+	margin:46px 0 0 36px;
+}
+#top ul li{
+	float:left;
+}
+#top ul li a{
+	display:block;
+	width:100px;
+	height:40px;
+	margin-left:10px;
+}
+#top ul li a.nav2{
+	background:url(../img/top_nav-2.png) no-repeat 18px center;
+}
+#top ul li a.nav3{
+	background:url(../img/top_nav-3.png) no-repeat 34px center;
+}
+#top ul li a.nav5{
+	background:url(../img/top_nav-5.png) no-repeat 18px center;
+}
+#top ul li a.nav6{
+	background:url(../img/top_nav-6.png) no-repeat 18px center;
+}
+#top ul li a.nav7{
+	background:url(../img/top_nav-7.png) no-repeat 34px center;
+}
+#top ul li a.nav1:hover{
+	background:url(../img/top_nav_hover-1.png) no-repeat left center;
+}
+#top ul li a.nav2:hover{
+	background:url(../img/top_nav_hover-2.png) no-repeat left center;
+}
+#top ul li a.nav3:hover{
+	background:url(../img/top_nav_hover-3.png) no-repeat left center;
+}
+#top ul li a.nav4:hover{
+	background:url(../img/top_nav_hover-4.png) no-repeat left center;
+}
+#top ul li a.nav5:hover{
+	background:url(../img/top_nav_hover-5.png) no-repeat left center;
+}
+#top ul li a.nav6:hover{
+	background:url(../img/top_nav_hover-6.png) no-repeat left center;
+}
+#top ul li a.nav7:hover{
+	background:url(../img/top_nav_hover-7.png) no-repeat left center;
+}
+#top p{
+	float:left;
+	margin:8px 0 0 48px;
+}
+#top p a{
+	color:#666;
+}
+#top p a:hover{
+	color:green;
+}
+
+#footer{
+	width:996px;
+	height:117px;
+	background:url(../img/footer.jpg) no-repeat left bottom;
+	clear:both;
+	padding-top:50px;
+}
+#footer p{
+	text-align:center;
+	height:117px;
+	line-height:117px;
+	color:#fff;
+	font-size:14px;
+}
+
+#bottom{
+	width:996px;
+	height:38px;
+	background:url(../img/bottom.jpg);
+}
+#bottom p{
+	float:right;
+	clear:right;
+	margin:3px 5px 0 0;
+	color:#eee;
+}
+
+

@@ -1,0 +1,43 @@
+﻿#sidebar{
+	width:267px;
+	height:850px;
+	background:white;
+	float:left;
+}
+#sidebar embed{
+	width:220px;
+	height:200px;
+  margin-left:23px;
+  margin-top:20px;
+}
+		
+#contents{
+	width:599px; 
+	/*注意这里是599+1+267=867，
+	如果大于599就会总和大于867，就浮不起来。*/
+	height:850px;
+	border-left:1px solid #ccc;
+	float:right;
+	background:white;
+}
+#contents h1{
+	width:122px;
+	height:26px;
+	background:url(../img/aboutme.gif);
+	margin-top:20px;
+	margin-left:20px;
+}
+#contents img{
+	margin-left:14px;
+}
+#contents p{
+	width:520px;
+	text-indent:24px;
+	line-height:180%;
+	margin-left:20px;
+}
+#contents p span{
+	color:#06f;
+}
+		
+	 

@@ -1,0 +1,19 @@
+body{
+	padding: 0 0 100px 200px;
+	font-size: 16px;
+}
+pre{
+	font-family: '宋体';
+	/*font-family: '微软雅黑';*/
+}
+.title{
+	font-size: 20px;
+	font-weight: bold;
+	color: green;
+	width: 1000px;
+	height: 100px;
+	line-height: 160px;
+	border-bottom: 1px solid #ccc;
+	margin: 0px;
+	padding: 0px;
+}

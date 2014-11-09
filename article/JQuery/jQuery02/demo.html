@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无缝滚动</title>
+<style type="text/css">
+*{
+	margin:0px;
+	padding:0px;
+}
+ul{
+	list-style:none;
+}
+
+#wrap{
+	height:250px;
+	margin:50px auto;
+	border:1px solid #aaa;
+	position:relative;
+	overflow:hidden;
+}
+#scroll{
+	height:220px;      /*  #wrap #scroll的宽度用js动态设置 后续添加图片就不需要改动了*/
+	position:absolute;
+}
+#scroll li{
+	width:200px;
+	height:200px;
+	float:left;
+	padding:10px 0 10px 10px;               /*上下左 每个li的宽度是210px 尽量不用margin 这样就能动态设置ul跨度为li个数*一个li宽度 */
+}
+#scroll li img{
+	width:200px;
+	height:200px;
+	cursor:pointer;
+}
+input{
+	width:525px;
+	height:30px;
+	font-size:30px;
+	font-weight:bold;
+	background:#ccc;
+	border:none;
+	opacity:0.2;
+	position:absolute;
+	top:220px;
+	cursor:pointer;
+}
+#left{
+	left:0px;
+}
+#right{
+	left:525px;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="../../../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+  
+<p class="title">DEMO演示 无缝滚动</p>
+
+<div id="wrap">
+	<ul id="scroll">
+		<li><img src="img/1.jpg"/></li>
+		<li><img src="img/2.jpg"/></li>
+		<li><img src="img/3.jpg"/></li>
+		<li><img src="img/4.jpg"/></li>
+		<li><img src="img/5.jpg"/></li>
+	</ul> 
+  	<input id="left" type="button" value="&lt&lt&lt"/>
+	<input id="right" type="button" value="&gt&gt&gt"/>
+</div> 
+
+<p class="title">js代码</p>
+<pre>
+//无缝滚动
+$(function(){
+	var nLiWidth = $("#scroll li").innerWidth();     //li有padding 所以用innerWidth
+	var nLiNum = $("#scroll li").size();             //获取li的个数
+	var nUlWidth = 2*nLiNum*nLiWidth;                 
+	var nDivWidth = nLiNum*nLiWidth;                
+	var oUl = $("#scroll");
+	var oDiv = $("#wrap");
+	var iLeft = 0;
+	var iSpeed = -2;
+	var time = null;
+
+	//动态让ul的宽度为2倍的li个数乘以li宽度 动态设置div宽度
+  	oUl.css({width:nUlWidth+"px"});   
+	oDiv.css({width:nDivWidth+"px"});   
+
+	//复制一份ul在原ul后面 产生新ul便于后续无缝滚动
+	oUl.html(oUl.html() + oUl.html())   
+	
+	//点击改变速度正负 从而改变运动方向						
+	$("#left").click(function(){      
+		iSpeed = -Math.abs(iSpeed);
+	})
+	$("#right").click(function(){
+		iSpeed = Math.abs(iSpeed);
+	})
+
+	//自动轮播
+	time = setInterval(scroll,10);
+	
+	//hover启动停止轮播
+	oUl.hover(function(){
+		clearInterval(time);
+	},function(){
+		time = setInterval(scroll,10);
+	});
+	
+	//轮播
+  	function scroll(){
+  		//每次循环 都获取一次当前的left值
+	  	var NowLeft = parseInt(oUl.css("left"));      
+		//判断当前的left值 
+		if(NowLeft <= -nUlWidth/2){    		//左移动 如果走到新ul一半的时候 迅速拉回到前一半ul             
+			iLeft = 0;
+		}else if(NowLeft >=0){
+			iLeft = -nUlWidth/2;		//右移动 一开始就迅速拉到后一半ul 
+		}
+		//每次循环 iLeft在自身上累加一次速度 也就是匀速运动
+		iLeft += iSpeed;                              
+		oUl.css({left:iLeft+"px"});	
+	}
+
+});
+</pre>
+
+<p class="title">html代码</p>
+<pre>
+&ltdiv id="wrap">
+	&ltul id="scroll">
+		&ltli>&ltimg src="img/1.jpg"/>&lt/li>
+		&ltli>&ltimg src="img/2.jpg"/>&lt/li>
+		&ltli>&ltimg src="img/3.jpg"/>&lt/li>
+		&ltli>&ltimg src="img/4.jpg"/>&lt/li>
+		&ltli>&ltimg src="img/5.jpg"/>&lt/li>
+	&lt/ul> 
+  	&ltinput id="left" type="button" value="&lt&lt&lt"/>
+	&ltinput id="right" type="button" value="&gt&gt&gt"/>
+&lt/div> 
+</pre>
+
+<p class="title">css代码</p>
+<pre>
+*{
+	margin:0px;
+	padding:0px;
+}
+ul{
+	list-style:none;
+}
+
+#wrap{
+	height:250px;
+	margin:50px auto;
+	border:1px solid #aaa;
+	position:relative;
+	overflow:hidden;
+}
+#scroll{
+	height:220px;      		/*  #wrap #scroll的宽度用js动态设置 后续添加图片就不需要改动了*/
+	position:absolute;
+}
+#scroll li{
+	width:200px;
+	height:200px;
+	float:left;
+	padding:10px 0 10px 10px;  	/*上下左 每个li的宽度是210px 尽量不用margin 这样就能动态设置ul跨度为li个数*一个li宽度 */
+}
+#scroll li img{
+	width:200px;
+	height:200px;
+	cursor:pointer;
+}
+input{
+	width:525px;
+	height:30px;
+	font-size:30px;
+	font-weight:bold;
+	background:#ccc;
+	border:none;
+	opacity:0.2;
+	position:absolute;
+	top:220px;
+	cursor:pointer;
+}
+#left{
+	left:0px;
+}
+#right{
+	left:525px;
+}
+</pre>
+  
+ 
+</body> 
+</html>    
+      
+     
+     
+     

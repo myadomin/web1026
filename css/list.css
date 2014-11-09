@@ -1,0 +1,72 @@
+#content{
+	width: 1176px;
+	min-height: 500px;
+	margin: 30px auto 0px;
+}
+
+#content .content_left{
+	width: 800px;
+	float: left;
+}
+#content .content_left .tabs{
+	width: 800px;
+	height: 26px;
+	border-bottom: 1px solid #ccc;
+}
+#content .content_left .tabs li{
+	width: 55px;
+	text-align: center;
+	height: 26px;
+	line-height: 26px;
+	float: left;
+	margin-right: 5px;
+	cursor: pointer;
+}
+#content  .content_left .tabs li.active{
+	background: #fff;
+	color: #FE781F;
+	/*color: green;*/
+	border: 1px solid #ddd;
+	border-radius: 5px 5px 0 0;
+	border-bottom: none;
+}
+#content .content_left .tab1{
+	display: block;
+}
+#content .content_left .tab2, #content .content_left .tab3{
+	display: none;
+}
+#content .tab1 ul{
+
+}
+#content .content_left .tab1 ul li a{
+	display: block;
+	width: 776px;
+	padding: 0px 12px 0 12px;
+	height: 34px;
+	line-height: 34px;
+	border-bottom: 1px solid #ccc;
+	letter-spacing: 1px;
+}
+#content .content_left .tab1 ul li a:hover{
+	text-decoration: none;
+	background: #eee;
+}
+#content .content_left .tab1 ul li a span{
+	float: right;
+}
+
+#content .content_right{
+	width: 300px;
+	height: 300px;
+	float: right;
+	border: 1px solid red;
+}
+
+/*#content不能设置死高度 因为每个页面高度不一样 那就必须用min-height或者height:auto
+下面的兄弟元素#footer必须清除浮动 所以#content是无法padding-bottom margin-bottom的
+为了让#content底部空出100px的高度 所以设置一个空div 清除浮动 然后height:100px*/
+#content .content_bottom{
+	clear: both;
+	height: 100px;
+}

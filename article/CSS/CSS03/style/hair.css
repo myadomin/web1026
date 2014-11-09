@@ -1,0 +1,83 @@
+﻿ul,li,h1,div,img,dl,dt,dd,body,p{
+	margin:0px;
+	padding:0px;
+}
+body{
+	font-size:12px;                   
+	font-family:瀹嬩綋;           /*阃氲绷杩欓噷璁剧疆瀛椾綋 瀛椾綋鐩存帴澶嶅埗FW閲岄溃镄勫瓧浣揿悕绉板氨琛?杩欎簺瀛椾綋宸茬粡涓嬭浇瀛桦叆鍒?window font鏂囦欢澶逛简*/         
+	width:996px;
+	margin:0 auto;
+	color:#666;
+}
+a{
+	text-decoration:none;
+	color:#666;
+}
+a:hover{
+	color:green;
+}
+ul{
+	list-style:none;
+}
+img{
+	border:none;              /*1-22琛岃繖娈靛簲璇ュ啓杩沚asic.css鍏辩敤锛屼絾鏄负浜嗗寸瀹笽E6 镓€浠ヨ繖娈靛啓杩涗简杩欓噷 钥屾病链夊啓杩沚asic*/
+}
+
+#top ul li a.nav1{
+	background:url(../img/top_nav-1.png) no-repeat 18px center;
+}
+#top ul li a.nav4{
+	background:url(../img/top_nav_hover-4.png);
+}
+
+#sidebar{
+	width:200px;
+	height:430px;
+	float:left;
+}
+#sidebar em{
+	display:block;
+	width:192px;
+	height:46px;
+	background:url(../img/hair_sidebar_h1.jpg);
+}
+#sidebar ul{
+	padding-top:10px;
+}
+#sidebar ul li{
+	height:26px;
+	line-height:26px;
+	border-bottom:1px dashed #ccc;
+}
+
+#content{
+	width:700px;
+	float:left;
+	margin-left:50px;
+}
+#content dl{
+	width:700px;
+	height:350px;
+	background:url(../img/hair_content_dl_bg.jpg) no-repeat 0 0;
+	margin-top:10px;
+	padding:40px 0 0 5px;
+}
+#content dl dt{
+	width:355px;
+	height:236px;
+	float:left;
+}
+#content dl dd{
+	color:#333;
+	letter-spacing:3px;
+	line-height:16px;
+	width:330px;
+	padding:0 0 8px 0;
+	text-indent:30px;
+	float:left;
+}
+#content dl dd.no_float{
+	clear:both;
+	width:680px;
+	padding-left:10px;
+}

@@ -1,0 +1,391 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>图片预加载</title>
+<style>
+*{
+	margin: 0px;
+	padding: 0px;
+}
+.small_img{
+	border: 1px solid #ccc;
+	width: 1320px;
+	height: 540px; 
+	margin: 50px 0 0 0px ;
+}	
+.small_img img{
+	display: block;
+	float: left;
+	border: none;
+	width: 200px;
+	height: 250px;
+	margin: 10px;
+	cursor: pointer;
+}
+.big_img{
+	position: absolute;
+	width: 600px;
+	height: 470px;
+	left: 500px;
+	top: 100px;
+	border: 1px solid #ccc;
+	display: none;
+	z-index: 9999;
+	background: #fff;
+}
+.big_img h1{
+	text-align: center;
+	height: 20px;
+	line-height: 20px;
+	font-size: 14px;
+	font-weight: normal;
+	background: #ccc;
+}
+.big_img h1 span{
+	float: right;
+	cursor: pointer;
+}
+.big_img .content{
+	width: 600px;
+	height: 450px;
+	position: relative;
+}
+.big_img .content img{
+	width: 600px;
+	height: 450px;
+}
+.big_img .content img.loading_img{
+	display: block;
+	width: 32px;
+	height: 32px;
+	margin: 0px auto;
+	margin-top: 200px;
+}
+.big_img .content img.real_img{
+	width: 600px;
+	height: 450px;
+}
+.prev, .next{
+	width: 70px;
+	text-align: center;
+	height: 70px;
+	line-height: 70px;
+	font-size: 40px;
+	background: #ccc;
+	opacity: 0.3;
+	position: absolute;
+	top: 190px;
+	cursor: pointer;
+}
+.prev{
+	left: 0px;
+}
+.next{
+	left: 530px;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="../../../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+
+<p class="title">DEMO演示 点击图片 预加载上一张下一张大图</p>
+
+<div class="small_img">
+	<img src="img/p1.jpg" big_src="img/p1big.jpg" />
+	<img src="img/p2.jpg" big_src="img/p2big.jpg" />
+	<img src="img/p3.jpg" big_src="img/p3big.jpg" />
+	<img src="img/p4.jpg" big_src="img/p4big.jpg" />
+	<img src="img/p5.jpg" big_src="img/p5big.jpg" />
+	<img src="img/p6.jpg" big_src="img/p6big.jpg" />
+	<img src="img/p7.jpg" big_src="img/p7big.jpg" />
+	<img src="img/p8.jpg" big_src="img/p8big.jpg" />
+	<img src="img/p9.jpg" big_src="img/p9big.jpg" />
+	<img src="img/p10.jpg" big_src="img/p10big.jpg" />
+	<img src="img/p11.jpg" big_src="img/p11big.jpg" />
+	<img src="img/p12.jpg" big_src="img/p12big.jpg" />
+</div>
+<div class="big_img">
+	<h1>图片预加载<span>×</span></h1>
+	<div class="content">
+		<img class="loading_img" src="img/loading.gif" />
+		<div class="prev">＜</div>
+		<div class="next">＞</div>	
+	</div>
+</div>
+
+<p class="title">图片预加载</p>
+什么是图片预加载：<br /> 
+点击显示某张图片的时候 此图片的前一张和后一张都预先加载好<br />  
+然后用户点击前一张或后一张按钮的时候 就能快速的显示图片 从而提高用户体验<br /> 
+DEMO演示如上 实现原理见下面JS代码
+
+<p class="title">js代码</p>
+<pre>
+//图片预加载
+$(function(){
+	var iNow = 0;
+	var nImgLength = $('.small_img img').size();
+
+	//显示大图框体 以及加载图 遮罩锁屏
+	$('.small_img img').click(function(){
+		$('.big_img').show();  
+		$('body').append('&ltdiv class="mark">&lt/div>');  
+		$('.mark').css({
+			"width": $(document).width(),
+			"height": $(document).height(),
+			"position": "absolute",
+			"left": "0px",
+			"top": "0px",
+			"zIndex": "9998",
+			"background": "#ccc",
+			"opacity": "0.4"
+		});
+
+		//创建Image对象 预加载真实图片
+		var oNowImg = new Image();   			 
+		var oPrevImg = new Image();   			  
+		var oNextImg = new Image();   			 
+		oNowImg.src = $(this).attr('big_src');  		//预加载被点击图片的真实大图
+		oPrevImg.src = getPrevObj($(this)).attr('big_src');  	//预加载前一张真实大图
+		oNextImg.src = getNextObj($(this)).attr('big_src');  	//预加载后一张真实大图
+
+		//当图片对象预加载被点击对象的大图src完毕后
+		$(oNowImg).load(function(){			 	
+			$('.big_img img').attr({   
+				//将大图框体里的图片src替换为真实大图 class换成真实大图的样式class      
+				'src': this.src,             	
+				'class': 'real_img'         
+			});
+		});
+
+		//记录iNow
+		iNow = $(this).index();	
+	});
+
+
+	//如果点击了右上角的X  
+	$('.big_img span').click(function(){         
+		$('.big_img').hide().find('img').attr({ //隐藏大图框体 
+			'src': 'img/loading.gif',  			//同时将图片src还原为加载图src 
+			'class': 'loading_img'     			//class还原为加载图样式class
+		});
+
+		$('.mark').remove();  					//取消遮罩
+	});
+
+
+	//点击prev后 当前大图显示的同时 他的前一张也预加载了(通过firebug网络图片查看 )
+	$('.prev').click(function(){ 
+		//首先将图片的src欢迎为加载图src class还原为加载图样式class 	           
+		$('.big_img img').attr({               
+			'src': 'img/loading.gif',  		  
+			'class': 'loading_img'     		  
+		});
+
+		//全局变量iNow用于传递索引 如果是第一张的前一张 那索引就是最后一张的索引
+		iNow--;								  
+		if(iNow == -1){                       
+			iNow = nImgLength - 1;
+		}
+
+		//创建一个新的Image对象 开始加载src
+		var oNowImg = new Image();            
+		oNowImg.src = $('.small_img img').eq(iNow).attr('big_src'); 
+		//注意：这个src在前一次点击prev或者第一次开启大图的时候已实现预加载过了 为什么还在这里加载一次
+		//因为可能用户点击的非常快速 前一次点击prev 这个src可能还没加载完毕 就跳到这里来了
+		//而且这里必须加如下的.load事件 判断到这里的时候 这个src是否加载完毕
+		//而为了.load事件判断 必须要有oNowImg对象 所以这里就再进行了一次oNowImg.src
+		//如果oNowImg.src在前一次点击prev的时候src已加载完毕了 就会立即执行.load里面的语句 
+		//加上oNowImg.src 也并不拖慢加载src的速度 另外如果所有图片都预加载过一遍了 
+		//这里还是会执行oNowImg.src 但是会读取缓冲 速度非常快的进入到.laod里面的语句 也并不拖慢加载src速度
+
+		//这个对象加载src完毕后 将大图框体里的图片src替换为真实大图 class换成真实大图的样式class		  
+		$(oNowImg).load(function(){           
+			// alert(this.src);
+			$('.big_img img').attr({
+				'src': this.src,                         
+				'class': 'real_img'          
+			});
+		});
+
+		//预先加载当前显示图片的前一张
+		var oPrevImg = new Image();            
+		oPrevImg.src = getPrevObj($('.small_img img').eq(iNow)).attr('big_src');
+	});
+
+
+	//点击next后 当前大图显示的同时 他的后一张也预加载了(通过firebug网络图片查看)
+	$('.next').click(function(){
+		$('.big_img img').attr({  
+			'src': 'img/loading.gif',  			 
+			'class': 'loading_img'     			 
+		});
+
+		iNow++;
+		if(iNow == nImgLength){
+			iNow = 0
+		}
+
+		var oNowImg = new Image();
+		oNowImg.src = $('.small_img img').eq(iNow).attr('big_src');
+		$(oNowImg).load(function(){
+			// alert(this.src);
+			$('.big_img img').attr({
+				'src': this.src,             
+				'class': 'real_img'          		
+			});
+		});
+
+		//预先加载当前显示图片的后一张
+		var oNextImg = new Image();   	
+		oNextImg.src = getNextObj($('.small_img img').eq(iNow)).attr('big_src');
+	});
+
+
+	//获取obj对象的前一个兄弟节点 
+	//如果obj对象是父节点的第一个子节点 那他的前一个兄弟节点就是父节点的最后一个子节点
+	function getPrevObj(obj){
+		var prevObj = obj.prev();
+		if(prevObj.index() == -1){
+			prevObj = obj.parent().children().last();
+		}
+		return prevObj;
+	}
+	// alert(getPrevObj($('.small_img img').eq(0)).index());
+
+
+	//获取obj对象的后一个兄弟节点 
+	//如果obj对象是父节点的最后一个子节点 那他的后一个兄弟节点就是父节点的第一个子节点
+	function getNextObj(obj){
+		var nextObj = obj.next();
+		if(nextObj.index() == -1){
+			nextObj = obj.parent().children().first();
+		}
+		return nextObj;
+	}
+	// alert(getNextObj($('.small_img img').eq(11)).index());
+	
+});
+</pre>
+
+<p class="title">html代码</p>
+<pre>
+&ltdiv class="small_img">
+	&ltimg src="img/p1.jpg" big_src="img/p1big.jpg" />
+	&ltimg src="img/p2.jpg" big_src="img/p2big.jpg" />
+	&ltimg src="img/p3.jpg" big_src="img/p3big.jpg" />
+	&ltimg src="img/p4.jpg" big_src="img/p4big.jpg" />
+	&ltimg src="img/p5.jpg" big_src="img/p5big.jpg" />
+	&ltimg src="img/p6.jpg" big_src="img/p6big.jpg" />
+	&ltimg src="img/p7.jpg" big_src="img/p7big.jpg" />
+	&ltimg src="img/p8.jpg" big_src="img/p8big.jpg" />
+	&ltimg src="img/p9.jpg" big_src="img/p9big.jpg" />
+	&ltimg src="img/p10.jpg" big_src="img/p10big.jpg" />
+	&ltimg src="img/p11.jpg" big_src="img/p11big.jpg" />
+	&ltimg src="img/p12.jpg" big_src="img/p12big.jpg" />
+&lt/div>
+&ltdiv class="big_img">
+	&lth1>图片预加载&ltspan>×&lt/span>&lt/h1>
+	&ltdiv class="content">
+		&ltimg class="loading_img" src="img/loading.gif" />
+		&ltdiv class="prev">＜&lt/div>
+		&ltdiv class="next">＞&lt/div>	
+	&lt/div>
+&lt/div>
+</pre>
+
+<p class="title">css代码</p>
+<pre>
+*{
+	margin: 0px;
+	padding: 0px;
+}
+.small_img{
+	border: 1px solid #ccc;
+	width: 1320px;
+	height: 540px; 
+	margin: 50px 0 0 0px ;
+}	
+.small_img img{
+	display: block;
+	float: left;
+	border: none;
+	width: 200px;
+	height: 250px;
+	margin: 10px;
+	cursor: pointer;
+}
+.big_img{
+	position: absolute;
+	width: 600px;
+	height: 470px;
+	left: 500px;
+	top: 100px;
+	border: 1px solid #ccc;
+	display: none;
+	z-index: 9999;
+	background: #fff;
+}
+.big_img h1{
+	text-align: center;
+	height: 20px;
+	line-height: 20px;
+	font-size: 14px;
+	font-weight: normal;
+	background: #ccc;
+}
+.big_img h1 span{
+	float: right;
+	cursor: pointer;
+}
+.big_img .content{
+	width: 600px;
+	height: 450px;
+	position: relative;
+}
+.big_img .content img{
+	width: 600px;
+	height: 450px;
+}
+.big_img .content img.loading_img{
+	display: block;
+	width: 32px;
+	height: 32px;
+	margin: 0px auto;
+	margin-top: 200px;
+}
+.big_img .content img.real_img{
+	width: 600px;
+	height: 450px;
+}
+.prev, .next{
+	width: 70px;
+	text-align: center;
+	height: 70px;
+	line-height: 70px;
+	font-size: 40px;
+	background: #ccc;
+	opacity: 0.3;
+	position: absolute;
+	top: 190px;
+	cursor: pointer;
+}
+.prev{
+	left: 0px;
+}
+.next{
+	left: 530px;
+}
+</pre>
+
+
+</body> 
+</html>    
+      
+     
+     
+     

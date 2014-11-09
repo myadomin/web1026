@@ -1,0 +1,52 @@
+﻿ul,div,img,dl,body{
+	margin:0;
+	padding:0;
+}
+body{
+	background:#cfedcd;
+	font-size:12px;
+}
+ul{
+	list-style-type:none;
+}
+	
+#sidebar,   /*div#sidebar可以  div #sidebar不行*/
+#header,
+#contents,
+#footer{
+	width:778px;
+	margin:0 auto;
+}
+	
+#sidebar{
+	height:61px;
+	background:#399c00;
+}
+#sidebar embed{
+	height:51px;
+	width:778px;
+	margin-top:10px;
+}
+ 	
+#header{
+	height:153px;
+	background:url(../img/banner.jpg) no-repeat left top;   
+  /*url调用本地图片时候 要写相对地址  
+    html文件目录是 D:\web前端开发\15.html
+    本地图片目录是 D:\照片\20天.jpg    
+    所以要写成 ../照片/20天.jpg
+    如果本地图片和HTML文件在一个文件夹下 那就是 20天.jpg
+    如果是src herf 就直接是 照片/20天.jpg*/
+}
+#header embed{
+	width:778px;
+	height:153px;
+}
+
+#footer{
+	background:#399c00;
+	color:#fff;
+	text-align:center;
+	height:30px;
+	line-height:30px;	
+}

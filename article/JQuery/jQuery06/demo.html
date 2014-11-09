@@ -1,0 +1,288 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>拖拽模拟滚动条</title>
+<style>
+*{
+	margin:0px;
+	padding:0px;
+}
+#instructions{
+	width:300px;
+	height:50px;
+	margin:20px 0 0 250px;
+}
+#box{
+	width:606px;
+	height:646px;
+	margin:0 0 0 50px;
+}
+#top_bar{
+	width:600px;
+	height:40px;
+	background:teal;
+	position:relative;
+	border:3px solid #ccc;
+}
+#top_block{
+	width:40px;
+	height:40px;
+	background:red;
+	position:absolute;
+}
+#txt_wrap{
+	width:557px;
+	height:600px;
+	border-left:3px solid #ccc;
+	border-bottom:3px solid #ccc;
+	position:relative;
+	overflow:hidden;
+	float:left;
+}
+#txt{
+	width:1117px;
+	height:1160px;
+	background:orange;
+	position:absolute;
+}
+#right_bar{
+	width:40px;
+	height:600px;
+	background:#b45;
+	position:relative;
+	border:3px solid #ccc;
+	border-top:none;
+	float:left;
+}
+#right_block{
+	width:40px;
+	height:40px;
+	background:#9af;
+	position:absolute;
+	top:0px;         			/*如果不写top值，那IE中第一次parseInt(obj.css("top"))是NaN 所以写上;*/
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="../../../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="jquery.mousewheel.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+<p class="title">DEMO演示 拖拽模拟滚动条</p>
+	
+<div id="instructions">拖拽红块绿块模拟滚动条从而移动文本<br/>鼠标滚轮也能上下移动文本</div>
+<div id="box">
+	<div id="top_bar">
+		<div id="top_block"></div>
+	</div>
+  	<div id="txt_wrap">
+  		<div id="txt">
+			Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28.8kbps，验证步骤浪费的时间太多。于是Netscape的浏览器Navigator加入了Javascript，提供了数据验证的基本功能。 JavaScript是一种基于对象和事件驱动并具有相对安全性的客户端脚本语言。同时也是一种广泛用于客户端Web开发的脚本语言，常用来给HTML网页添加动态功能，比如响应用户的各种操作。它最初由网景公司（Netscape）的Brendan Eich设计，是一种动态、弱类型、基于原型的语言，内置支持类。JavaScript是Sun公司的注册商标。Ecma国际以JavaScript为基础制定了ECMAScript标准。JavaScript也可以用于其他场合，如服务器端编程。完整的JavaScript实现包含三个部分：ECMAScript，文档对象模型，字节顺序记号。 Netscape公司在最初将其脚本语言命名为LiveScript。在Netscape在与Sun合作之后将其改名为JavaScript。JavaScript最初受Java启发而开始设计的，目的之一就是“看上去像Java”[2]，因此语法上有类似之处，一些名称和命名规范也借自Java。但JavaScript的主要设计原则源自Self和Scheme[3]。JavaScript与Java名称上的近似，是当时网景为了营销[1]考虑与Sun公司达成协议的结果。为了取得技术优势，微软推出了JScript脚本语言。Ecma国际（前身为欧洲计算机制造商协会）创建了ECMA-262标准（ECMAScript）。现两者都属于ECMAScript的实现。尽管JavaScript作为给非程序人员的脚本语言，而非是作为给程序人员的编程语言来推广和宣传，但是JavaScript具有非常丰富的特性。 前身是 Live Script 　　正式名称：ECMAScript 　　ECMAScript-262是JavaScript标准，基于网景（Netscape）公司提出JavaScript语言和微软公司提出的JScript语言 　　ECMA开始于1996年，在1997年7月，采纳了首个版本，1998年，该标准成为了国际ISO标准 函数是命名的语句段，这个语句段可以被当作一个整体来引用和执行。使用函数要注意以下几点： 1）函数由关键字function定义（也可由Function构造函数构造）。 2）使用function关键字定义的函数在一个作用域内是可以在任意处调用的（包括定义函数的语句前）；而用var关键字定义的必须定义后才能被调用。 3）函数名是调用函数时引用的名称，它对大小写是敏感的，调用函数时不可写错函数名。 4）参数表示传递给函数使用或操作的值，它可以是常量，也可以是变量，也可以是函数，在函数内部可以通过arguments对象（arguments对象是一个伪数组，属性callee引用被调用的函数）访问所有参数。 5）return语句用于返回表达式的值。 6）yield语句扔出一个表达式，并且中断函数执行直到下一次调用next。 一般的函数都是以下格式：
+			Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的        主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28Javascript是一种由Netscape的LiveScript发展而来的原型化继承的面向对象的动态类型的区分大小写的客户端脚本语言，主要目的是为了解决服务器端语言，比如Perl，遗留的速度问题，为客户提供更流畅的浏览效果。当时服务端需要对数据进行验证，由于网络速度相当缓慢，只有28
+		</div>
+ 	</div> 
+ 	<div id="right_bar">
+		<div id="right_block"></div>
+	</div>
+</div><br />
+滚轮方向<input type="text"></div>
+
+<p class="title">js代码</p>
+<pre>
+//拖拽模拟滚动条
+$(function(){
+
+//函数调用	
+drag($("#top_block"));        	//让上面滚动条里面的块体可以被拖拽，同时移动文本
+drag($("#right_block"));      	//让右边滚动条里面的块体可以被拖拽，同时移动文本
+wheel($("#right_block"));     	//让右边滚动条里面的块体跟随鼠标滚轮移动，同时移动文本
+
+
+//拖拽函数
+function drag(obj){
+	var rightBarHeight = parseInt($("#right_bar").height());                                   //右边滚动条高度
+	var rightBarHeightRange = parseInt($("#right_bar").height()-$("#right_block").height());   //右边滚动块体可以移动的高度
+	var txtHeight = parseInt($("#txt").height());                                              //文本整体高度	
+	var topBarWidth = parseInt($("#top_bar").width());                                         //上边滚动条宽度
+	var topBarWidthRange = parseInt($("#top_bar").width()-$("#top_block").width());            //上边滚动块体可以移动的宽度
+	var txtWidth = parseInt($("#txt").width());                                                //文本整体宽度
+	
+	obj.mousedown(function(ev){
+		var disX = ev.pageX - $(this).offset().left;
+		var disY = ev.pageY - $(this).offset().top;
+		_this = this;
+
+		$(document).mousemove(function(ev){
+			var barOffsetLeft = obj.parent().offset().left;   //为了让两个滚动条共用这一个drag函数，这里不能写死滚动条的左边距，
+			var barOffsetTop = obj.parent().offset().top;     //只能用参数传进来的当前对象的父节点的滚动条左边距
+			var barWidth = obj.parent().width();              //滚动条宽度高度，拖拽块体的宽度高度，用同样的方法，不能写死
+			var barHeight = obj.parent().height();
+			var blockWidth = obj.width();
+			var blockHeight = obj.height();
+			var nLeft = ev.pageX - barOffsetLeft - disX;
+			var nTop = ev.pageY - barOffsetTop - disY;
+			
+			if(nLeft < 0){
+				nLeft = 0;
+			}
+			if(nLeft > barWidth - blockWidth){     		//限定块体的拖拽范围
+				nLeft = barWidth - blockWidth;
+			}
+			if(nTop < 0){
+				nTop = 0;
+			}
+			if(nTop > barHeight - blockHeight){
+				nTop = barHeight - blockHeight;
+			}
+			obj.css({left:nLeft+"px",top:nTop+"px"});  	//拖拽块体移动
+
+			if(obj.attr("id") == "top_block"){   		//只移动上面的滚动条的时候 
+				var txtLeft = ((txtWidth-topBarWidth+blockWidth)/topBarWidthRange)*nLeft;   //文本的left与上边滚动块体的left成一定比例
+				var txtTop = _this.upTop;                //上下距离保持上一次右边滚动条拖拽抬起时的位置
+				$("#txt").css({left:-txtLeft+"px",top:txtTop+"px"});
+			}
+			if(obj.attr("id") == "right_block"){   		 //只移动右边的滚动条的时候
+				var txtLeft = _this.upLeft;              //左右距离保持上一次上面滚动条拖拽抬起时的位置
+				var txtTop = ((txtHeight-rightBarHeight)/rightBarHeightRange)*nTop;         //文本的top与右边滚动块体的top成一定比例
+				$("#txt").css({left:txtLeft+"px",top:-txtTop+"px"});
+			}	
+
+			return false;                           	 
+		})
+		.mouseup(function(){
+			_this.upLeft = $("#txt").css("left");   	 //每次鼠标抬起时，记录当前的left top位置，为下一次拖拽的txtLeft txtTop做准备
+			_this.upTop = $("#txt").css("top");     	 //如果这里用var 那下一次txtLeft就不认识upLeft了，所以用_this.upLeft，既能下一次认识，又不污染全局    
+			$(this).unbind();
+		}); 
+
+		return false;	                              	 //阻止默认事件 阻止按下后选中文本
+	});
+}
+
+
+//鼠标滚轮
+function wheel(obj){
+	var iSpeed = 10;
+	var rightBarHeight = parseInt($("#right_bar").height());                                        //右边滚动条高度
+	var rightBarHeightRange = parseInt($("#right_bar").height()-$("#right_block").outerHeight());   //右边滚动块体可以移动的高度
+	var txtHeight = parseInt($("#txt").height());                                                   //文本整体高度
+	
+	$("#box").mousewheel(function(ev,d){ 	      		//应用插件，第一个ev参数，第二个d参数(鼠标滚轮往上为1，鼠标滚轮往下为-1)
+		var blockTop = parseInt(obj.css("top"));    	//一旦鼠标滚轮事件开始 滚动块体top初始值就是他当前的top值，
+		if(d == 1){                                 	//注意如果css中不写top，那IE第一次读取top是NaN，所以必须写
+			blockTop = blockTop - iSpeed;           //往上滚轮一次，右边的滚动块体往上移动10
+			if(blockTop <= 0){                      //滚动块体Top小于0就为0
+				blockTop = 0;
+			}	
+		}
+		if(d == -1){                                              
+			blockTop = blockTop + iSpeed;        	//往下滚轮一次，右边的滚动块体往下移动10
+			if(blockTop >= rightBarHeightRange){    //滚动块体Top大于他可以移动的高度，就为他可以移动的高度
+				blockTop = rightBarHeightRange;
+			}	 
+		}
+		
+		$("#right_block").css("top",blockTop+"px");	//设置右边滚动块体的top
+		
+		var txtTop = ((txtHeight-rightBarHeight)/rightBarHeightRange)*blockTop;   //文本的top与右边滚动块体的top成一定比例 
+		$("#txt").css("top",-txtTop);
+		
+		$("input").val(d);	
+
+		return false;   	//一旦在$("#box")范围内开始触发鼠标滚轮事件 就阻止掉浏览器窗口的鼠标滚轮事件
+	});
+}
+	 
+
+});
+</pre>
+
+<p class="title">html代码</p>
+<pre>
+&ltdiv id="instructions">拖拽模拟滚动条从而移动文本&ltbr/>鼠标滚轮也能上下移动文本&lt/div>
+&ltdiv id="box">
+	&ltdiv id="top_bar">
+		&ltdiv id="top_block">&lt/div>
+	&lt/div>
+  	&ltdiv id="txt_wrap">
+  		&ltdiv id="txt">
+			各种文字
+		&lt/div>
+ 	&lt/div> 
+ 	&ltdiv id="right_bar">
+		&ltdiv id="right_block">&lt/div>
+	&lt/div>
+&lt/div>
+</pre>
+
+<p class="title">css代码</p>
+<pre>
+*{
+	margin:0px;
+	padding:0px;
+}
+#instructions{
+	width:300px;
+	height:50px;
+	margin:20px 0 0 250px;
+}
+#box{
+	width:606px;
+	height:646px;
+	margin:0 0 0 50px;
+}
+#top_bar{
+	width:600px;
+	height:40px;
+	background:teal;
+	position:relative;
+	border:3px solid #ccc;
+}
+#top_block{
+	width:40px;
+	height:40px;
+	background:red;
+	position:absolute;
+}
+#txt_wrap{
+	width:557px;
+	height:600px;
+	border-left:3px solid #ccc;
+	border-bottom:3px solid #ccc;
+	position:relative;
+	overflow:hidden;
+	float:left;
+}
+#txt{
+	width:1117px;
+	height:1160px;
+	background:orange;
+	position:absolute;
+}
+#right_bar{
+	width:40px;
+	height:600px;
+	background:#b45;
+	position:relative;
+	border:3px solid #ccc;
+	border-top:none;
+	float:left;
+}
+#right_block{
+	width:40px;
+	height:40px;
+	background:#9af;
+	position:absolute;
+	top:0px;         			/*如果不写top值，那IE中第一次parseInt(obj.css("top"))是NaN 所以写上;*/
+}
+</pre>
+
+
+</body> 
+</html>    
+      
+     
+     
+     

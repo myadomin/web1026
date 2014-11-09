@@ -1,0 +1,289 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>土豆网右下角弹窗菜单</title>
+<style>
+body,ul,li,div,h2{margin:0;padding:0;font: 12px/1.25 tahoma,arial,宋体,sans-serif;}
+li{list-style:none;}
+a{text-decoration:none;}
+body{width:100%;height:100%;background:#fff;_position:relative;overflow-x:hidden;}
+.page{position:fixed;_position:absolute;right:0;bottom:0;}
+#v_bottom{width:203px;height: 50px;background:url(img/minibar.png) no-repeat 0 0;position:absolute;right:-165px;bottom:0;z-index: 20001;}
+#nav{height: 22px;margin: 5px 0 0 43px;width: 125px;}
+#nav li{float: left;width: 25px;}
+#nav li a{display: block;height: 22px;width: 25px;}
+#nav li .show,#nav li a:hover{background: url(img/minibar.png) no-repeat 0 -51px;}
+#nav .li_1 .show,#nav .li_1 a:hover{background-position:-25px -51px}
+#nav .li_2 .show,#nav .li_2 a:hover{background-position:-50px -51px}
+#nav .li_3 .show,#nav .li_3 a:hover{background-position:-75px -51px}
+#nav .li_4 .show,#nav .li_4 a:hover{background-position:-100px -51px}
+.v{color: #FFFFFF;height: 16px;margin: 4px 0 0 8px;overflow: hidden;width: 160px;}
+#but{ bottom: 0;display: block;height: 50px;position: absolute;right: 0;width: 33px;z-index:20002;}
+.but_hide{background: url(img/minibar.png) no-repeat -170px 0;}
+.but_hide:hover{background-position:-203px 0;}
+.but_show{background: url(img/minibar.png) no-repeat -236px 0;}
+.but_show:hover{background-position:-269px 0;}
+#v_box{bottom:-315px;display:none;height: 315px;padding: 0 0 48px;position: absolute;right: 1px;width: 200px; z-index: 20000;}
+.bg{background: url(img/mini_jpgs.jpg) no-repeat 0 0;height: 315px;opacity: 0.9;position: absolute;right: 0;top: 0;width: 200px;}
+.nav2_bg{bottom: 48px;height: 176px;left: 0;position: absolute;width: 34px;background: url(img/mini_jpgs.jpg) no-repeat 0 -139px;}
+#list_nav{background: url(img/minibar.png) no-repeat scroll 0 -255px transparent;height: 139px;left: 0;position: absolute;top: 2px;width: 34px;}
+#list_nav a{ color: #FFFFFF;display: block;height: 27px;line-height: 25px;text-align: center;text-decoration: none;}
+#list_nav .show{color: #FF9900;}
+#list_nav a:hover{color:#FFFF00;}
+.clos{ background: url(img/minibar.png) no-repeat 0 -76px ;cursor: pointer;height: 9px;position: absolute;right: 10px;top: 14px;width: 9px;}
+.box_right{color: #FFFFFF;height: 285px;overflow: hidden;position: absolute;right: 6px;top: 28px;width:150px;}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+
+<div class="page">
+	<div id="v_bottom">
+		<ul id='nav'>
+			<li><a href="###"></a></li>
+			<li class='li_1'><a href="###"></a></li>       
+			<li class='li_2'><a href="###"></a></li>       
+			<li class='li_3'><a href="###"></a></li>       
+			<li class='li_4'><a href="###"></a></li>      
+		</ul>
+		<h2 class="v">www.tudou.com</h2>
+	</div>
+	<a class="but_show" id="but" href="###"></a>
+  	<div id="v_box">
+		<div class="bg"></div>
+		<div class="nav2_bg"></div>
+		<ul id="list_nav">       
+			<li><a  class="show" href="http://www.miaov.com" target="_blank">天气</a></li>
+			<li class="tab2"><a href="http://www.miaov.com" target="_blank">星座</a></li>
+			<li class="tab3"><a href="http://www.miaov.com" target="_blank">排行</a></li>
+			<li class="tab4"><a href="http://www.miaov.com" target="_blank">热点</a></li>
+			<li class="tab5"><a href="http://www.miaov.com" target="_blank">直播</a></li>
+		</ul>
+		<a class='clos' id="btn_close"></a>
+		<div class="box_right">  
+			<div>北京</div>      
+			<div>    
+				<div>     
+					<strong><em>今天</em> (周二)</strong>           
+					<img title="晴" src="img/01.gif" class="pic">         
+				</div>    
+				<span>-1~10C°</span>
+				<span>晴</span>
+				<span>微风小于3级</span>   
+			</div>      
+			<div >    
+				<div>     
+					<strong><em>明天</em> (周三)</strong>           
+					<img title="多云" src="img/02.gif" class="pic">         
+				</div>    
+				<span>0~11C°</span>
+				<span>多云</span>
+				<span>北风3-4级</span>   
+			</div>      
+			<div>    
+				<div>     
+					<strong><em>后天</em> (周四)</strong>           
+					<img title="晴" src="img/01.gif" class="pic">         
+				</div>    
+				<span>-1~12C°</span>
+				<span>晴</span>
+				<span>北风3-4级 转 微风小于3级</span>   
+			</div>     
+		</div>
+  	</div>
+</div>
+ 
+
+<p class="title">DEMO演示 土豆网右下角弹窗菜单 利用封装好的运动函数进行链式运动</p>
+看窗口右下角 点击
+
+<p class="title">js代码</p>
+<pre>
+//土豆网右下角效果
+//运动函数的链式运动
+window.onload = function(){
+	var oBtn = document.getElementById("but");
+	var oBottom = document.getElementById("v_bottom");
+	var oBox = document.getElementById("v_box");
+	var oClose = document.getElementById("btn_close");
+	
+	//链式运动
+	oBtn.onclick = function(){
+		bufferMove(oBottom,{"right":"0px"},function(){
+			oBox.style.display = "block";
+			bufferMove(oBox,{"bottom":"0px"});
+		})
+	}
+	
+	oClose.onclick = function(){
+		bufferMove(oBox,{"bottom":"-315px"},function(){
+			oBox.style.display = "none";
+			bufferMove(oBottom,{"right":"-165px"});
+		})
+	}
+
+}
+
+//缓冲运动
+//每个对象有单独的obj.timer定时器，多个对象的各自运动互不影响
+//通过json的for in 每个对象可以同时改变自身多个属性
+//通过函数回调 每个对象能形成链式运动
+function bufferMove(obj,json,fn){              
+	clearInterval(obj.timer);
+	var iCur = 0;
+	var iTagrget = 0;
+	var iSpeed = 0;
+	
+	obj.timer = setInterval(function(){
+		var bStop = true;                                  //每次定时器一开始 就设置bStop为ture
+
+		for(attr in json){                                 //attr变成了json的属性名，iTarget变成了json的属性值json[attr]  
+			if(attr == 'opacity'){             
+					iCur = parseInt(parseFloat(getStyle(obj,attr)) * 100);		 
+			}else{
+					iCur = parseInt(getStyle(obj,attr));                       
+			}
+			iTarget = parseInt(json[attr]);
+			iSpeed = (iTarget - iCur)/8;                                 
+			
+			if(iSpeed > 0){
+					iSpeed = Math.ceil(iSpeed);
+			}
+			if(iSpeed < 0){
+					iSpeed = Math.floor(iSpeed);
+			}
+			                                               //每次定时器周期里 for in 循环了n次 有n个同时进行的startMove函数 从而变化属性值
+			if(iTarget != iCur){                        	 //n个startMove函数里只要有任意一个函数里的属性值还没到达终点 都会把bStop变为false
+					bStop = false;                             //当所有属性值都到达终点后 也就是n个startMove函数都不执行这句的时候 
+			}                                              //这次定时器周期最后的bStop没有被变化为false 还是true 
+		                                                 //当这次定时器周期的bStop还是ture的话 在定时器周期函数最后判断bStop为ture，那就关闭定时器了
+			if(attr == 'opacity'){                                       
+					obj.style[attr] = (iCur + iSpeed)/100 + '';            
+					obj.style.filter = 'alpha(opacity:'+(iCur+iSpeed)+')';  
+			}else{
+					obj.style[attr] = iCur + iSpeed + 'px';                
+			}		
+		}
+		
+		if(bStop){                                       //只要有任意一个还没到达终点 bStop会被变成false 不停止定时器
+			clearInterval(obj.timer);                      //当所有属性值都到达终点后 bStop不会变false 还是原来的true 停止定时器         
+			if(fn){                                                    
+				fn();                                                  
+			}
+		}
+	
+	},20);
+}
+
+//获取css属性
+function getStyle(obj,attr){
+	if(obj.currentStyle){
+		return obj.currentStyle[attr];
+	}else{
+		return getComputedStyle(obj,false)[attr];
+	}
+}
+</pre>
+
+<p class="title">html代码</p>
+<pre>
+&ltdiv class="page">
+	&ltdiv id="v_bottom">
+		&ltul id='nav'>
+			&ltli>&lta href="###">&lt/a>&lt/li>
+			&ltli class='li_1'>&lta href="###">&lt/a>&lt/li>       
+			&ltli class='li_2'>&lta href="###">&lt/a>&lt/li>       
+			&ltli class='li_3'>&lta href="###">&lt/a>&lt/li>       
+			&ltli class='li_4'>&lta href="###">&lt/a>&lt/li>      
+		&lt/ul>
+		&lth2 class="v">www.tudou.com&lt/h2>
+	&lt/div>
+	&lta class="but_show" id="but" href="###">&lt/a>
+  	&ltdiv id="v_box">
+		&ltdiv class="bg">&lt/div>
+		&ltdiv class="nav2_bg">&lt/div>
+		&ltul id="list_nav">       
+			&ltli>&lta  class="show" href="http://www.miaov.com" target="_blank">天气&lt/a>&lt/li>
+			&ltli class="tab2">&lta href="http://www.miaov.com" target="_blank">星座&lt/a>&lt/li>
+			&ltli class="tab3">&lta href="http://www.miaov.com" target="_blank">排行&lt/a>&lt/li>
+			&ltli class="tab4">&lta href="http://www.miaov.com" target="_blank">热点&lt/a>&lt/li>
+			&ltli class="tab5">&lta href="http://www.miaov.com" target="_blank">直播&lt/a>&lt/li>
+		&lt/ul>
+		&lta class='clos' id="btn_close">&lt/a>
+		&ltdiv class="box_right">  
+			&ltdiv>北京&lt/div>      
+			&ltdiv>    
+				&ltdiv>     
+					&ltstrong>&ltem>今天&lt/em> (周二)&lt/strong>           
+					&ltimg title="晴" src="img/01.gif" class="pic">         
+				&lt/div>    
+				&ltspan>-1~10C°&lt/span>
+				&ltspan>晴&lt/span>
+				&ltspan>微风小于3级&lt/span>   
+			&lt/div>      
+			&ltdiv >    
+				&ltdiv>     
+					&ltstrong>&ltem>明天&lt/em> (周三)&lt/strong>           
+					&ltimg title="多云" src="img/02.gif" class="pic">         
+				&lt/div>    
+				&ltspan>0~11C°&lt/span>
+				&ltspan>多云&lt/span>
+				&ltspan>北风3-4级&lt/span>   
+			&lt/div>      
+			&ltdiv>    
+				&ltdiv>     
+					&ltstrong>&ltem>后天&lt/em> (周四)&lt/strong>           
+					&ltimg title="晴" src="img/01.gif" class="pic">         
+				&lt/div>    
+				&ltspan>-1~12C°&lt/span>
+				&ltspan>晴&lt/span>
+				&ltspan>北风3-4级 转 微风小于3级&lt/span>   
+			&lt/div>     
+		&lt/div>
+  	&lt/div>
+&lt/div>
+</pre>
+
+<p class="title">css代码</p>
+<pre>
+body,ul,li,div,h2{margin:0;padding:0;font: 12px/1.25 tahoma,arial,宋体,sans-serif;}
+li{list-style:none;}
+a{text-decoration:none;}
+body{width:100%;height:100%;background:#fff;_position:relative;}
+.page{position:fixed;_position:absolute;right:0;bottom:0;}
+#v_bottom{width:203px;height: 50px;background:url(img/minibar.png) no-repeat 0 0;position:absolute;right:-165px;bottom:0;z-index: 20001;}
+#nav{height: 22px;margin: 5px 0 0 43px;width: 125px;}
+#nav li{float: left;width: 25px;}
+#nav li a{display: block;height: 22px;width: 25px;}
+#nav li .show,#nav li a:hover{background: url(img/minibar.png) no-repeat 0 -51px;}
+#nav .li_1 .show,#nav .li_1 a:hover{background-position:-25px -51px}
+#nav .li_2 .show,#nav .li_2 a:hover{background-position:-50px -51px}
+#nav .li_3 .show,#nav .li_3 a:hover{background-position:-75px -51px}
+#nav .li_4 .show,#nav .li_4 a:hover{background-position:-100px -51px}
+.v{color: #FFFFFF;height: 16px;margin: 4px 0 0 8px;overflow: hidden;width: 160px;}
+#but{ bottom: 0;display: block;height: 50px;position: absolute;right: 0;width: 33px;z-index:20002;}
+.but_hide{background: url(img/minibar.png) no-repeat -170px 0;}
+.but_hide:hover{background-position:-203px 0;}
+.but_show{background: url(img/minibar.png) no-repeat -236px 0;}
+.but_show:hover{background-position:-269px 0;}
+#v_box{bottom:-315px;display:none;height: 315px;padding: 0 0 48px;position: absolute;right: 1px;width: 200px; z-index: 20000;}
+.bg{background: url(img/mini_jpgs.jpg) no-repeat 0 0;height: 315px;opacity: 0.9;position: absolute;right: 0;top: 0;width: 200px;}
+.nav2_bg{bottom: 48px;height: 176px;left: 0;position: absolute;width: 34px;background: url(img/mini_jpgs.jpg) no-repeat 0 -139px;}
+#list_nav{background: url(img/minibar.png) no-repeat scroll 0 -255px transparent;height: 139px;left: 0;position: absolute;top: 2px;width: 34px;}
+#list_nav a{ color: #FFFFFF;display: block;height: 27px;line-height: 25px;text-align: center;text-decoration: none;}
+#list_nav .show{color: #FF9900;}
+#list_nav a:hover{color:#FFFF00;}
+.clos{ background: url(img/minibar.png) no-repeat 0 -76px ;cursor: pointer;height: 9px;position: absolute;right: 10px;top: 14px;width: 9px;}
+.box_right{color: #FFFFFF;height: 285px;overflow: hidden;position: absolute;right: 6px;top: 28px;width:150px;}
+</pre>
+
+
+</body> 
+</html>    
+      
+     
+     
+     

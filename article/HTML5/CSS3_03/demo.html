@@ -1,0 +1,269 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>css3--自适应布局</title>
+<link rel="stylesheet" href="demo.css">
+<link rel="stylesheet" href="demo1.css" media="screen and (min-width:1000px)">
+<link rel="stylesheet" href="demo2.css" media="screen and (min-width:600px) and (max-width:1000px)">
+<link rel="stylesheet" href="demo3.css" media="screen and (max-width:600px)">
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+<h1>不支持IE浏览器</h1>
+
+<h3>1: css3 box布局</h3>
+最外围元素宽度100%，永远等于屏幕(浏览器)宽度。子元素1宽度固定200px，子元素2 3永远是剩余宽度的1/2。<br>
+这样就实现了各子元素宽度的自适应，适配手机的各种屏幕宽度，具体说明见css代码。
+<div class="box">
+	<div class="item">column 1</div>
+	<div class="item">column 2</div>
+	<div class="item">column 3</div>
+</div>
+
+<h3>2: css3 响应式布局</h3>
+当前屏幕(浏览器)宽度大于1000px时(例如PC端) 采用demo1.css 　&ltlink rel="stylesheet" href="demo1.css" media="screen and (min-width:1000px)"><br>
+当前屏幕(浏览器)宽度大于600px小于1000px时(例如平板端) 采用demo2.css 　&ltlink rel="stylesheet" href="demo2.css" media="screen and (min-width:600px) and (max-width:1000px)"><br>
+当前屏幕(浏览器)宽度小于600px时(例如手机端) 采用demo3.css 　&ltlink rel="stylesheet" href="demo3.css" media="screen and (max-width:600px)"><br>
+或者不用link链接demo 1 2 3这三个css 而是把这三种样式全部写进demo.css 通过@media screen and (min-width: 1000px){demox.css的内容}区分。<br>
+这样三套css就实现了不同设备访问有不同布局的响应式布局。
+<div class="wrap">
+	<div class='header'>            
+	    <h1>header</h1>        
+	</div>        
+	<div class="sidebar">            
+	    <h1>sidebar</h1>        
+	</div>
+	<div class="content">
+	    <h1>content</h1>
+	</div>
+</div>
+
+
+<h3>3: css3 多列布局</h3>
+多列布局 类似报纸的排版 内部文本分成3列后 随着屏幕(浏览器)宽度的不同会自动排版。
+<div class="column">
+	通过 CSS3，您能够创建多个列来对文本进行布局 - 就像报纸那样！在本章中，您将学习如下多列属性：column-count column-gap column-rule。通过 CSS3，您能够创建多个列来对文本进行布局 - 就像报纸那样！在本章中，您将学习如下多列属性：column-count column-gap column-rule。通过 CSS3，您能够创建多个列来对文本进行布局 - 就像报纸那样！在本章中，您将学习如下多列属性：column-count column-gap column-rule。通过 CSS3，您能够创建多个列来对文本进行布局 - 就像报纸那样！在本章中，您将学习如下多列属性：column-count column-gap column-rule。通过 CSS3，您能够创建多个列来对文本进行布局 - 就像报纸那样！在本章中，您将学习如下多列属性：column-count column-gap column-rule。通过 CSS3，您能够创建多个列来对文本进行布局 - 就像报纸那样！在本章中，您将学习如下多列属性：column-count column-gap column-rule。通过 CSS3，您能够创建多个列来对文本进行布局 - 就像报纸那样！在本章中，您将学习如下多列属性：column-count column-gap column-rule。通过 CSS3，您能够创建多个列来对文本进行布局 - 就像报纸那样！在本章中，您将学习如下多列属性：column-count column-gap column-rule。通过 CSS3，您能够创建多个列来对文本进行布局 - 就像报纸那样！在本章中，您将学习如下多列属性：column-count column-gap column-rule。通过 CSS3，您能够创建多个列来对文本进行布局 - 就像报纸那样！在本章中，您将学习如下多列属性：column-count column-gap column-rule。通过 CSS3，您能够创建多个列来对文本进行布局 - 就像报纸那样！在本章中，您将学习如下多列属性：column-count column-gap column-rule。通过 CSS3，您能够创建多个列来对文本进行布局 - 就像报纸那样！在本章中，您将学习如下多列属性：column-count column-gap column-rule。
+</div>
+
+
+<pre style="padding:100px 0 100px 200px;">
+<h3>demo.css代码 box及多列布局的css</h3>
+*{
+	margin: 0px;
+	padding: 0px;
+}
+ul{
+	list-style: none;
+}
+h3{
+	height: 70px;
+	line-height: 110px;
+	width: 800px;
+}
+
+<strong>/*1：css3 box布局。最外围元素宽度100%永远等于屏幕宽度，子元素1宽度固定200px，子元素2 3永远是剩余宽度的1/2 */</strong>    
+.box{
+	/*最外围box元素永远等于当前屏幕宽度*/
+	width: 100%;
+	height: 80px;
+	padding: 10px 0;
+	background: green;
+
+	/*启用box布局就不能用定位 box布局与定位与浮动同级别*/
+	display:-moz-box;
+	display:-webkit-box;
+	display:box;
+	
+	/*box-orient默认就是horizontal水平排列 也可设置为vertical垂直排列*/
+	/*-moz-box-orient:horizontal;
+	-webkit-box-orient:horizontal;
+	box-orient:horizontal; */
+	
+	/*box-direction默认就是normal 也可设置为reverse子元素反序排列，也可以给每个子元素设置box-ordinal-group:xx 设定排列顺序*/
+	/*-moz-box-direction:normal;
+	-webkit-box-direction:normal;
+	box-direction:normal; */
+
+	/*box-pack:center水平居中 或者是start居左 end居右 前提是每个子元素都设定了宽度*/
+	/*-webkit-box-pack:center;
+	-moz-box-pack:center;
+	box-pack:center;*/
+
+	/*box-align:center垂直居中 或者是start居左 end居右 前提是每个子元素都设定了高度*/
+	/*-webkit-box-align:center;
+	-moz-box-align:center;
+	box-align:center;*/
+}
+.item{
+	background: #ccc; 
+	height: 80px; 
+}
+.item:nth-child(1){
+    width: 200px;
+}
+.item:nth-child(2){
+	/*box-flex：所有子元素 减去固定宽度 减去margin 剩下的分到的比例
+	这里子元素没有设置宽度 所以是分宽度 减去子元素1固定宽度200 及子元素2的margin值20
+	剩下宽度值给子元素2 3分 这两个子元素box-flex都是1 所以平均分剩下的宽度*/
+	-moz-box-flex:1;
+	-webkit-box-flex:1;
+	box-flex:1;  
+	margin: 0px 10px;
+}
+/*.item:nth-child(3)代表父元素.item的第三个子元素， .item:nth-last-child(3)代表倒数第三个子元素
+.item:nth-child(odd)选取第奇数个子元素 even偶数个， .item:nth-child(3n+1)选取第1 4 7..个子元素*/
+.item:nth-child(3){
+	-moz-box-flex:1;
+	-webkit-box-flex:1;
+	box-flex:1;  
+}
+
+<strong>/*3：css3 多列布局 类似报纸的排版 内部文本分成3列后 随着屏幕(浏览器)宽度的不同会自动排版*/</strong>
+.column{
+	width: 100%;
+
+	/*column-count 定义有多少列 内部文本分成3列后 随着宽度的不同会自动排版*/
+	-webkit-column-count: 3;
+	-moz-column-count: 3;
+	-o-column-count: 3;
+	column-count: 3;
+	
+	/*column-gap 定义列之间的间距宽度*/
+	-webkit-column-gap: 30px;
+	-moz-column-gap: 30px;
+	-o-column-gap: 30px;
+	column-gap: 30px;
+	
+	/*column-rule 定义两列中间的边线*/
+	-webkit-column-rule: 4px solid #f40;
+	-moz-column-rule: 4px solid #f40;
+	-o-column-rule: 4px solid #f40;
+	column-rule: 4px solid #f40;
+}
+
+
+<h3>demo1.css代码</h3>
+/*当前屏幕宽度大于1000px时 引入这个css*/
+.wrap{
+	border: 1px solid green;
+	width: 100%;
+	height: 100px;
+	padding: 10px 0;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-box;
+	display: box;
+}
+.header{
+	background: red;
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	-ms-box-flex: 1;
+	box-flex: 1;
+}
+.sidebar{
+	background: green;
+	width: 200px;
+	margin: 0 10px;
+}
+.content{
+	background: blue;
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	-ms-box-flex: 1;
+	box-flex: 1;
+}
+
+
+<h3>demo2.css代码</h3>
+/*当前屏幕宽度小于1000px大于600px时 引入这个css*/
+.wrap{
+	border: 1px solid green;
+	width: 100%;
+	padding: 10px 0;
+}
+.header{
+	width: 100%;
+	height: 100px;
+	background: red;
+	margin-bottom: 10px;
+}
+.sidebar{
+	width: 200px;
+	height: 100px;
+	float: left;
+	background: green;
+}
+.content{
+	width: 100%;
+	/*左边的sidebar已脱离稳定流 这里的content 100%并且margin-left 210px 形成自适应屏幕宽度*/
+	margin-left: 210px;
+	background: blue;
+	height: 100px;
+}
+
+
+<h3>demo3.css代码</h3>
+/*当前屏幕宽度小于600px时 引入这个css*/
+.wrap{
+	border: 1px solid green;
+	width: 100%;
+	padding: 10px 0;
+}
+.header{
+	width: 100%;
+	height: 100px;
+	background: red;
+	margin-bottom: 10px;
+}
+.sidebar{
+	width: 100%;
+	height: 100px;
+	background: green;
+	margin-bottom: 10px;
+}
+.content{
+	width: 100%;
+	height: 100px;
+	background: blue;	
+}
+
+
+<h3>html代码</h3>
+&lth3>1: css3 box布局&lt/h3>
+&ltdiv class="box">
+	&ltdiv class="item">column 1&lt/div>
+	&ltdiv class="item">column 2&lt/div>
+	&ltdiv class="item">column 3&lt/div>
+&lt/div>
+
+&lth3>2: css3 响应式布局&lt/h3>
+&ltdiv class="wrap">
+	&ltdiv class='header'>            
+	    &lth1>header&lt/h1>        
+	&lt/div>        
+	&ltdiv class="sidebar">            
+	    &lth1>sidebar&lt/h1>        
+	&lt/div>
+	&ltdiv class="content">
+	    &lth1>content&lt/h1>
+	&lt/div>
+&lt/div>
+
+&lth3>3: css3 多列布局&lt/h3>
+&ltdiv class="column">
+	xxxxx
+&lt/div>
+</pre>
+
+
+
+
+</body> 
+</html>    
+      
+     
+     
+     

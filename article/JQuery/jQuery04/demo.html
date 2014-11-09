@@ -1,0 +1,1958 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>各种下拉菜单</title>
+<style type="text/css">
+*{
+	margin:0px;
+	padding:0px;
+}
+ul{
+	list-style:none;
+} 
+
+/*测试按钮部分*/
+#show{
+	border:1px solid black;
+	margin:20px 0 10px 0px;
+	width:750px;
+	height:60px;
+	/*float:left;*/
+}
+
+/*各种下拉菜单*/
+#menu{
+	margin:0px 200px 50px 0px;
+	width:306px;
+	height:340px;
+	float:left;
+	border:1px solid black;
+}
+#menu div{
+	width:100px;
+	text-align:center;
+	height:30px;
+	line-height:30px;
+	border:1px solid #666;
+	float:left;
+	position:relative;
+	cursor:pointer;
+}
+#menu div ul{
+	width:102px;
+	position:absolute;
+	left:-1px;
+	top:31px;
+	display:none;
+	-height:0px;
+	-overflow:hidden;    /*为了一套css能演示所有效果 这里这display height overflow三个属性都会在js中动态设置*/
+}
+#menu div ul li{
+	width:100px;
+	height:29px;
+	line-height:29px;
+	border:1px solid #ccc;
+	border-top:none;
+	cursor:pointer;
+} 
+ 
+/*面向对象副本css*/
+#other_menu{
+	width:310px;
+	height:340px;
+	float:left;
+	/*margin:50px 0 0 120px;*/
+}
+#other_menu div{
+	width:100px;
+	text-align:center;
+	height:30px;
+	line-height:30px;
+	border:1px solid #666;
+	float:left;
+	position:relative;
+	cursor:pointer;
+}
+#other_menu div ul{
+	width:102px;
+	position:absolute;
+	left:-1px;
+	top:31px;
+	display:none;
+	-height:0px;
+	-overflow:hidden;    
+}
+#other_menu div ul li{
+	width:100px;
+	height:29px;
+	line-height:29px;
+	border:1px solid #ccc;
+	border-top:none;
+	cursor:pointer;
+} 
+ 
+/*竖向菜单css*/
+#color_menu{
+	width:271px;
+	height:327px;
+	clear: both;
+	float: left;
+	margin:0px 200px 0 0;
+	border:1px solid black;
+	background:black;
+}
+#color_menu a.color{
+	display:block;
+	width:271px;
+	height:44px;
+	cursor:pointer;
+	line-height:44px;
+	text-indent:15px;
+	font-size:24px;
+	font-family:Arial;
+	color:#333;
+	margin-bottom:10px;
+}
+
+#color_menu  a.color1{
+	background:url(img/green.png);
+}
+#color_menu  a.color2{
+	background:url(img/orange.png);
+}
+#color_menu  a.color3{
+	background:url(img/blue.png);
+}
+#color_menu  a.color4{
+	background:url(img/red.png);
+}
+#color_menu  a.color1:hover{
+	background:url(img/green.png) 0 bottom;
+}
+#color_menu  a.color2:hover{
+	background:url(img/orange.png) 0 bottom;
+}
+#color_menu  a.color3:hover{
+	background:url(img/blue.png) 0 bottom;
+}
+#color_menu  a.color4:hover{
+	background:url(img/red.png) 0 bottom;
+}
+#color_menu ul{
+	padding-bottom:5px;
+	display:none;
+}
+#color_menu ul.show_ul{
+	display:block;
+}
+#color_menu ul li{
+	background:#333;
+	margin:5px 0 5px 0;
+	text-indent:15px;
+	font-size:18px;
+	font-family:Arial;
+}
+#color_menu ul li a{
+	text-decoration:none;
+	color:#ddd;
+}
+#color_menu ul li a:hover{
+	color:green;
+}
+
+/*多级菜单css*/
+#multi_menu{
+	float:left;
+}
+#multi_menu ul{
+	display:none;             /*菜单全部隐藏*/
+}
+#multi_menu li.float_li{
+	float:left;     
+}
+#multi_menu div{
+	width:100px;
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	font-size:18px;
+	border:1px solid black;
+	cursor:pointer;
+}
+ul.first_menu li{        	/*第一层之下 也就是所有层ul菜单的li*/
+	text-align:center;
+	font-size:18px;
+	width:100px;
+	height:30px;
+	line-height:30px;
+	border:1px solid black;
+	cursor:pointer;
+	background:red;
+}
+ul.second_menu li{
+	background:yellow;
+}
+ul.third_menu li{
+	background:blue;
+}
+ul.second_menu{
+	position:relative; 
+	width:102px;      
+	left:101px;                
+	top:-31px;               
+}
+ul.third_menu{
+	position:relative;  
+	width:102px;    
+	left:101px;               
+	top:-31px;					 
+}
+
+/*多级菜单定位核心思想  （可以设置第二第三的left top为0看看原本的位置）
+第一层菜单同级的div会挤压他，他正好排在div下面 不需要定位改变
+第二层菜单同级的1111也会挤压他，他正好排在1111下面，所以相对定位，相对自己原本的位置右移动101，再上移动31。
+第三次菜单同级的2222也会加压他，他正好排在2222下面，所以相对定位，相对自己原本的位置右移动101，再上移动31。
+postion:absolute就是一直往自己的父级找，如果父级有relative或者absolute就相对父级left top，
+如果父级没有再往父级父级一直往上找，如果一直没找到就是相对窗口，找到就是相对那一级的left top
+position:relative后left:0 top:0就是待在自己本来的位置，left:-31px就是往自己本该处于的位置上移动31px
+*/
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="../../../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../../../js/move.js"></script>
+<script type="text/javascript" src="jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+   
+	<p class="title">DEMO演示 各种下拉菜单</p>
+
+	<!-- 按钮部分HTML -->
+	<div id="show">
+		<p>点击不同的按钮 下边显示不同的下拉菜单效果 切换按钮时无需页面刷新</p>
+		<input type="button" value="dropDown1"/>
+		<input type="button" value="dropDown2"/> 
+		<input type="button" value="dropDown3"/> 
+		<input type="button" value="dropDown4"/> 
+		<input type="button" value="dropDown5"/> 
+		<input type="button" value="dropDown6"/> 
+		<input type="button" value="dropDown7"/> 
+		<input type="button" value="dropDown8"/> 
+		<p>效果说明：<span></span></p>
+	</div>
+
+	<!-- 各种下拉菜单 -->
+	<div id="menu">
+		<div>
+			各种
+			<ul>
+				<li>11111</li>
+				<li>22222</li>
+				<li>33333</li>
+				<li>44444</li>
+				<li>55555</li>
+				<li>66666</li>
+				<li>77777</li>
+			</ul>
+		</div>
+		<div>
+			下拉
+			<ul>
+				<li>11111</li>
+				<li>22222</li>
+				<li>33333</li>
+				<li>44444</li>
+			</ul>
+		</div>
+		<div>
+			菜单
+			<ul>
+				<li>11111</li>
+				<li>22222</li>
+				<li>33333</li>
+				<li>44444</li>
+				<li>55555</li>
+				<li>66666</li>
+				<li>77777</li>
+				<li>88888</li>
+				<li>99999</li>
+				<li>aaaaa</li>
+			</ul>
+		</div>
+	</div> 
+  
+  	<!--面向对象副本HTML-->
+	<div id="other_menu">
+		<div>
+		  	面向
+		  	<ul>
+		  		<li>11111</li>
+		  		<li>22222</li>
+		  		<li>33333</li>
+		  		<li>44444</li>
+		  		<li>55555</li>
+		  		<li>66666</li>
+		  		<li>77777</li>
+		  	</ul>
+				</div>
+				<div>
+		  	对象
+		  	<ul>
+		  		<li>11111</li>
+		  		<li>22222</li>
+		  		<li>33333</li>
+		  		<li>44444</li>
+		  	</ul>
+				</div>
+				<div>
+		  	副本
+		  	<ul>
+		  		<li>11111</li>
+		  		<li>22222</li>
+		  		<li>33333</li>
+		  		<li>44444</li>
+		  		<li>55555</li>
+		  		<li>66666</li>
+		  		<li>77777</li>
+		  		<li>88888</li>
+		  		<li>99999</li>
+		  		<li>aaaaa</li>
+		  	</ul>
+		</div>
+	</div> 
+  
+
+	<!--竖向菜单HTML-->
+	<ul id="color_menu">
+		<li>
+			<a class="color color1">Green</a>
+			<ul class="show_ul">
+				<li><a href="#">Open Grapes Section</a></li>
+				<li><a href="#">Close This Section</a></li>
+				<li><a href="#">Read on Wikipedia</a></li>
+				<li><a href="#">Flickr Stream</a></li>
+			</ul>
+		</li>
+		<li>
+			<a class="color color2">Orange</a>
+			<ul>
+				<li><a href="#">Open Grapes Section</a></li>
+				<li><a href="#">Flickr Stream</a></li>
+				<li><a href="#">Read on Wikipedia</a></li>
+				<li><a href="#">Open Grapes Section</a></li>
+			</ul>
+		</li>
+		<li>
+			<a class="color color3">Blue</a>
+			<ul>
+				<li><a href="#">Open Grapes Section</a></li>
+				<li><a href="#">Open Grapes Section</a></li>
+				<li><a href="#">Flickr Stream</a></li>
+				<li><a href="#">Read on Wikipedia</a></li>
+			</ul>
+		</li>
+		<li>
+			<a class="color color4">Red</a>
+			<ul>
+				<li><a href="#">Flickr Stream</a></li>
+				<li><a href="#">Open Grapes Section</a></li>
+				<li><a href="#">Close This Section</a></li>
+				<li><a href="#">Read on Wikipedia</a></li>
+			</ul>
+		</li>
+	</ul>
+  
+ 	
+ 	<!--多级菜单HTML-->
+	<ul id="multi_menu">
+		<li class="float_li">
+			<div>我是</div>
+			<ul class="first_menu">
+				<li>
+					1111
+					<ul class="second_menu">
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>
+					1111
+					<ul class="second_menu">
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>
+					1111
+					<ul class="second_menu">
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+		<li class="float_li">
+			<div class="first_menu">多级</div>
+			<ul class="first_menu">
+				<li>
+					1111
+					<ul class="second_menu">
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>
+					1111
+					<ul class="second_menu">
+						<li>2222</li>
+						<li>2222</li>
+						<li>2222</li>
+						<li>2222</li>
+						<li>2222</li>
+					</ul>
+				</li>
+				<li>
+					1111
+					<ul class="second_menu">
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+		<li class="float_li">
+			<div class="first_menu">菜单</div>
+			<ul class="first_menu">
+				<li>
+					1111
+					<ul class="second_menu">
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>
+					1111
+					<ul class="second_menu">
+							<li>2222</li>
+							<li>2222</li>
+							<li>2222</li>
+							<li>2222</li>
+							<li>2222</li>
+						</ul>
+				</li>
+				<li>
+					1111
+					<ul class="second_menu">
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>
+					1111
+					<ul class="second_menu">
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+						<li>
+							2222
+							<ul class="third_menu">
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+								<li>3333</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+	</ul> 	 
+ 
+
+<p class="title" style="clear:both;">js代码</p>
+<pre>
+//各种下拉菜单
+$(function(){
+
+<strong>//一：测试按钮部分</strong>
+$("#show input").click(function(){
+	var num = $(this).index();
+	//传参为true 就清除这个函数的所有事件 
+	dropDown1(1);            
+	dropDown2(1);            
+	dropDown3(1);
+	dropDown4(1);
+	//清除所有jquery函数的遗留事件
+	$("#menu div ul").unbind();  
+	$("#menu div").unbind();
+	$(document).unbind();
+	//css设置还原到刚刷新进页面的初始值
+	$("#menu div ul").css({display:"none",height:"auto",overflow:"visible"});  
+	switch(num){
+		case 1:
+			dropDown1();
+			$("span").html("原生JS函数dropDown1：鼠标移入移出，菜单缓冲型下拉，缓冲引入自己写的move.js")
+			break;
+		case 2:
+			dropDown2();
+			$("span").html("原生JS函数dropDown2：鼠标点击，菜单缓冲型下拉,缓冲引入自己写的move.js")
+			break;
+		case 3:
+			dropDown3();
+			$("span").html("原生JS函数dropDown3：鼠标移入移除，菜单显示隐藏")
+			break;
+		case 4:
+			dropDown4();
+			$("span").html("原生JS函数dropDown4：鼠标点击，菜单显示隐藏")
+			break;
+		case 5:
+			dropDown5();
+		  $("span").html("jquery函数dropDown5：鼠标移入移出，菜单弹型下拉，弹性引入JQ的jquery.easing.1.3.js")
+		break;
+		case 6:
+			dropDown6();
+		  $("span").html("jquery函数dropDown6：鼠标点击，菜单延时缓冲下拉，缓冲引入JQ的jquery.easing.1.3.js")
+		break;
+		case 7:
+			dropDown7();
+		  $("span").html("jquery函数dropDown7：鼠标移入移除，菜单显示隐藏")
+		break;
+		case 8:
+			dropDown8();
+		  $("span").html("jquery函数dropDown8：鼠标点击，菜单显示隐藏")
+		break;
+	}	
+})
+
+
+
+<strong>//二：原生js实现各类型菜单(html及css共用一套，所以css ul的height,overflow,display都js动态设置)</strong>
+//dropDown1：鼠标移入移出，菜单缓冲型下拉，js中设置css ul height:0同时overflow:hidden，通过js把各ul的height值缓冲型增大从而形成下拉效果
+//dropDown2：鼠标点击，菜单缓冲型下拉，下拉效果同上，注意阻止冒泡。
+//dropDown3：鼠标移入移除，菜单显示隐藏
+//dropDown4：鼠标点击，菜单显示隐藏
+function dropDown1(flag){
+	var oDiv = document.getElementById("menu");
+	var aDiv = oDiv.getElementsByTagName("div");
+	for(var i=0 ; i&ltaDiv.length ; i++){
+		var oUl = aDiv[i].getElementsByTagName("ul")[0]; 
+
+		//预存当前ul的高度  
+		oUl.style.display = "block";             //css默认的是display:none 需要先block才能正确得到offsetHeight  
+		oUl.style.height = "auto";               //每一次循环开始 这里不能写死具体是多少高度 每个ul都不同 所以用auto 各个ul该是多少就是多少 
+		var iHeight = oUl.offsetHeight;          //只有ul显示的时候 才会有offsetHeight 所以上面先让他显示 这里在得到他的实际高度  
+		oUl.style.height = "0px";                //得到后 ul继续高度为0
+		oUl.style.overflow = "hidden";           //然后ul溢出隐藏
+		oUl.height = iHeight;                    //每一次循环 都把当前的oUl对象的height属性设置为这次循环得到的当前oUl对象的实际高度
+		
+		//hover事件
+		aDiv[i].onmouseover = function(ev){	
+			var oUl = this.getElementsByTagName("ul")[0];
+			//当前被鼠标放上去的oUl对象的实际高度 通过上面预存的height属性取出来 
+			bufferMove(oUl,{"height":oUl.height});    
+		}
+		aDiv[i].onmouseout = function(){
+			var oUl = this.getElementsByTagName("ul")[0];
+			bufferMove(oUl,{"height":0});
+		} 	
+		
+		//如果传参为true 就清除这个函数的所有事件
+		if(flag){
+			aDiv[i].onmouseover = null;    
+			aDiv[i].onmouseout = null;
+		}		
+	}
+}
+
+
+function dropDown2(flag){
+	var oDiv = document.getElementById("menu");
+	var aDiv = oDiv.getElementsByTagName("div");
+	for(var i=0 ; i&ltaDiv.length ; i++){
+		var oUl = aDiv[i].getElementsByTagName("ul")[0];    
+		
+		//预存当前ul的高度  
+		oUl.style.display = "block";           
+		oUl.style.height = "auto";               
+		var iHeight = oUl.offsetHeight;            
+		oUl.style.height = "0px";              
+		oUl.style.overflow = "hidden";         
+		oUl.height = iHeight;                    
+		
+		//点击事件
+		aDiv[i].onclick = function(ev){
+			hideAll();                                	//先隐藏所有菜单
+			var oUl = this.getElementsByTagName("ul")[0]; 
+			var oEvent = ev||event;      
+			bufferMove(oUl,{"height":oUl.height});     	//点击的oUl对象的实际高度 通过上面预存的height属性取出来
+			oEvent.cancelBubble = true;               	//阻止冒泡到document
+		}
+		
+		//除了3个点击区域 点击任何区域都隐藏
+		document.onclick = function(){
+			hideAll();                               
+		} 
+
+		//隐藏所有ul
+		function hideAll(){
+			var aUl = oDiv.getElementsByTagName("ul"); 
+			for(var i=0 ; i&ltaUl.length ; i++){
+				bufferMove(aUl[i],{"height":0});
+			}
+		}
+
+		//如果传参为true 就清除这个函数的所有事件
+		if(flag){
+			aDiv[i].onclick = null;
+			document.onclick = null;
+		}	
+	}
+}
+
+
+function dropDown3(flag){
+	var oDiv = document.getElementById("menu");
+	var aDiv = oDiv.getElementsByTagName("div");
+	for(var i=0 ; i&ltaDiv.length ; i++){
+		aDiv[i].getElementsByTagName("ul")[0].style.display = "none";   
+		
+		aDiv[i].onmouseover = function(){
+			var oUl = this.getElementsByTagName("ul")[0];
+			oUl.style.height = "auto";          
+			oUl.style.display = "block";
+			
+			var aLi = oUl.getElementsByTagName("li");
+			for(var i=0 ; i&ltaLi.length ; i++){
+				aLi[i].onmouseover = function(){
+					this.style.background = "#ccc";
+				}
+				aLi[i].onmouseout = function(){
+					this.style.background = "#fff";
+				}
+			}
+		}
+		
+		aDiv[i].onmouseout = function(){
+			var oUl = this.getElementsByTagName("ul")[0];
+			oUl.style.display = "none";
+		}
+		
+		if(flag){
+			aDiv[i].onmouseover = null;
+			aDiv[i].onmouseout = null;
+		}		
+	}
+}
+
+
+function dropDown4(flag){
+	var oDiv = document.getElementById("menu");
+	var aDiv = oDiv.getElementsByTagName("div");
+	for(var i=0 ; i&ltaDiv.length ; i++){
+		aDiv[i].getElementsByTagName("ul")[0].style.display = "none";   
+		
+		aDiv[i].onclick = function(ev){
+			hideAll();
+			var oUl = this.getElementsByTagName("ul")[0];
+			oUl.style.height = "auto";     
+			oUl.style.display = "block";
+			var oEvent = ev||event;
+			oEvent.cancelBubble = true;
+		}
+		
+		document.onclick = function(){
+			hideAll();
+		}
+		
+		if(flag){
+			aDiv[i].onclick = null;
+			document.onclick = null;
+		}	
+		
+		function hideAll(){
+			var aUl = oDiv.getElementsByTagName("ul");  //隐藏所有ul
+			for(var i=0 ; i&ltaUl.length ; i++){
+				aUl[i].style.display = "none";
+			}
+		}
+	}
+}
+
+
+
+<strong>//三：jquery实现各类型菜单</strong>
+//dropDown5：鼠标移入移出，菜单弹性下拉，缓冲引入JQ的jquery.easing.1.3.js 
+//dropDown6：鼠标点击，菜单缓冲型下拉， 
+//dropDown7：鼠标移入移除，菜单显示隐藏
+//dropDown8：鼠标点击，菜单显示隐藏
+//引入query.easing.1.3.js 在时间参数后面加上相应easing参数(必须先写时间参数，后面再写easing参数才有效果)
+ 
+function dropDown5(){
+	$("#menu div").hover(function(){ 
+	  	$(this).find("ul").slideDown(1000,'easeInOutElastic');
+	},function(){
+		//如果快速移入移出 也只保留最后一次的移入移出 之前的动画队列全部被sotp清空
+		$(this).find("ul").stop(true).slideUp(1000,'easeOutElastic');  
+	});
+}
+
+function dropDown6(){
+	$("#menu div").click(function(){
+		$(this).find("ul").slideDown(500,"easeOutBack")  	//3：当前被点击的这个div区域的ul菜单slideDown
+		.parent().siblings("div").find("ul").slideUp(500,"easeInBack");   //4：其他的div区域的ul菜单全部上拉，siblings("div")就是除了当前div的同级兄弟div
+	  	return false;                           			//2：阻止冒泡 三个div区域点击不触发下面的菜单上拉 
+	})
+	$(document).click(function(){                 
+		$("#menu div ul").slideUp(500,"easeInBack");		//1：点击任何区域都是菜单上拉
+	})
+}
+
+function dropDown7(){
+	$("#menu div").hover(function(){ 
+	  	$(this).find("ul").show();
+	},function(){
+		$(this).find("ul").hide();   
+	});
+}
+
+function dropDown8(){
+	$("#menu div").click(function(){
+		$(this).find("ul").show()
+		.parent().siblings("div").find("ul").hide();
+		return false;
+	});
+	$(document).click(function(){
+		$("#menu div ul").hide();
+	})
+}
+ 
+ 
+
+<strong>//四：面向对象写法</strong>
+//DropDown1：鼠标移入移出，菜单缓冲型下拉， 
+//DropDown2：鼠标点击，菜单缓冲型下拉， 
+//DropDown3：鼠标移入移除，菜单显示隐藏
+//DropDown4：鼠标点击，菜单显示隐藏
+	
+//实例化
+//var dropDown = new DropDown1("menu");
+//var dropDown = new DropDown2("menu");
+//var dropDown = new DropDown3("menu");
+//var dropDown = new DropDown4("menu");
+//var dropDown = new DropDown1("other_menu");
+//var dropDown = new DropDown2("other_menu");
+//var dropDown = new DropDown3("other_menu");
+var dropDown = new DropDown1("other_menu");
+
+function DropDown1(id){
+	var oDiv = document.getElementById(id);
+	this.aDiv = oDiv.getElementsByTagName("div");
+	_this = this;  
+	
+	for(var i=0 ; i&ltthis.aDiv.length ; i++){
+		var oUl = this.aDiv[i].getElementsByTagName("ul")[0]; 
+		oUl.style.display = "block";            
+		oUl.style.height = "auto";                                                                                                                   
+		oUl.height = oUl.offsetHeight;                                                                                                              
+		oUl.style.height = "0px";                                                                                                                    
+		oUl.style.overflow = "hidden";                                                                                                                                                                                                                         
+	  
+		this.aDiv[i].onmouseover = function(){
+			_this.higher(this);
+		}
+		this.aDiv[i].onmouseout = function(){
+			_this.lower(this);
+		} 		
+	}
+}
+DropDown1.prototype.higher = function(theMouseoverDiv){	
+	var oUl = theMouseoverDiv.getElementsByTagName("ul")[0]; 
+	bufferMove(oUl,{"height":oUl.height});     
+}
+DropDown1.prototype.lower = function(theMouseoutDiv){	
+	var oUl = theMouseoutDiv.getElementsByTagName("ul")[0]; 
+	bufferMove(oUl,{"height":0});     
+}
+
+
+function DropDown2(id){
+	var oDiv = document.getElementById(id);
+	this.aDiv = oDiv.getElementsByTagName("div");
+	var _this = this;
+	for(var i=0 ; i&ltthis.aDiv.length ; i++){
+		var oUl = this.aDiv[i].getElementsByTagName("ul")[0];   
+		oUl.style.display = "block";              
+		oUl.style.height = "auto";                 
+		oUl.height = oUl.offsetHeight;               
+		oUl.style.height = "0px";                
+		oUl.style.overflow = "hidden";           
+		
+		this.aDiv[i].onclick = function(ev){
+			_this.higher(ev,this,oDiv);      //ev this oDiv分别一一对应higher的ev theClickDiv oDiv
+		}
+		document.onclick = function(){
+			_this.hideAll(oDiv);             //hideAll方法需要传递oDiv对象给到hideAll函数               
+		} 
+	}
+}
+DropDown2.prototype.higher = function(ev,theClickDiv,oDiv){
+	this.hideAll(oDiv);                          //接受了上面的oDiv 再传递给hideAll
+	var oUl = theClickDiv.getElementsByTagName("ul")[0];
+	bufferMove(oUl,{"height":oUl.height});     
+	this.oEvent = ev||event;          
+	this.oEvent.cancelBubble = true;              
+}
+DropDown2.prototype.hideAll = function(oDiv){         
+	this.aUl = oDiv.getElementsByTagName("ul");  //oDiv在构造函数中是局部变量 需要通过_this.higher(ev,this,oDiv); _this.hideAll(oDiv)传递过来
+	for(var i=0 ; i&ltthis.aUl.length ; i++){
+		bufferMove(this.aUl[i],{"height":0});
+	}
+}
+		
+		 
+function DropDown3(id){
+	var oDiv = document.getElementById(id);
+	this.aDiv = oDiv.getElementsByTagName("div");
+	var _this = this;
+	for(var i=0 ; i&ltthis.aDiv.length ; i++){
+		this.aDiv[i].getElementsByTagName("ul")[0].style.display = "none";   //隐藏所有菜单
+		this.aDiv[i].onmouseover = function(){   
+			_this.show(this);                     
+		}
+		this.aDiv[i].onmouseout = function(){
+			_this.hide(this);
+		}	
+	}
+}
+DropDown3.prototype.show = function(theMouseoverDiv){     		//每次show()函数调用 参数都是当前被mouseover的div
+	var oUl = theMouseoverDiv.getElementsByTagName("ul")[0];  	//当前被mouseover的div下的第一个ul
+	oUl.style.display = "block";
+	
+	var aLi = oUl.getElementsByTagName("li");   	//当前被mouseover的div下的所有li进行移入移出变色 这一层不准备再写一层了
+	for(var i=0 ; i&ltaLi.length ; i++){
+		aLi[i].onmouseover = function(){
+			this.style.background = "#ccc";
+		}
+		aLi[i].onmouseout = function(){
+			this.style.background = "#fff";
+		}
+	}
+}
+DropDown3.prototype.hide = function(theMouseoutDiv){
+	var oUl = theMouseoutDiv.getElementsByTagName("ul")[0];
+	oUl.style.display = "none";
+}
+
+
+function DropDown4(id){
+	var oDiv = document.getElementById(id);
+	this.aDiv = oDiv.getElementsByTagName("div");
+	_this = this;
+	for(var i=0 ; i&ltthis.aDiv.length ; i++){
+		this.aDiv[i].getElementsByTagName("ul")[0].style.display = "none";    
+		
+		this.aDiv[i].onclick = function(ev){
+			_this.hideAll(oDiv);
+			_this.show(ev,this);
+		}
+		
+		document.onclick = function(){
+			_this.hideAll(oDiv);
+		}
+
+	}
+}
+DropDown4.prototype.show = function(ev,theClickDiv){
+	var oUl = theClickDiv.getElementsByTagName("ul")[0];
+	oUl.style.display = "block";
+	this.oEvent = ev||event;
+	this.oEvent.cancelBubble = true;
+}
+DropDown4.prototype.hideAll = function(oDiv){
+	this.aUl = oDiv.getElementsByTagName("ul");  
+	for(var i=0 ; i&ltthis.aUl.length ; i++){
+		this.aUl[i].style.display = "none";
+	}
+}
+
+
+
+<strong>//五：竖向下拉菜单</strong>
+$("#color_menu .color").click(function(){
+	$(this).next().slideDown("slow","easeInElastic")        //easeInOutElastic  easeOutBounce
+	.parent().siblings().find("ul").slideUp("slow","easeInElastic");
+})
+
+
+
+<strong>//六：多层级下拉菜单</strong>
+$("#multi_menu li").hover(function(){                     	//所有的li(各个层级)都加上移入移出事件
+	$(this).children("ul").stop(true).slideDown(200);       //当前被移入的li的子元素ul(也就是菜单)下拉 只保留最近一次下拉动画
+},function(){
+	$(this).children("ul").stop(true).slideUp(10);          //当前被移出的li的子元素ul(也就是菜单)上拉
+});
+
+
+
+})
+</pre>
+ 
+
+<p class="title">html代码</p>
+<pre>
+	&lt!-- 按钮部分HTML -->
+	&ltdiv id="show">
+		&ltp>点击不同的按钮 下边显示不同的下拉菜单效果 切换按钮时无需页面刷新&lt/p>
+		&ltinput type="button" value="dropDown1"/>
+		&ltinput type="button" value="dropDown2"/> 
+		&ltinput type="button" value="dropDown3"/> 
+		&ltinput type="button" value="dropDown4"/> 
+		&ltinput type="button" value="dropDown5"/> 
+		&ltinput type="button" value="dropDown6"/> 
+		&ltinput type="button" value="dropDown7"/> 
+		&ltinput type="button" value="dropDown8"/> 
+		&ltp>效果说明：&ltspan>&lt/span>&lt/p>
+	&lt/div>
+
+	&lt!-- 各种下拉菜单 -->
+	&ltdiv id="menu">
+		&ltdiv>
+			各种
+			&ltul>
+				&ltli>11111&lt/li>
+				&ltli>22222&lt/li>
+				&ltli>33333&lt/li>
+				&ltli>44444&lt/li>
+				&ltli>55555&lt/li>
+				&ltli>66666&lt/li>
+				&ltli>77777&lt/li>
+			&lt/ul>
+		&lt/div>
+		&ltdiv>
+			下拉
+			&ltul>
+				&ltli>11111&lt/li>
+				&ltli>22222&lt/li>
+				&ltli>33333&lt/li>
+				&ltli>44444&lt/li>
+			&lt/ul>
+		&lt/div>
+		&ltdiv>
+			菜单
+			&ltul>
+				&ltli>11111&lt/li>
+				&ltli>22222&lt/li>
+				&ltli>33333&lt/li>
+				&ltli>44444&lt/li>
+				&ltli>55555&lt/li>
+				&ltli>66666&lt/li>
+				&ltli>77777&lt/li>
+				&ltli>88888&lt/li>
+				&ltli>99999&lt/li>
+				&ltli>aaaaa&lt/li>
+			&lt/ul>
+		&lt/div>
+	&lt/div> 
+  
+  	&lt!--面向对象副本HTML-->
+	&ltdiv id="other_menu">
+		&ltdiv>
+		  	面向
+		  	&ltul>
+		  		&ltli>11111&lt/li>
+		  		&ltli>22222&lt/li>
+		  		&ltli>33333&lt/li>
+		  		&ltli>44444&lt/li>
+		  		&ltli>55555&lt/li>
+		  		&ltli>66666&lt/li>
+		  		&ltli>77777&lt/li>
+		  	&lt/ul>
+				&lt/div>
+				&ltdiv>
+		  	对象
+		  	&ltul>
+		  		&ltli>11111&lt/li>
+		  		&ltli>22222&lt/li>
+		  		&ltli>33333&lt/li>
+		  		&ltli>44444&lt/li>
+		  	&lt/ul>
+				&lt/div>
+				&ltdiv>
+		  	副本
+		  	&ltul>
+		  		&ltli>11111&lt/li>
+		  		&ltli>22222&lt/li>
+		  		&ltli>33333&lt/li>
+		  		&ltli>44444&lt/li>
+		  		&ltli>55555&lt/li>
+		  		&ltli>66666&lt/li>
+		  		&ltli>77777&lt/li>
+		  		&ltli>88888&lt/li>
+		  		&ltli>99999&lt/li>
+		  		&ltli>aaaaa&lt/li>
+		  	&lt/ul>
+		&lt/div>
+	&lt/div> 
+  
+
+	&lt!--竖向菜单HTML-->
+	&ltul id="color_menu">
+		&ltli>
+			&lta class="color color1">Green&lt/a>
+			&ltul class="show_ul">
+				&ltli>&lta href="#">Open Grapes Section&lt/a>&lt/li>
+				&ltli>&lta href="#">Close This Section&lt/a>&lt/li>
+				&ltli>&lta href="#">Read on Wikipedia&lt/a>&lt/li>
+				&ltli>&lta href="#">Flickr Stream&lt/a>&lt/li>
+			&lt/ul>
+		&lt/li>
+		&ltli>
+			&lta class="color color2">Orange&lt/a>
+			&ltul>
+				&ltli>&lta href="#">Open Grapes Section&lt/a>&lt/li>
+				&ltli>&lta href="#">Flickr Stream&lt/a>&lt/li>
+				&ltli>&lta href="#">Read on Wikipedia&lt/a>&lt/li>
+				&ltli>&lta href="#">Open Grapes Section&lt/a>&lt/li>
+			&lt/ul>
+		&lt/li>
+		&ltli>
+			&lta class="color color3">Blue&lt/a>
+			&ltul>
+				&ltli>&lta href="#">Open Grapes Section&lt/a>&lt/li>
+				&ltli>&lta href="#">Open Grapes Section&lt/a>&lt/li>
+				&ltli>&lta href="#">Flickr Stream&lt/a>&lt/li>
+				&ltli>&lta href="#">Read on Wikipedia&lt/a>&lt/li>
+			&lt/ul>
+		&lt/li>
+		&ltli>
+			&lta class="color color4">Red&lt/a>
+			&ltul>
+				&ltli>&lta href="#">Flickr Stream&lt/a>&lt/li>
+				&ltli>&lta href="#">Open Grapes Section&lt/a>&lt/li>
+				&ltli>&lta href="#">Close This Section&lt/a>&lt/li>
+				&ltli>&lta href="#">Read on Wikipedia&lt/a>&lt/li>
+			&lt/ul>
+		&lt/li>
+	&lt/ul>
+  
+ 	
+ 	&lt!--多级菜单HTML-->
+	&ltul id="multi_menu">
+		&ltli class="float_li">
+			&ltdiv>我是&lt/div>
+			&ltul class="first_menu">
+				&ltli>
+					1111
+					&ltul class="second_menu">
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+					&lt/ul>
+				&lt/li>
+				&ltli>
+					1111
+					&ltul class="second_menu">
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+					&lt/ul>
+				&lt/li>
+				&ltli>
+					1111
+					&ltul class="second_menu">
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+					&lt/ul>
+				&lt/li>
+			&lt/ul>
+		&lt/li>
+		&ltli class="float_li">
+			&ltdiv class="first_menu">多级&lt/div>
+			&ltul class="first_menu">
+				&ltli>
+					1111
+					&ltul class="second_menu">
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+					&lt/ul>
+				&lt/li>
+				&ltli>
+					1111
+					&ltul class="second_menu">
+						&ltli>2222&lt/li>
+						&ltli>2222&lt/li>
+						&ltli>2222&lt/li>
+						&ltli>2222&lt/li>
+						&ltli>2222&lt/li>
+					&lt/ul>
+				&lt/li>
+				&ltli>
+					1111
+					&ltul class="second_menu">
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+					&lt/ul>
+				&lt/li>
+			&lt/ul>
+		&lt/li>
+		&ltli class="float_li">
+			&ltdiv class="first_menu">菜单&lt/div>
+			&ltul class="first_menu">
+				&ltli>
+					1111
+					&ltul class="second_menu">
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+					&lt/ul>
+				&lt/li>
+				&ltli>
+					1111
+					&ltul class="second_menu">
+							&ltli>2222&lt/li>
+							&ltli>2222&lt/li>
+							&ltli>2222&lt/li>
+							&ltli>2222&lt/li>
+							&ltli>2222&lt/li>
+						&lt/ul>
+				&lt/li>
+				&ltli>
+					1111
+					&ltul class="second_menu">
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+					&lt/ul>
+				&lt/li>
+				&ltli>
+					1111
+					&ltul class="second_menu">
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+						&ltli>
+							2222
+							&ltul class="third_menu">
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+								&ltli>3333&lt/li>
+							&lt/ul>
+						&lt/li>
+					&lt/ul>
+				&lt/li>
+			&lt/ul>
+		&lt/li>
+	&lt/ul> 	 
+</pre>	
+ 	
+
+<p class="title">css代码</p>
+<pre>
+*{
+	margin:0px;
+	padding:0px;
+}
+ul{
+	list-style:none;
+} 
+
+/*测试按钮部分*/
+#show{
+	border:1px solid black;
+	margin:20px 0 10px 0px;
+	width:750px;
+	height:60px;
+	/*float:left;*/
+}
+
+/*各种下拉菜单*/
+#menu{
+	margin:0px 200px 50px 0px;
+	width:306px;
+	height:340px;
+	float:left;
+	border:1px solid black;
+}
+#menu div{
+	width:100px;
+	text-align:center;
+	height:30px;
+	line-height:30px;
+	border:1px solid #666;
+	float:left;
+	position:relative;
+	cursor:pointer;
+}
+#menu div ul{
+	width:102px;
+	position:absolute;
+	left:-1px;
+	top:31px;
+	display:none;
+	-height:0px;
+	-overflow:hidden;    /*为了一套css能演示所有效果 这里这display height overflow三个属性都会在js中动态设置*/
+}
+#menu div ul li{
+	width:100px;
+	height:29px;
+	line-height:29px;
+	border:1px solid #ccc;
+	border-top:none;
+	cursor:pointer;
+} 
+ 
+/*面向对象副本css*/
+#other_menu{
+	width:310px;
+	height:340px;
+	float:left;
+	/*margin:50px 0 0 120px;*/
+}
+#other_menu div{
+	width:100px;
+	text-align:center;
+	height:30px;
+	line-height:30px;
+	border:1px solid #666;
+	float:left;
+	position:relative;
+	cursor:pointer;
+}
+#other_menu div ul{
+	width:102px;
+	position:absolute;
+	left:-1px;
+	top:31px;
+	display:none;
+	-height:0px;
+	-overflow:hidden;    
+}
+#other_menu div ul li{
+	width:100px;
+	height:29px;
+	line-height:29px;
+	border:1px solid #ccc;
+	border-top:none;
+	cursor:pointer;
+} 
+ 
+/*竖向菜单css*/
+#color_menu{
+	width:271px;
+	height:327px;
+	clear: both;
+	float: left;
+	margin:0px 200px 0 0;
+	border:1px solid black;
+	background:black;
+}
+#color_menu a.color{
+	display:block;
+	width:271px;
+	height:44px;
+	cursor:pointer;
+	line-height:44px;
+	text-indent:15px;
+	font-size:24px;
+	font-family:Arial;
+	color:#333;
+	margin-bottom:10px;
+}
+
+#color_menu  a.color1{
+	background:url(img/green.png);
+}
+#color_menu  a.color2{
+	background:url(img/orange.png);
+}
+#color_menu  a.color3{
+	background:url(img/blue.png);
+}
+#color_menu  a.color4{
+	background:url(img/red.png);
+}
+#color_menu  a.color1:hover{
+	background:url(img/green.png) 0 bottom;
+}
+#color_menu  a.color2:hover{
+	background:url(img/orange.png) 0 bottom;
+}
+#color_menu  a.color3:hover{
+	background:url(img/blue.png) 0 bottom;
+}
+#color_menu  a.color4:hover{
+	background:url(img/red.png) 0 bottom;
+}
+#color_menu ul{
+	padding-bottom:5px;
+	display:none;
+}
+#color_menu ul.show_ul{
+	display:block;
+}
+#color_menu ul li{
+	background:#333;
+	margin:5px 0 5px 0;
+	text-indent:15px;
+	font-size:18px;
+	font-family:Arial;
+}
+#color_menu ul li a{
+	text-decoration:none;
+	color:#ddd;
+}
+#color_menu ul li a:hover{
+	color:green;
+}
+
+/*多级菜单css*/
+#multi_menu{
+	float:left;
+}
+#multi_menu ul{
+	display:none;             /*菜单全部隐藏*/
+}
+#multi_menu li.float_li{
+	float:left;     
+}
+#multi_menu div{
+	width:100px;
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	font-size:18px;
+	border:1px solid black;
+	cursor:pointer;
+}
+ul.first_menu li{        	/*第一层之下 也就是所有层ul菜单的li*/
+	text-align:center;
+	font-size:18px;
+	width:100px;
+	height:30px;
+	line-height:30px;
+	border:1px solid black;
+	cursor:pointer;
+	background:red;
+}
+ul.second_menu li{
+	background:yellow;
+}
+ul.third_menu li{
+	background:blue;
+}
+ul.second_menu{
+	position:relative; 
+	width:102px;      
+	left:101px;                
+	top:-31px;               
+}
+ul.third_menu{
+	position:relative;  
+	width:102px;    
+	left:101px;               
+	top:-31px;					 
+}
+
+/*多级菜单定位核心思想  （可以设置第二第三的left top为0看看原本的位置）
+第一层菜单同级的div会挤压他，他正好排在div下面 不需要定位改变
+第二层菜单同级的1111也会挤压他，他正好排在1111下面，所以相对定位，相对自己原本的位置右移动101，再上移动31。
+第三次菜单同级的2222也会加压他，他正好排在2222下面，所以相对定位，相对自己原本的位置右移动101，再上移动31。
+postion:absolute就是一直往自己的父级找，如果父级有relative或者absolute就相对父级left top，
+如果父级没有再往父级父级一直往上找，如果一直没找到就是相对窗口，找到就是相对那一级的left top
+position:relative后left:0 top:0就是待在自己本来的位置，left:-31px就是往自己本该处于的位置上移动31px
+*/
+</pre>
+
+
+</body> 
+</html>    
+      
+     
+     
+     

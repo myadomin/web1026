@@ -1,0 +1,274 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>HTML5播放器</title>
+<style>
+*{
+	margin: 0px;
+	padding: 0px;
+}
+ul{
+	list-style: none;
+}
+#ul1 li{
+	float: left;
+	width: 50px;
+	line-height: 100px;
+	height: 100px;
+	margin-left: 5px;
+	background: #aaa;
+	text-align: center;
+	color: #fff;
+}
+#ul1 li.black{
+	background: black;
+}
+
+#canvas3{
+	position: fixed;
+	left: 800px;
+	top: 500px;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+<p class="title">DEMO演示 html5播放器 支持firefox 部分支持chrome 不支持IE</p>
+
+<p>第一部分：自定义播放器</p><br/>
+<!-- controls="controls"必须写 写上才会出现视频控件 -->
+<video id="video1" controls="controls" poster="source/PLMM.jpg">   
+	<!-- 支持webm格式就调用这个地址 C F IE9+ O支持 -->
+	<source src="source/movie.webm" type="video/webm" /> 
+	<!-- 否则 支持ogg格式就调用这个地址 C F O支持 -->  	
+	<source src="source/movie.ogg" type="video/ogg" />
+	<!-- 否则 支持mp4格式就调用这个地址 C S支持	 -->    	
+	<source src="source/movie.mp4" type="video/mpeg" />  
+	<!-- 如果都不支持 	 -->
+	Your browser does not support the video element.
+</video><br/>
+<button id="btn2">播放</button>
+<button id="btn3">暂停</button>
+<button id="btn4">快进10秒</button>
+<button id="btn5">快退10秒</button>
+<button id="btn6">静音</button>
+<button id="btn7">加速3倍</button>
+<button id="btn8">减速3倍</button>
+<button id="btn9">正常默认倍数</button>
+<button id="btn10">提高音量</button>
+<button id="btn11">降低音量</button><br/><br/> 
+<audio controls="controls">   
+	<source src="source/111.mp3" type="audio/mpeg" />   
+	<source src="horse.ogg" type="audio/ogg" />  
+	<source src="horse.wav" type="audio/mpeg" />   	
+	Your browser does not support the audio element.
+</audio><br/><br/><br/><br/>
+
+<p>第二部分：模拟钢琴</p><br/> 
+<ul id="ul1">
+	<li au="source/c4.mp3" class="black">1</li>
+	<li au="source/d4.mp3">2</li>
+	<li au="source/e4.mp3" class="black">3</li>
+	<li au="source/f4.mp3">4</li>
+	<li au="source/g4.mp3" class="black">5</li>
+	<li au="source/a4.mp3">6</li>
+	<li au="source/b4.mp3" class="black">7</li>
+	<li au="source/c5.mp3">1</li>
+</ul><br/>
+<audio id="audio1"></audio><br/><br/><br/><br/><br/><br/><br/><br/>
+
+<p>第三部分：模仿优酷微缩视频 只支持firefox</p><br/>
+<video id="video3" controls="controls">   
+	<source src="source/movie.webm" type="video/webm" /> 	
+	<source src="source/movie.ogg" type="video/ogg" />  	
+	<source src="source/movie.mp3" type="video/mpeg" />  
+	Your browser does not support the video element.
+</video><br/>
+<canvas id="canvas3"></canvas>
+
+
+<p class="title">js代码</p>
+<pre>
+//HTML5播放器
+window.onload = function(){
+
+	<strong>//第一部分：自定义播放器</strong>
+	var oVideo1 = document.getElementById('video1');
+	var oBtn2 = document.getElementById('btn2');
+	var oBtn3 = document.getElementById('btn3');
+	var oBtn4 = document.getElementById('btn4');
+	var oBtn5 = document.getElementById('btn5');
+	var oBtn6 = document.getElementById('btn6');
+	var oBtn7 = document.getElementById('btn7');
+	var oBtn8 = document.getElementById('btn8');
+	var oBtn9 = document.getElementById('btn9');
+	var oBtn10 = document.getElementById('btn10');
+	var oBtn11 = document.getElementById('btn11');
+	
+	oBtn2.onclick = function(){
+		oVideo1.play();     		//视频对象.play() 播放方法
+	}
+	oBtn3.onclick = function(){
+		oVideo1.pause();     		//暂停方法
+	}
+	oBtn4.onclick = function(){
+		oVideo1.currentTime += 10;  	//设置.currentTime属性 快进10秒
+	}
+	oBtn5.onclick = function(){
+		oVideo1.currentTime -= 10;
+	}
+	oBtn6.onclick = function(){
+		if(oBtn6.innerHTML == '静音'){
+			oVideo1.muted = true;   	//设置.muted为true 就是静音
+			oBtn6.innerHTML = '不静音';
+		}else{
+			oVideo1.muted = false;   	//设置.muted为true 就是静音
+			oBtn6.innerHTML = '静音'
+		}	
+	}
+	oBtn7.onclick = function(){
+		oVideo1.playbackRate = 3;  		//设置.playbackRate属性 正常倍数基础上加速3倍
+	}
+	oBtn8.onclick = function(){
+		oVideo1.playbackRate = 0.3; 		//正常倍数基础上减速3倍
+	}
+	oBtn9.onclick = function(){
+		oVideo1.playbackRate = 1;  		//正常倍数 
+	}
+	oBtn10.onclick = function(){
+		oVideo1.volume += 0.1; 			//音量加0.1  默认是最大音量1
+	}
+	oBtn11.onclick = function(){
+		oVideo1.volume -= 0.1;  		//音量减0.1
+	}
+	
+
+	<strong>//第二部分：模拟钢琴</strong>
+	var oUl1 = document.getElementById('ul1');
+	var aLi1 = oUl1.getElementsByTagName('li');
+	var oAudio1 = document.getElementById('audio1');
+
+	for(var i=0; i&ltaLi1.length; i++){
+		aLi1[i].onmouseover = function(){
+			oAudio1.src = this.getAttribute('au');
+			oAudio1.play();
+		}
+	}
+
+
+	<strong>//第三部分：模仿优酷微缩视频</strong>
+	var oV3 = document.getElementById('video3');
+	var oC3	= document.getElementById('canvas3');
+	var oGc3 = oC3.getContext('2d');
+
+	oC3.width = oV3.videoWidth/2;
+	oC3.height = oV3.videoHeight/2;
+	setInterval(function(){
+		//drawImage除了画图还能画视频 画布坐标0 0 宽度oC3.width 高度oC3.height 画布css fixed定位
+		oGc3.drawImage(oV3, 0, 0, oC3.width, oC3.height);	
+	},30);
+
+
+}
+</pre>
+
+
+<p class="title">html5代码</p>
+<pre>
+&ltp>第一部分：自定义播放器&lt/p>&ltbr/>
+&lt!-- controls="controls"必须写 写上才会出现视频控件 -->
+&ltvideo id="video1" controls="controls" poster="source/PLMM.jpg">   
+	&lt!-- 支持webm格式就调用这个地址 C F IE9+ O支持 -->
+	&ltsource src="source/movie.webm" type="video/webm" /> 
+	&lt!-- 否则 支持ogg格式就调用这个地址 C F O支持 -->  	
+	&ltsource src="source/movie.ogg" type="video/ogg" />
+	&lt!-- 否则 支持mp4格式就调用这个地址 C S支持	 -->    	
+	&ltsource src="source/movie.mp4" type="video/mpeg" />  
+	&lt!-- 如果都不支持 	 -->
+	Your browser does not support the video element.
+&lt/video>&ltbr/>
+&ltbutton id="btn2">播放&lt/button>
+&ltbutton id="btn3">暂停&lt/button>
+&ltbutton id="btn4">快进10秒&lt/button>
+&ltbutton id="btn5">快退10秒&lt/button>
+&ltbutton id="btn6">静音&lt/button>
+&ltbutton id="btn7">加速3倍&lt/button>
+&ltbutton id="btn8">减速3倍&lt/button>
+&ltbutton id="btn9">正常默认倍数&lt/button>
+&ltbutton id="btn10">提高音量&lt/button>
+&ltbutton id="btn11">降低音量&lt/button>&ltbr/>&ltbr/> 
+&ltaudio controls="controls">   
+	&ltsource src="source/111.mp3" type="audio/mpeg" />   
+	&ltsource src="horse.ogg" type="audio/ogg" />  
+	&ltsource src="horse.wav" type="audio/mpeg" />   	
+	Your browser does not support the audio element.
+&lt/audio>&ltbr/>&ltbr/>&ltbr/>&ltbr/>
+
+&ltp>第二部分：模拟钢琴&lt/p>&ltbr/> 
+&ltul id="ul1">
+	&ltli au="source/c4.mp3" class="black">1&lt/li>
+	&ltli au="source/d4.mp3">2&lt/li>
+	&ltli au="source/e4.mp3" class="black">3&lt/li>
+	&ltli au="source/f4.mp3">4&lt/li>
+	&ltli au="source/g4.mp3" class="black">5&lt/li>
+	&ltli au="source/a4.mp3">6&lt/li>
+	&ltli au="source/b4.mp3" class="black">7&lt/li>
+	&ltli au="source/c5.mp3">1&lt/li>
+&lt/ul>&ltbr/>
+&ltaudio id="audio1">&lt/audio>&ltbr/>
+
+&ltp>第三部分：模仿优酷微缩视频 只支持firefox&lt/p>&ltbr/>
+&ltvideo id="video3" controls="controls">   
+	&ltsource src="source/movie.webm" type="video/webm" /> 	
+	&ltsource src="source/movie.ogg" type="video/ogg" />  	
+	&ltsource src="source/movie.mp3" type="video/mpeg" />  
+	Your browser does not support the video element.
+&lt/video>&ltbr/>
+&ltcanvas id="canvas3">&lt/canvas>
+</pre>
+
+
+<p class="title">css代码</p>
+<pre>
+*{
+	margin: 0px;
+	padding: 0px;
+}
+ul{
+	list-style: none;
+}
+
+#ul1{
+
+}
+#ul1 li{
+	float: left;
+	width: 50px;
+	line-height: 100px;
+	height: 100px;
+	margin-left: 5px;
+	background: #aaa;
+	text-align: center;
+	color: #fff;
+}
+#ul1 li.black{
+	background: black;
+}
+
+#canvas3{
+	position: fixed;
+	left: 800px;
+	top: 500px;
+}
+</pre>
+
+
+</body> 
+</html>    
+      
+     
+     
+     

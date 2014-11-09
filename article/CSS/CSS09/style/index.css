@@ -1,0 +1,908 @@
+﻿ul,li,h1,div,img,dl,dt,dd,body,p{
+	margin:0;
+	padding:0;
+}
+body{
+	width:960px;
+	font-size:12px;
+	margin:0 auto;
+	position:relative;
+	/*其实是conten的position:relative;
+	为了解决IE6可能出现的兼容性问题，
+	在conten上层的body也position:relative;*/
+}
+ul{
+	list-style-type:none;
+}	
+a{
+	text-decoration:none;
+}
+a:hover{
+	text-decoration:underline;
+	cursor:pointer;
+}
+img{
+	border:none;
+}
+
+#header{
+	height:89px;
+	background:url("../img/global.gif") no-repeat left top;
+}
+/* 内部各框体要点。
+整个header框体背景是golbal.gif的左上部分。
+内部的logo login lead supnav subnav用左浮动排。*/
+#logo{
+	width:169px;
+	height:89px;
+	float:left;
+}
+#logo a{
+	display:block;
+	width:169px;
+	height:89px;
+}
+#login{
+	width:272px;
+	height:19px;
+	float:left;
+}
+#login input{
+	margin:5px 0 0 4px;
+}
+#login input.text{
+	width:72px;
+	height:16px;
+	border:1px solid #666;
+	float:left;
+}
+#login input.submit{
+	width:49px;
+	height:19px;
+	color:#504f4f;
+	cursor:pointer;
+	border:none;
+	background:url(../img/global.gif) no-repeat -300px -100px;
+	/*!!!对于切片的理解！！！重要！！！。
+	用fireworks的切片工具，截取此元素要附上的大图片中的某个小图片做背景。
+	用切片工具截取时，fireworks显示的XY坐标就是此截取图片左上角的XY坐标，同时显示此截图的宽度高度。
+	显示的XY坐标，用负数进入到大背景中的background中找到。
+	截图显示的宽度高度用于此框体的宽度高度定义。
+	例如此submit框体的宽度高度通过切片工具截取需要作为背景的小图，知道背景宽度高度是49与19，大图global中的小截图的左上坐标点是300px 100px，
+	那此框体的background就是：提取大图片的以坐标300px 100px的点作为左上的宽度为49高度19的小截图。*/
+}
+#lead{
+	width:511px;
+	height:27px;
+	float:left;
+	text-align:right;
+	line-height:27px;
+	background:url(../img/global.gif) no-repeat 452px -101px;
+	/*注意，这里面其实截取了global大图的以0 101坐标为左上的宽度511高度27的一个图片。
+	如果background是 0px -101px那就是宽度511高度27的截图左上贴上了lead框体左上，右移动了452px，才使小图标到了该有的位置，此方法是权宜之计*/
+}
+#lead a{
+	color:#666;
+	overflow:hidden;
+} 
+#supnav{
+	width:791px;
+	height:32px;
+	float:left;
+}
+#supnav a{		
+	display:block;
+	float:left;
+	color:white;
+	font-weight:bold;
+	height:32px;
+	width:76px;
+	text-align:center;
+	line-height:32px;
+	background:url(../img/global.gif) no-repeat right -96px;
+	/*如果按照上面的方法，量取一个宽度74高度32的截图出来，那左上的坐标的887 96，
+	那就必须写-887px -96px，但是这个截图不合适a.index的宽度56px，
+	所以为了加a.其他和a.index不同的背景分类a并写两次，代码冗余。
+	不冗余的办法就是把默认的left改成right从大图的右边开始套，
+	反正左边都是透明图层，a.index不同于其他a的宽度也没关系了。
+	此为特殊情况，也只有需要的小截图正好位于大图的最右边才能这样用*/
+	margin-left:-2px;
+	/*这里很复杂，本来应该是51+74*10=791px，但是这样有个问题
+	因为字体旁边的竖黑条纹是加在每个74长度的最右边，
+	那后续的hover背景也只能覆盖74宽度的字体块末端的竖黑条纹而不能覆盖字前面的竖黑条纹
+	所以集体给他们margin-left:-2px;让a框体覆盖掉字体前面的竖黑条纹（竖黑条纹是背景他不会被margin动）
+	由于margin了2px，所以a框体左移动了2px，后面的顺黑条纹又覆盖不到了，所以集体加2px变成了53+76*10，
+	同时a.index会左边溢出lead 所以再lead加overflow:hidden;*/
+}
+#supnav a.index{
+	width:53px;
+}
+#supnav a:hover{
+ 	background:url(../img/global.gif) no-repeat -380px -100px;
+}			
+#subnav{
+	width:791px;
+	height:27px;
+	float:left;
+}	
+#subnav a{	
+	display:block;
+	float:left;	
+	color:white;
+	text-indent:26px;
+	height:27px;
+	line-height:27px;
+	width:85px;
+}
+
+#wrap{
+	height:164px;
+}
+#wrap img{
+	display:block;
+	float:left;
+	/*img本身是内联块，要不就在html中每个img之间不要有空格，
+	要不就把img变为区块，然后全部左浮动。*/
+}
+
+#nav{
+	height:69px;
+	background:url(../img/global.gif) no-repeat 0 -177px;
+	color:white;
+}
+#nav img{
+	display:block;
+	float:right;
+}
+#nav div.nav1{
+	width:759px;
+	height:25px;	
+	text-align:center;
+}
+#nav div.nav1 a{
+	color:white;
+	line-height:25px;
+	text-decoration:none;
+}
+#nav div.nav2{
+	width:759px;
+	height:26px;	
+	text-align:center;
+}
+#nav div.nav2 a{
+	color:white;
+	line-height:26px;
+	text-decoration:none;
+}
+#nav div.nav2 a span{
+	color:yellow;
+}	
+
+#content{
+	height:1530px;
+	background:url(../img/contentbg.jpg);
+	padding:4px 10px 10px 10px;
+	/*让内部所有的框体都距离外边框content 上右下左的距离*/
+	position:relative;
+}
+/*内部各框体要点。
+topic star update自然排。
+adv focu data da tyro vc定位排。
+video1 2 3 4 5浮动排。
+bbs定位排（也可以浮动排，但是ie6 7 8不兼容。*/	
+
+#topic{
+	width:303px;
+	height:192px;
+	background:url(../img/bodytop.gif) no-repeat 0 -124px;
+	margin-bottom:6px;
+}
+#topic h1{
+	width:303px;
+	height:38px;
+	background:url(../img/bodytop.gif) no-repeat 0 0;
+	padding-top:9px;
+	/*为什么要在这里padding-top，
+	为什么在a中marign-top不行？，
+	为什么在a中padding-top会多出a原高度的背景？
+	记得写测试程序进行margin padding专题研究*/
+}	
+#topic h1 a{
+	color:white;
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:none;
+	display:block;
+	width:45px;
+	height:23px;
+	text-align:center;
+	line-height:23px;
+	margin-left:251px;
+	background:url(../img/bodytop.gif) no-repeat -241px -152px;
+}	
+#topic dl{
+	width:303px;
+	height:130px;
+	background:url(../img/bodytop.gif) no-repeat 0px -331px;
+}
+#topic dt{
+	width:100px;
+	height:112px;
+	border:1px solid black;
+	float:left;
+	margin:6px 0 0 15px;
+}
+#topic dd{
+	width:160px;
+	float:left;
+}
+#topic dd.dd1{
+	margin:6px 0 0 7px;		
+}
+#topic dd.dd2{
+	line-height:150%;
+	margin:4px 0 0 7px;		
+}
+#topic dd.dd1 a{
+	color:red;
+	text-decoration:none;
+	font-weight:bold;
+}
+#topic dd.dd2 a{
+	color:#666;
+}
+/*#content下的topic start update的样式都是一样的，可以套用，
+要注意的就是由于三个元素的高度稍有不同另外某些背景图片不同所以换背景图片记得换background坐标。
+底部背景在#topic下加。
+上部背景在h1下加。
+更多字体的背景在h1下面的a下面加(a记得block)。
+(理论上大背景上再加中背景再加小背景再加再小的背景都完全没问题，只要在大背景标签下一直嵌套标签。)
+边框背景在dl下加。*/
+	
+#star{
+	width:303px;
+	height:194px;
+	background:url(../img/bodytop.gif) no-repeat 0 -122px;
+	margin-bottom:5px;
+}
+#star h1{
+	width:303px;
+	height:38px;
+	background:url(../img/bodytop.gif) no-repeat 0 -47px;
+	padding-top:9px;
+	/*为什么要在这里padding-top，
+	为什么在a中marign-top不行？，
+	为什么在a中padding-top会多出a原高度的背景？
+	见margin padding专题研究*/
+}	
+#star h1 a{
+	color:white;
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:none;
+	display:block;
+	width:45px;
+	height:23px;
+	text-align:center;
+	line-height:23px;
+	margin-left:251px;
+	background:url(../img/bodytop.gif) no-repeat -241px -152px;
+}	
+#star dl{
+	width:303px;
+	height:138px;
+	background:url(../img/bodytop.gif) no-repeat 0px -331px;
+}
+#star dt{
+	width:100px;
+	height:112px;
+	border:1px solid black;
+	float:left;
+	margin:6px 0 0 15px;
+}
+#star dt img{
+	display:block;
+	width:100px;
+	height:112px;
+}
+#star dd{
+	width:164px;
+	float:left;
+}
+#star dd.dd1{
+	margin:6px 0 0 7px;		
+}
+#star dd.dd2{
+	line-height:150%;
+	margin:4px 0 0 7px;		
+}
+#star dd.dd1 a{
+	color:red;
+	text-decoration:none;
+	font-weight:bold;
+}
+#star dd.dd2 a{
+	color:#666;
+}	
+
+#update{
+	width:303px;
+	height:195px;
+	background:url(../img/bodytop.gif) no-repeat 0 -121px;
+	margin-bottom:6px;
+}
+#update h1{
+	width:303px;
+	height:38px;
+	background:url(../img/bodytop.gif) no-repeat 0 -94px;
+	padding-top:9px;
+	/*为什么要在这里padding-top，
+	为什么在a中marign-top不行？，
+	为什么在a中padding-top会多出a原高度的背景？
+	见margin padding专题研究*/
+}	
+#update h1 a{
+	color:white;
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:none;
+	display:block;
+	width:45px;
+	height:23px;
+	text-align:center;
+	line-height:23px;
+	margin-left:251px;
+	background:url(../img/bodytop.gif) no-repeat -241px -152px;
+}	
+#update dl{
+	width:303px;
+	height:138px;
+	background:url(../img/bodytop.gif) no-repeat 0px -331px;
+}
+#update dt{
+	width:100px;
+	height:112px;
+	border:1px solid black;
+	float:left;
+	margin:6px 0 0 15px;
+}
+#update dd{
+	width:160px;
+	float:left;
+}
+#update dd.dd1{
+	margin:6px 0 0 7px;		
+}
+#update dd.dd2{
+	line-height:150%;
+	margin:4px 0 0 7px;		
+}
+#update dd.dd1 a{
+	color:red;
+	text-decoration:none;
+	font-weight:bold;
+}
+#update dd.dd2 a{
+	color:#666;
+}	
+		
+#adv{
+	width:401px;
+	height:190px;
+	background:url(../img/bodytop.gif) no-repeat -303px 0;
+	position:absolute;
+	top:8px;
+	left:322px;
+}
+		
+#focu{
+	width:400px;
+	height:392px;
+	position:absolute;
+	top:204px;
+	left:322px;
+	margin-bottom:6px;
+	background:url(../img/bodytop.gif) no-repeat 0 94px;
+	/*注意这里为什么是94px。在body大图中坐标是0 288，
+	所以就是-288+（392-12）=94px。*/
+}	
+#focu h1{
+	width:400px;
+	height:49px;
+	background:url(../img/bodytop.gif) no-repeat 0 -235px;
+}
+#focu ul{
+	height:329px;
+	background:url(../img/bodytop.gif) no-repeat -303px -309px;
+	padding-top:4px;
+}	
+#focu ul li{
+	color:#666;
+	line-height:23px;
+	border-bottom:1px dotted #666;
+	width:362px;
+	margin:0 auto;
+}
+#focu ul li em{
+	font-style:normal;
+	float:right;
+}
+#focu ul li.t1{
+	border:none;
+	line-height:18px; 
+	color:red;
+	font-size:14px;
+	font-weight:bold;
+	text-align:center;
+}
+#focu ul li.t1 a:hover{
+	text-decoration:none;
+}
+#focu ul li.t2{
+	border-bottom:1px solid #ddd;
+	line-height:24px;
+	color:black;
+	font-size:12px;
+	font-weight:bold;
+	text-align:center;
+	margin-bottom:5px;
+}
+#focu ul li.t2 a:hover{
+	color:orange;
+}
+	
+#data{
+	width:220px;
+	height:168px;
+	background:url(../img/bodytop.gif) no-repeat 0 -163px;
+	/*-319+(168-12)=-163*/
+	position:absolute;
+	top:4px;
+	left:730px;
+}	
+#data h1{
+	width:220x;
+	height:44px;
+	background:url(../img/bodytop.gif) no-repeat 0 -190px;
+}
+#data ul{
+	width:220px;
+	height:102px;
+	background:url(../img/bodytop.gif) no-repeat 0 -481px;
+	padding-top:7px;
+}
+#data ul li{
+	text-indent:20px;
+	line-height:200%;
+}
+#data ul li a{
+	color:#666;
+}
+
+#da{
+	width:220px;
+	height:133px;
+	background:url(../img/bodytop.gif) no-repeat -391px -31px;
+	position:absolute;
+	top:180px;
+	left:730px;
+}	
+#da div{
+	margin-top:7px;
+	margin-left:5px;
+}
+#da img{
+	border:none;
+	padding:2.5px;
+}
+
+#tyro{
+	width:220px;
+	height:152px;
+	background:url(../img/bodytop.gif) no-repeat 0 -179px;
+	/*-319+(142-12)=-163*/
+	position:absolute;
+	top:318px;
+	left:730px;
+}	
+#tyro h1{
+	width:220x;
+	height:48px;
+	background:url(../img/bodytop.gif) no-repeat 0 -142px;
+}
+#tyro ul{
+	width:220px;
+	height:89px;
+	background:url(../img/bodytop.gif) no-repeat 0 -481px;
+}
+#tyro ul li{
+	text-indent:20px;
+	line-height:190%;
+}
+#tyro ul li a{
+	color:#666;
+}	
+	
+#vc{
+	width:220px;
+	height:119px;
+	background:url(../img/bodytop.gif) no-repeat -402px -190px;
+	position:absolute;
+	top:477px;
+	left:730px;
+}			
+#vc img{
+	margin-left:5px;
+	margin-top:7px;
+}	
+	
+/*video1比较复杂。
+video1(加整体的红色背景#950502）
+ h1（加上部背景）
+ div（加全白背景，通过margin-left，使左边留出条#950502的竖线）
+   p（加评测。。。那行字的背景）
+   dl（加dl框体背景）（用定位排，或者浮动）
+     dt（加dt背景 记得移动里面的图片留出蓝边框） dd
+ h2（加底边背景）
+ */			
+#video1{
+	background:#950502;
+	width:680px;
+	height:407px;
+	float:left;
+	margin-bottom:4px;	
+}
+#video1 h1{
+	width:680px;
+	height:43px;
+	background:url(../img/body2.gif) no-repeat 0 -562px
+}
+#video1 h1 a.a {
+	width:130px;
+	height:43px;
+	float:left;	
+}
+/*做热点的不用dw的方式，对a区块分类为a和b定义宽度高度后浮动在一起。*/
+#video1 h1 a.b {
+	width:208px;
+	height:43px;	
+	float:left;
+}			
+#video1 div{
+	width:661px;
+	height:354px;
+	background:white;
+	margin-left:8px;
+	position:relative;	
+	/*如果出现ie7第一次打开不对的兼容性情况，
+	就在div再上一层的vedio1加position:relative;*/	
+}
+#video1 div p{
+	color:white;
+	width:645px;
+	height:31px;
+	background:url(../img/body2.gif) no-repeat 0 -520px;
+	line-height:31px;
+	text-indent:12px;
+	margin-left:7px;
+}
+#video1 div p a{
+	color:white;
+}
+#video1 div p a:hover{
+	text-decoration:none;
+}
+#video1 div dl{
+	width:138px;
+	height:153px;
+	background:url(../img/body2.gif) no-repeat -291px -362px;
+	position:absolute;
+	/*或者用dl浮动排版，dl外层再加一个div层控制这些dl们左移动。*/
+}	
+#video1 div dl.dl1{	
+	top:36px;
+	left:25px;
+}	
+#video1 div dl.dl2{
+	top:36px;
+	left:182px;
+}	
+#video1 div dl.dl3{
+	top:36px;
+	left:339px;
+}	
+#video1 div dl.dl4{
+	top:36px;
+	left:496px;
+}	
+#video1 div dl.dl5{
+	top:193px;
+	left:25px;
+}	
+#video1 div dl.dl6{
+	top:193px;
+	left:182px;
+}	
+#video1 div dl.dl7{
+	top:193px;
+	left:339px;
+}	
+#video1 div dl.dl8{
+	top:193px;
+	left:496px;
+}	
+#video1 div dl dt{
+	width:122px;
+	height:108px;
+	background:url(../img/body2.gif) no-repeat -336px -98px;
+	margin:0 auto;
+	margin-top:8px;
+}
+#video1 div dl dt img{
+	display:block;
+	width:120px;
+	height:90px;
+	margin-left:1px;
+	padding-top:1px;
+}
+#video1 div dl dd{
+	width:122px;
+	height:45px;
+	line-height:120%;
+	color:white;
+	text-align:center;
+	margin:3px 0 0 8px;
+}
+#video1 div dl dd a{
+	color:white;
+}
+#video1 dl dd a:hover{
+	text-decoration:none;
+}			
+#video1 h2{
+	width:680px;
+	height:10px;
+	background:url(../img/body2.gif) no-repeat 0 -551px
+}	
+
+#video2{ 
+	background:url(../img/body2.gif) no-repeat -467px 308px;
+	/*-91+（407-8）=308*/
+	width:260px;
+	height:407px;	
+	float:right;
+}
+#video2 ul{
+	width:260px;
+	height:396px;/*407-8-3=396，给底边框留8高度再减去padding-top的3px*/
+	background:#950502 url(../img/body2.gif) no-repeat -467px -102px;	 
+	padding-top:3px;
+}	
+#video2 ul li{
+	width:249px;
+	height:121px;
+	background:url(../img/body2.gif) no-repeat -10px -607px;
+	margin-top:11px;
+}	
+#video2 ul li img{
+	display:block;
+	margin:0 auto;
+	padding-top:10px; 
+}	
+
+#video3{
+	background:url(../img/body2.gif) no-repeat -265px -230px;
+	/*-607+(393-16)=-230*/
+	width:327px;
+	height:393px;
+	float:left;
+}	
+#video3 h1{
+	width:327px;
+	height:38px;/*47-9=38*/
+	background:url(../img/body2.gif) no-repeat 0 0;
+	padding-top:9px;
+	/*为什么要在这里padding-top，
+	为什么在a中marign-top不行？，
+	为什么在a中padding-top会多出a原高度的背景？
+	见margin padding专题研究*/
+}	
+#video3 h1 a{
+	color:white;
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:none;
+	display:block;
+	width:45px;
+	height:23px;
+	text-align:center;
+	line-height:23px;
+	margin-left:273px;
+	background:url(../img/bodytop.gif) no-repeat -241px -152px;
+}	
+#video3 dl{
+	width:327px;
+	height:105px;
+	background: white url(../img/body2.gif) no-repeat -10px -737px;
+}
+#video3 dt{
+	width:110px;
+	height:100px;
+	border:1px solid black;
+	float:left;
+	margin:5px 0 0 20px;
+}
+#video3 dt img{
+	display:block;
+	width:110px;
+	height:100px;
+}
+#video3 dd{
+	width:164px;
+	float:left;
+}
+#video3 dd.dd1{
+	margin:5px 0 0 8px;		
+	font-weight:bold;
+	color:#666;
+}
+#video3 dd.dd2{
+	line-height:200%;
+	margin:4px 0 0 8px;		
+	color:#666;
+}	
+#video3 ul{
+	width:327px;
+	height:223px;
+	background:#fff url(../img/body2.gif) no-repeat -10px -737px;
+	padding-top:4px;
+}	
+#video3 ul li{
+	color:#666;
+	line-height:25px;
+	border-bottom:1px dotted #666;
+	width:286px;
+	margin:0 auto;
+}
+#video3 ul li em{
+	font-style:normal;
+	float:right;
+}
+
+#video4{
+	background:url(../img/body2.gif) no-repeat -265px -230px;
+	/*-607+(393-16)=-230*/
+	width:327px;
+	height:393px;
+	float:left;
+	margin-left:6px;
+}		
+#video4 h1{
+	width:327px;
+	height:38px;/*47-9=38*/
+	background:url(../img/body2.gif) no-repeat 0 -47px;
+	padding-top:9px;
+}	
+#video4 h1 a{
+	color:white;
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:none;
+	display:block;
+	width:45px;
+	height:23px;
+	text-align:center;
+	line-height:23px;
+	margin-left:273px;
+	background:url(../img/bodytop.gif) no-repeat -241px -152px;
+}	
+#video4 dl{
+	width:327px;
+	height:104px;
+	background: white url(../img/body2.gif) no-repeat -10px -737px;
+}
+#video4 dt{
+	width:110px;
+	height:100px;
+	border:1px solid black;
+	float:left;
+	margin:5px 0 0 20px;
+}
+#video4 dt img{
+	display:block;
+	width:110px;
+	height:100px;
+}
+#video4 dd{
+	width:164px;
+	float:left;
+}
+#video4 dd.dd1{
+	margin:5px 0 0 8px;		
+	font-weight:bold;
+	color:#666;
+}
+#video4 dd.dd2{
+	line-height:200%;
+	margin:4px 0 0 8px;		
+	color:#666;
+}	
+#video4 ul{
+	width:327px;
+	height:224px;
+	background:#fff url(../img/body2.gif) no-repeat -10px -737px;
+	padding-top:4px;
+}	
+#video4 ul li{
+	color:#666;
+	line-height:25px;
+	border-bottom:1px dotted #666;
+	width:286px;
+	margin:0 auto;
+}
+#video4 ul li em{
+	font-style:normal;
+	float:right;
+} 	
+
+#video5{
+	background:#fff url(../img/body2.gif) no-repeat -265px -248px;
+	/*-625+(393-16)=-248*/
+	width:275px;
+	height:393px;
+	float:right
+}		
+#video5 h1{
+	width:275px;
+	height:38px; /*47-9=38*/
+	background:url(../img/body2.gif) no-repeat 0 -383px;
+	padding-top:9px;
+}	
+#video5 h1 a{
+	color:white;
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:none;
+	display:block;
+	width:45px;
+	height:23px;
+	text-align:center;
+	line-height:23px;
+	margin-left:221px;
+	background:url(../img/bodytop.gif) no-repeat -241px -152px;
+}		
+#video5 ul{
+	background:#fff url(../img/body2.gif) no-repeat -339px -737px;
+	width:260px;
+	height:330px;/*393-47-16=330*/
+	padding-left:15px;
+}	
+#video5 ul li{
+	float:left;
+	padding:5px;
+}	
+
+#bbs{
+	background:url(../img/body2.gif) no-repeat 0px -1072px;
+	width:940px;
+	height:123px;
+	position:absolute;
+	top:1413px;
+	left:10px;
+	/*其实这里用一个clear:both再margin一下就搞定了，
+	但是clear会照成IE 6 7 8兼容性问题，所以用了定位做。*/
+}
+#bbs a img{
+	margin:10px 0 0 8px;
+}
+
+#footer{
+	height:37px;
+	background:url(../img/global.gif) no-repeat 0 -140px;
+}
+#footer p{
+	padding-top:9px;
+	padding-left:780px;
+}
+
+ 

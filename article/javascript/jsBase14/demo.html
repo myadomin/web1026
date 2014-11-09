@@ -1,0 +1,494 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>面向对象组件开发的实现原理</title>
+<style>
+#red, #yellow, #blue, #green{
+	width: 100px;
+	height: 100px;
+	position: absolute;
+	top:350px;
+}
+#red{
+	left:300px;
+	background: red;
+}
+#yellow{
+	left:450px;
+	background: yellow;
+}
+#blue{
+	left:600px;
+	background: blue;
+}
+#green{
+	left:750px;
+	background: green;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+<div id="red">拖拽功能</div>
+<div id="yellow">拖拽及鼠标按下title变化功能</div>
+<div id="blue">拖拽及鼠标按下及移动中title变化功能</div>
+<div id="green">拖拽及鼠标按下及移动中及抬起title变化变色功能</div>
+ 
+<p class="title">本文概述</p>
+在大型前端项目(例如jQeuryUI)中一般采用组件开发的形式<br /> 
+为什么要用组件开发的形式？它有什么好处？如何进行组件开发？<br />
+本文主要讨论面向对象组件开发的实现原理 解决以上疑问 最终形成正规组件开发的三要素 options event method
+
+<p class="title">DEMO演示</p>
+
+<p class="title" style="padding-top:100px">js代码</p>
+<pre>
+//面向对象组件开发的实现原理
+
+<strong>//1：拖拽4个对象 除了实现拖拽以外 还有各自的独有功能</strong>  
+/*window.onload = function(){
+	//红色块体 只有拖拽功能
+	var dragRed = new Drag('red'); 
+
+	//除了拖拽 按下浏览器标题显示按下了   				
+	var dragYellow = new Drag('yellow', function(){   
+		document.title = '按下了';
+	});
+
+	//除了拖拽 还有xxx 
+	var dragBlue = new Drag('blue', function(){     
+		document.title = '按下了';
+	}, function(){
+		document.title = '移动中';
+	});
+
+	//除了拖拽 还有xxx
+	var dragGreen = new Drag('green', function(){   
+		document.title = '按下了';
+	}, function(){
+		document.title = '移动中';
+	}, function(){
+		document.title = '抬起了';
+	});
+}
+
+function Drag(id, toDown, toMove, toUp){
+	this.oDiv2 = document.getElementById(id);
+	this.scrollLeft = 0;
+	this.scrollTop = 0;
+	this.disX = 0;
+	this.disY = 0;
+	var _this = this;    //预存this
+	this.oDiv2.onmousedown = function(ev){
+		_this.fnDown(ev, this, toMove, toUp);
+		//实例化的时候传入了第二个函数参数toDown 这里执行toDown函数
+		toDown();	
+		return false;    
+	};
+}
+
+Drag.prototype.fnDown = function(ev, theMouseDownObj, toMove, toUp){
+	var oEvent = ev || event;  
+	var _this = this;   
+	this.scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+	this.scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+	this.disX = oEvent.clientX + this.scrollLeft - theMouseDownObj.offsetLeft;
+	this.disY = oEvent.clientY + this.scrollTop - theMouseDownObj.offsetTop;
+	document.onmousemove = function(ev){
+		_this.fnMove(ev); 
+		//实例化的时候传入了第三个函数参数toMove 这里执行toMove函数
+		toMove();
+		return false;  
+	};
+	document.onmouseup = function(){
+		_this.fnUp();
+		//实例化的时候传入了第四个函数参数toUp 这里执行toUp函数
+		toUp();
+	}	
+}
+
+Drag.prototype.fnMove = function(ev){   
+	var oEvent = ev || event;  
+	nLeft = oEvent.clientX + this.scrollLeft - this.disX;
+	nTop = oEvent.clientY + this.scrollTop - this.disY;
+	this.oDiv2.style.left = nLeft + 'px';
+	this.oDiv2.style.top = nTop + 'px';     
+}
+
+Drag.prototype.fnUp = function(){
+	document.onmousemove = null;
+	document.onmouseup = null;
+}
+//出现的问题
+//1：4个参数要不断的参数传递 太麻烦 解决办法：把prototype方法都包到init函数里去 就不需要传递参数了
+//2：有些对象只有1个参数 有些有4个参数 函数必须写4个参数 但是传了1个参数就会报错 看如下解决原理
+*/
+
+
+
+<strong>//2：解决上面的问题2的办法 引入配置参数 默认参数</strong>
+/*var a = {          
+	name: '小明'     //配置参数
+}
+var b = {           
+	name: '小强'     //默认参数
+}
+for(var i in a){
+	b[i] = a[i];
+}
+alert(b.name);      //小明
+//如果在配置参数中 设置了name: '小明' 那通过上面的方法 最终b.name被覆盖 也是小明
+//如果在配置参数中 没有设置name值 那最终b.name没被覆盖 还是小强
+//所以可以将上面的4个参数打包成一个json 在默认参数中写上完整的4个默认参数
+//最终传入的参数是配置参数 如果某个参数有配置就用配置参数 没有就用已写好的默认参数
+*/
+
+
+
+<strong>//3：解决上面的问题1和问题2</strong>
+/*window.onload = function(){
+	var dragRed = new Drag(); 
+	dragRed.init({                 
+		id: 'red'
+	});  
+
+	var dragYellow = new Drag();
+	dragYellow.init({
+		id: 'yellow',
+		toDown: function(){
+			document.title = '按下了';
+		}
+	});
+
+	var dragBlue = new Drag();
+	dragBlue.init({
+		id: 'blue',
+		toDown: function(){
+			document.title = '按下了';
+		},
+		toMove: function(){
+			document.title = '移动中';
+		}
+	});
+
+	var dragGreen = new Drag();
+	dragGreen.init({
+		//传入这这些参数 让绿色除了拖拽 还具备其他的3个功能                    
+		id: 'green',                     //必传id
+		toDown: function(){              //配置参数 
+			document.title = '按下了';
+		},
+		toMove: function(){
+			document.title = '移动中';
+		},
+		toUp: function(){
+			document.title = '抬起了';
+		}
+	});	
+}
+
+function Drag(){
+	this.scrollLeft = 0;
+	this.scrollTop = 0;
+	this.disX = 0;
+	this.disY = 0;
+	this.settings = {         //默认参数 空函数
+		toDown: function(){},
+		toMove: function(){},
+		toUp: function(){}
+	}
+}
+
+Drag.prototype.init = function(options){
+	var _this = this;     
+	this.obj = document.getElementById(options.id);    
+	
+	//拷贝 如果某个key有设置配置参数 那配置参数就覆盖默认参数 否则继续用默认参数
+	for(var i in options){           	
+		this.settings[i] = options[i];   
+	}
+
+	this.obj.onmousedown = function(ev){
+		_this.fnDown(ev, this);
+		//调用参数已设置好的toDown方法
+		_this.settings.toDown();      
+
+		document.onmousemove = function(ev){
+			_this.fnMove(ev);
+			//调用参数已设置好的toMove方法 
+			_this.settings.toMove();   
+			return false;  
+		};
+
+		document.onmouseup = function(){
+			_this.fnUp();
+			//调用参数已设置好的toUp方法 
+			_this.settings.toUp();    
+		}
+
+		return false;    
+	};
+}
+
+Drag.prototype.fnDown = function(ev, theMouseDownObj){
+	var oEvent = ev || event;  
+	var _this = this;   
+	this.scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+	this.scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+	this.disX = oEvent.clientX + this.scrollLeft - theMouseDownObj.offsetLeft;
+	this.disY = oEvent.clientY + this.scrollTop - theMouseDownObj.offsetTop;
+}
+
+Drag.prototype.fnMove = function(ev){   
+	var oEvent = ev || event;  
+	nLeft = oEvent.clientX + this.scrollLeft - this.disX;
+	nTop = oEvent.clientY + this.scrollTop - this.disY;
+	this.obj.style.left = nLeft + 'px';
+	this.obj.style.top = nTop + 'px';     
+}
+
+Drag.prototype.fnUp = function(){
+	document.onmousemove = null;
+	document.onmouseup = null;
+}*/
+//出现问题3：对于toDown: function(){document.title = '按下了';}这样的函数段落 
+//如果多人协作开发 必须在花括号内不断加语句 最好能每个人拥有自己的空间 各自独立的写函数段落到自身的空间
+//正规的组件开发采用触发自定义事件的方式 创造个人空间 进行协作开发 如下
+
+
+
+<strong>//4：触发自定义事件的原理</strong>
+/*window.onload = function(){
+	var oDiv1 = document.getElementById('div11');
+	var oSpan1 = document.getElementById('span11');
+
+	bindEvent(oDiv1, 'click', function(){  //oDiv1下的 系统onclick事件
+		alert(1);
+	});
+
+	bindEvent(oDiv1, 'click', function(){  //oDiv1下的 系统onclick事件
+		alert(2);
+	});
+
+	bindEvent(oSpan1, 'show', function(){  //oSpan1下的 自定义show事件
+		alert(3);
+	});
+
+	bindEvent(oSpan1, 'show', function(){  //oSpan1下的 自定义show事件
+		alert(4);
+	});
+
+	bindEvent(oSpan1, 'hide', function(){  //oSpan1下的 自定义hide事件
+		alert(5);
+	});
+
+	bindEvent(oSpan1, 'hide', function(){  //oSpan1下的 自定义hide事件
+		alert(6);
+	});
+
+	console.log(oSpan1.listeners);
+	//经过bindEvent有层级结构的存储 就形成了如下json 把相应的函数放到了相应的层级位置 便于后续解析
+	// oSpan1.listeners = {
+	// 	show: [function(){alert(3)}, function(){alert(4)}],
+	// 	hide: [function(){alert(5)}, function(){alert(6)}]
+	// }
+
+	fireEvent(oSpan1, 'show');   //主动触发自定义事件 依次弹出 3 4
+	//执行这个函数 就是传入参数 解析上面的oSpan1.listeners.show[i]找到函数 然后执行
+	//这样对于oSpan1对象 能在独立空间各自写alert(3) alert(4)等函数段落 
+	//而执行的时候 只需要执行show就可以一起调用上面两个函数段了
+	//所以合适多人协作开发 每个人在自己的独立空间各自写自己的函数段落
+	//而执行的时候 主动触发自定义事件 这些函数段落就能一起执行了
+}
+
+//层次存储各个函数
+function bindEvent(obj, events, fn){
+	//obj.listenrs[event][i]就是某个fn 有层次的存放各个函数
+	obj.listeners = obj.listeners || {};
+	obj.listeners[events] = obj.listeners[events] || [];
+	obj.listeners[events].push(fn);
+
+	if(obj.addEventListener){
+		obj.addEventListener(events, fn, false);
+	}else{
+		obj.attachEvent('on'+events, fn);
+	}
+}
+
+//主动触发自定义事件
+function fireEvent(obj, events){   
+	for(var i in obj.listeners[events]){
+		obj.listeners[events][i]();
+	}
+}*/
+
+
+
+<strong>//5：引入自定义事件 解决问题3 最终拖拽组件开发如下</strong>
+<strong>//形成正规组件开发的三要素 options event method</strong>
+window.onload = function(){
+	//红色块体对象 只有拖拽功能
+	var dragRed = new Drag(); 
+	dragRed.init({                 
+		id: 'red'
+	});  
+
+	//黄色块体对象 除了拖拽 还有鼠标按下title变化功能
+	var dragYellow = new Drag();
+	dragYellow.init({
+		id: 'yellow'
+	});
+	bindEvent(dragYellow, 'toDown', function(){  
+		document.title = '按下了';
+	});
+
+	//蓝色块体对象 除了拖拽 还有鼠标按下移动中title变化功能
+	var dragBlue = new Drag();
+	dragBlue.init({
+		id: 'blue'
+	});
+	bindEvent(dragBlue, 'toDown', function(){  
+		document.title = '按下了';
+	});
+	bindEvent(dragBlue, 'toMove', function(){   
+		document.title = '移动中';
+	});
+
+	//绿色块体对象 除了拖拽 还有鼠标按下移动中抬起title变化功能 以及鼠标抬起变色功能
+	var dragGreen = new Drag();
+	dragGreen.init({                     		//组件要素2 method
+		id: 'green'                      	//组件要素1 options  
+	});	
+	bindEvent(dragGreen, 'toDown', function(){ 	//组件要素3 event
+		document.title = '按下了';
+	});
+	bindEvent(dragGreen, 'toMove', function(){   
+		document.title = '移动中';
+	});
+	//针对同一对象dragGreen的同一函数toUp 程序员A写的部分程序
+	bindEvent(dragGreen, 'toUp', function(){    
+		document.title = '抬起了';               
+	});
+	//针对同一对象dragGreen的同一函数toUp 程序员B写的部分程序
+	bindEvent(dragGreen, 'toUp', function(){    
+		document.body.style.background = 'black';     
+	});
+	//为什么要将在配置参数内的函数参数 提取出来成为自定义绑定事件 然后用fireEvent(_this, xx)触发？
+	//例如程序员B在上面再加了一个bindEvent绑定 继续绑定到dragGreen 'toUp'上面 多加一个鼠标抬起变色功能 
+	//这样程序员A和B就可以在自己独立的空间里写自己的函数段落 而这些段落都是增强dragGreen对象的toUp功能
+	//从而便于多人协作开发组件 无论在dragGreen对象的toUp功能下增加多少个bindEvent 
+	//通过下面的fireEvent触发 都能类似现代事件一样依次触发执行
+
+}
+
+//构造函数 参数设置
+function Drag(){
+	this.scrollLeft = 0;
+	this.scrollTop = 0;
+	this.disX = 0;
+	this.disY = 0;
+	this.settings = {         
+		//原先这里写的toUp = function(){}等默认参数为什么不需要写了
+		//因为经过上面的bindEvent(xxx)已经形成了三个参数的层级存储
+		//下面fireEvent(_this, 'toDown')解析这个层级存储的时候 obj.listeners[events][i]();
+		//有这个函数就执行这个函数 层级存储没有的就不执行任何函数 也就是上面都不做
+		//所以这里定义的空函数就没有存在的意义了
+	}
+}
+
+//method
+Drag.prototype.init = function(options){  
+	var _this = this;     
+	this.obj = document.getElementById(options.id);   //必传参数
+
+	for(var i in options){ 
+		//拷贝 如果某个key有设置配置参数 那配置参数就覆盖默认参数 否则继续用默认参数         	 
+		this.settings[i] = options[i];   
+	}
+
+	this.obj.onmousedown = function(ev){
+		_this.fnDown(ev, this);
+		//触发当前对象下的toDown事件 其实就相当于执行toDown函数  
+		fireEvent(_this, 'toDown');        
+
+		document.onmousemove = function(ev){
+			_this.fnMove(ev);
+			//触发当前对象下的toMove事件 其实就相当于执行toMove函数  
+			fireEvent(_this, 'toMove'); 
+			return false;  
+		};
+
+		document.onmouseup = function(){
+			_this.fnUp();
+			//触发当前对象下的toUp事件 其实就相当于执行toUp函数    
+			fireEvent(_this, 'toUp');    
+		}
+
+		return false;    //阻止文字选中
+	};
+}
+
+Drag.prototype.fnDown = function(ev, theMouseDownObj){
+	var oEvent = ev || event;  
+	var _this = this;    //预存this
+	this.scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+	this.scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+	this.disX = oEvent.clientX + this.scrollLeft - theMouseDownObj.offsetLeft;
+	this.disY = oEvent.clientY + this.scrollTop - theMouseDownObj.offsetTop;
+}
+
+Drag.prototype.fnMove = function(ev){   
+	var oEvent = ev || event;  
+	nLeft = oEvent.clientX + this.scrollLeft - this.disX;
+	nTop = oEvent.clientY + this.scrollTop - this.disY;
+	this.obj.style.left = nLeft + 'px';
+	this.obj.style.top = nTop + 'px';     
+}
+
+Drag.prototype.fnUp = function(){
+	document.onmousemove = null;
+	document.onmouseup = null;
+} 
+
+//模拟事件绑定 层级存储函数
+function bindEvent(obj, events, fn){
+	obj.listeners = obj.listeners || {};
+	obj.listeners[events] = obj.listeners[events] || [];
+	obj.listeners[events].push(fn);
+
+	//为什么要加obj.nodeType的判断？
+	//因为如果是元素节点就会有nodeType 就需要执行这段绑定事件 执行类似onclick等绑定事件
+	//如果是对象不是元素节点 那只是为了模拟事件绑定 只要通过执行上面3句 形成三个参数的层级存储就行了
+	//不需要执行这里的真正的事件绑定 如果执行会报错
+	if(obj.nodeType){
+		if(obj.addEventListener){
+			obj.addEventListener(events, fn, false);
+		}else{
+			obj.attachEvent('on'+events, fn);
+		}
+	}
+}
+
+//主动触发自定义事件
+function fireEvent(obj, events){  
+	//为什么这里要判断obj.lisetener
+	//因为某些new出来的对象比如这里的dragRed 并没有执行事件绑定bindEvent(xxx)
+	//所以就没有定义obj.lisetener 如果没有定义 在解析fireEvent(dragRed, xxx)的时候就不执行函数 避免报错
+	if(obj.listeners){
+		for(var i in obj.listeners[events]){
+			obj.listeners[events][i]();
+		}	
+	}
+}
+</pre>
+
+
+</body> 
+</html>    
+      
+     
+     
+     

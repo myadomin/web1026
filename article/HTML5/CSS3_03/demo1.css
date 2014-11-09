@@ -1,0 +1,30 @@
+/*当前屏幕宽度大于1000px时*/
+.wrap{
+	border: 1px solid green;
+	width: 100%;
+	height: 100px;
+	padding: 10px 0;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-box;
+	display: box;
+}
+.header{
+	background: red;
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	-ms-box-flex: 1;
+	box-flex: 1;
+}
+.sidebar{
+	background: green;
+	width: 200px;
+	margin: 0 10px;
+}
+.content{
+	background: blue;
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	-ms-box-flex: 1;
+	box-flex: 1;
+}

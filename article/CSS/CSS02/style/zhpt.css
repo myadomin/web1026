@@ -1,0 +1,46 @@
+﻿#contents{
+	height:670px;
+	background:#fff;
+		color:#666;
+	}
+#contents img{
+padding:10px;
+}
+#contents dl.dl1{
+background:url(../img/server1.jpg) no-repeat right top;
+width:620px;
+height:270px;
+margin:0 auto;
+font-size:14px;
+}
+#contents dl.dl1 dt{
+ width:240px;
+ font-weight:bold;
+ line-height:30px;
+	}
+#contents dl.dl1 dd{
+ width:240px;
+ margin-top:8px;
+ line-height:150%;
+	}
+ 		
+#contents dl.dl2{
+background:url(../img/server2.jpg) no-repeat left 20px;
+width:620px;
+height:270px;
+margin:0 auto;
+font-size:14px;
+}
+#contents dl.dl2 dt{
+ width:250px;
+ font-weight:bold;
+ margin-left:auto;  /*是dt部分自适应到背景图片旁边*/
+ line-height:30px;
+ height:30px;
+	}
+#contents dl.dl2 dd{
+ width:250px;
+ line-height:150%;
+ padding-top:8px;
+ margin-left:auto;  /*是dd部分自适应到背景图片旁边*/
+	}

@@ -1,0 +1,501 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>CSS3-3D操作</title>
+<link rel="stylesheet" href="demo.css">
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+<p class="title">DEMO演示 css3--3D操作 IE9+ firebox chrome</p>
+
+<p>1: transform:rotateX(xxdeg) rotateY rotateZ</p>
+<div id="div1">
+	<div>rotateX</div>
+	<div>rotateY</div>
+	<div>rotateZ</div>
+</div>
+
+<p>2: 模仿优酷书本折叠效果 transition结合transform</p>
+<div id="book">
+	<div class="books"></div>
+	<div class="books"></div>
+	<div class="books"></div>
+	<div class="books"></div>
+	<div class="books"></div>
+	<div id="close_book">X</div>
+</div>
+
+<p>3: 3D轮播图 animation结合transform</p>
+<div id="images">
+	<img src="img/img1.jpg" class="show" />
+	<img src="img/img2.jpg" />
+	<img src="img/img3.jpg" />
+	<img src="img/img4.jpg" />
+	<img src="img/img5.jpg" />
+	<span id="prev_image">上一张</span>
+	<span id="next_image">下一张</span>
+</div>
+
+<p>4: 折纸下拉菜单 animation结合transform</p>
+<div id="menu_list">
+	<h1 id="title">折纸下拉菜单</h1>
+	<div>选项1</div>
+	<div>选项2</div>
+	<div>选项3</div>
+	<div>选项4</div>
+	<div>选项5</div>
+	<div>选项6</div>
+	<div>选项7</div>
+</div>
+
+
+<p class="title">css3代码</p>
+<pre>
+*{
+	margin: 0px;
+	padding: 0px;
+}
+body{
+	padding-bottom: 100px;
+}
+p{
+	height: 60px;
+	line-height: 90px;
+	clear: both;
+}
+ul{
+	list-style: none;
+}
+
+<strong>/*1: transform:rotateX(xxdeg) rotateY rotateZ*/</strong>
+#div1{
+	width: 900px;
+	height: 150px;
+	padding-top: 50px;
+	background: #ccc;
+	/*3D景深 transform-style perspective必须加在包裹元素#div1上*/
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	/*越小 变化幅度越大*/
+	-webkit-perspective: 800px;
+	perspective: 800px;
+}
+#div1 div{
+	width: 100px;
+	height: 100px;
+	background: green;
+	float: left;
+	margin: 0 100px;
+	-webkit-transition: 2s;
+	transition: 2s;
+}
+#div1:hover div:nth-child(1){
+	-webkit-transform: rotateX(180deg);
+	transform: rotateX(180deg);
+}
+#div1 div:nth-child(2){
+	/*设定rotate的基准点是left center 默认是center center*/
+	-webkit-transform-origin: left center;
+	transform-origin: left center;
+}
+#div1:hover div:nth-child(2){
+	-webkit-transform: rotateY(-180deg);
+	transform: rotateY(-180deg);
+}
+#div1:hover div:nth-child(3){
+	-webkit-transform: rotateZ(180deg);
+	transform: rotateZ(180deg);
+}
+
+
+<strong>/*2: 模仿优酷 书本折叠效果 transition结合transform*/</strong>
+#book{
+	width: 600px;
+	height: 600px;
+	background: #58e;
+	position: relative;
+	/*3D景深*/
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-perspective: 800px;
+	perspective: 800px;
+}
+#book .books{
+	position: absolute;
+	width: 200px;
+	text-align: center;
+	height: 200px;
+	line-height: 200px;
+	left: 200px;
+	top: 200px;
+	cursor: pointer;
+}
+#book div:nth-child(1){
+	background: url(img/1.jpg);
+	z-index: 5;
+	transform-origin: left center;
+	-webkit-transform-origin: left center;
+	/*在js中设置transition 第三个参数决定了书本翻开的前后顺序*/
+	/*transition: 1s ease-in 0s;*/		
+}
+/*在js中设置 transform*/
+/*#book:hover div:nth-child(1){
+	transform: rotateX(180deg);		
+}*/
+#book div:nth-child(2){
+	background: url(img/2.jpg);
+	z-index: 4;
+	transform-origin: right center;
+	-webkit-transform-origin: right center;
+}
+#book div:nth-child(3){
+	background:url(img/3.jpg);
+	z-index: 3;
+	transform-origin: center top;
+	-webkit-transform-origin: center top;
+}
+#book div:nth-child(4){
+	background: url(img/4.jpg);
+	z-index: 2;
+	transform-origin: center bottom;
+	-webkit-transform-origin: center bottom;
+}
+#book div:nth-child(5){
+	background: url(img/5.jpg);
+	z-index: 1;
+}
+#close_book{
+	position: absolute;
+	width: 30px;
+	text-align: center;
+	height: 30px;
+	line-height: 30px;
+	left: 570px;
+	top: 0px;
+	cursor: pointer;
+	background: #f91;
+}
+
+
+<strong>/*3: 3D轮播图 animation结合transform*/</strong>
+#images{
+	width: 400px;
+	height: 600px;
+	margin: 20px 0 0 100px;
+	position: relative;
+	/*3D景深*/
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-perspective: 800px;
+	perspective: 800px;
+}
+#prev_image, #next_image{
+	width: 50px;
+	text-align: center;
+	height: 50px;
+	line-height: 50px;
+	position: absolute;
+	top: 125px;
+	background: #c48;
+	color: #fff;
+	border-radius: 50%;
+	font-size: 12px;
+	cursor: pointer;
+}
+#prev_image{
+	position: absolute;
+	left: -70px;
+}
+#next_image{
+	position: absolute;
+	left: 420px;
+}
+#images img{
+	width: 400px;
+	height: 300px;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	opacity: 0;
+	-webkit-transform-origin: center bottom;
+	transform-origin: center bottom;	
+}
+/*通过js 给每个img元素轮流加show或者hide class形成效果*/
+#images .show{
+	/*定义animation: show 2s linear 2s infinite alternate;*/
+	/*加了class=show的元素 1s完成show运动 forwards定格在100%状态 默认定格回0%*/
+	-webkit-animation: show 1s forwards;
+	animation: show 1s forwards;
+}
+#images .hide{
+	-webkit-animation: hide 1s forwards;
+	animation: hide 1s forwards;
+}
+/*插入关键帧*/
+@-webkit-keyframes show{
+	0% {-webkit-transform: rotateX(180deg); opacity: 0;}
+	50% {-webkit-transform:rotateX(-25deg); opacity: 1;}
+	60% {-webkit-transform:rotateX(18deg); opacity: 1;}
+	70% {-webkit-transform:rotateX(-12deg); opacity: 1;}
+	80% {-webkit-transform:rotateX(8deg); opacity: 1;}
+	90% {-webkit-transform:rotateX(-6deg); opacity: 1;}
+	100% {-webkit-transform: rotateX(0deg); opacity: 1;}
+}
+@keyframes show{
+	0% {transform: rotateX(180deg); opacity: 0;}
+	50% {transform:rotateX(-25deg); opacity: 1;}
+	60% {transform:rotateX(18deg); opacity: 1;}
+	70% {transform:rotateX(-12deg); opacity: 1;}
+	80% {transform:rotateX(8deg); opacity: 1;}
+	90% {transform:rotateX(-6deg); opacity: 1;}
+	100% {transform: rotateX(0deg); opacity: 1;}
+}
+@-webkit-keyframes hide{
+	0% {-webkit-transform: rotateX(0deg); opacity: 1;}
+	100% {-webkit-transform: rotateX(180deg); opacity: 0;}
+}
+@keyframes hide{
+	0% {transform: rotateX(0deg); opacity: 1;}
+	100% {transform: rotateX(180deg); opacity: 0;}
+}
+
+
+<strong>/*4: 折纸下拉菜单*/</strong>
+#menu_list{
+	width: 200px;
+	height: 340px;
+	position: relative;
+	/*3D景深*/
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-perspective: 800px;
+	perspective: 800px;
+}
+#menu_list h1{
+	width: 200px;
+	text-align: center;
+	height: 40px;
+	line-height: 40px;
+	background: #9ee;
+	font-size: 16px;
+	cursor: pointer;
+}
+#menu_list div{
+	width: 200px;
+	text-indent: 10px;
+	height: 40px;
+	line-height: 40px;
+	background: #ee3;
+	margin-top: 2px;
+	-webkit-transform-origin: center top;
+	transform-origin: center top;
+	-webkit-transform: rotateX(-120deg);
+	transform: rotateX(-120deg);
+	opacity: 0;
+}
+/*js中定时器设置每个div的animation*/
+/*#menu_list div:nth-child(7){
+	animation: open 1s ease-in forwards;
+}*/
+@-webkit-keyframes open{
+	0% {-webkit-transform: rotateX(-120deg); opacity: 0;}
+	100% {-webkit-transform: rotateX(0deg); opacity: 1;}
+}
+@-webkit-keyframes close{
+	0% {-webkit-transform: rotateX(0deg); opacity: 1;}
+	100% {-webkit-transform: rotateX(-120deg); opacity: 0;}
+}
+@keyframes open{
+	0% {transform: rotateX(-120deg); opacity: 0;}
+	100% {transform: rotateX(0deg); opacity: 1;}
+}
+@keyframes close{
+	0% {transform: rotateX(0deg); opacity: 1;}
+	100% {transform: rotateX(-120deg); opacity: 0;}
+}
+</pre>
+
+<p class="title">js代码</p>
+<pre>
+//CSS3-3D操作 IE9+ firebox chorme
+window.onload = function(){
+
+	<strong>//第一部分：模仿优酷 书本折叠效果</strong>
+	var oBook = document.getElementById('book');
+	var aBooks = oBook.getElementsByTagName('div');
+	var oCloseBook = document.getElementById('close_book');
+
+	aBooks[0].onclick = function(){
+		aBooks[0].style.transition = '1s ease-in 0s';
+		aBooks[0].style.webkitTransition = '1s ease-in 0s';
+		aBooks[0].style.transform = 'rotateY(-180deg)';
+		aBooks[0].style.webkitTransform = 'rotateY(-180deg)';
+
+		aBooks[1].style.transition = '1s ease-in 1s';
+		aBooks[1].style.webkitTransition = '1s ease-in 1s';
+		aBooks[1].style.transform = 'rotateY(180deg)';
+		aBooks[1].style.webkitTransform = 'rotateY(180deg)';
+
+		aBooks[2].style.transition = '1s ease-in 2s';
+		aBooks[2].style.webkitTransition = '1s ease-in 2s';
+		aBooks[2].style.transform = 'rotateX(180deg)';
+		aBooks[2].style.webkitTransform = 'rotateX(180deg)';
+
+		aBooks[3].style.transition = '1s ease-in 3s';
+		aBooks[3].style.webkitTransition = '1s ease-in 3s';
+		aBooks[3].style.transform = 'rotateX(-180deg)';
+		aBooks[3].style.webkitTransform = 'rotateX(-180deg)';
+	}
+
+	oCloseBook.onclick = function(){
+		aBooks[0].style.transition = '1s ease-in 3s';
+		aBooks[0].style.webkitTransition = '1s ease-in 3s';
+		aBooks[0].style.transform = 'rotateY(0deg)';
+		aBooks[0].style.webkitTransform = 'rotateY(0deg)';
+
+		aBooks[1].style.transition = '1s ease-in 2s';
+		aBooks[1].style.webkitTransition = '1s ease-in 2s';
+		aBooks[1].style.transform = 'rotateY(0deg)';
+		aBooks[1].style.webkitTransform = 'rotateY(0deg)';
+
+		aBooks[2].style.transition = '1s ease-in 1s';
+		aBooks[2].style.webkitTransition = '1s ease-in 1.01s';	//chrome bug 设置为1图片消失 为1.01没事
+		aBooks[2].style.transform = 'rotateX(0deg)';
+		aBooks[2].style.webkitTransform = 'rotateX(0deg)';
+
+		aBooks[3].style.transition = '1s ease-in 0s';
+		aBooks[3].style.webkitTransition = '1s ease-in 0s';
+		aBooks[3].style.transform = 'rotateX(0deg)';
+		aBooks[3].style.webkitTransform = 'rotateX(0deg)';
+	}
+
+
+
+	<strong>//第二部分：3D轮播图</strong>
+	var oImages = document.getElementById('images');
+	var aImg = oImages.getElementsByTagName('img');
+	var oPrev = document.getElementById('prev_image');
+	var oNext = document.getElementById('next_image');
+	var num = 0;
+
+	//轮流加class hide show
+	oPrev.onclick = function(){
+		aImg[num].className = 'hide';
+		num--;
+		if(num == -1){
+			num = 4;
+		}
+		aImg[num].className = 'show';
+	}
+	oNext.onclick = function(){
+		aImg[num].className = 'hide';
+		num++;
+		if(num == 5){
+			num = 0;
+		}
+		aImg[num].className = 'show';
+	}
+
+
+
+	<strong>//第三部分：折纸下拉菜单</strong>
+	var oMenuList = document.getElementById('menu_list');
+	var aDivList = oMenuList.getElementsByTagName('div');
+	var oTitle = document.getElementById('title');
+	var listIndex = 0;
+	var openTimer = null;
+	var closeTimer = null;
+	var openFlag = false;
+	var closeFlag = false;
+
+	oTitle.onmouseenter = function(){
+		if(openFlag || closeFlag){		//下拉或者上拉菜单进行中的时候 都不开新定时器
+			return;
+		}
+		openTimer = setInterval(function(){
+			aDivList[listIndex].style.animation = 'open 1s ease-out forwards';
+			aDivList[listIndex].style.webkitAnimation = 'open 1s ease-out forwards';
+			listIndex++;
+			if(listIndex == 7){
+				listIndex = 6;
+				openFlag = false;
+				clearInterval(openTimer);
+			}
+		},300);
+		openFlag = true;
+	}
+
+	oMenuList.onmouseleave = function(){
+		if(openFlag || closeFlag){
+			return;
+		}
+		closeTimer = setInterval(function(){
+			aDivList[listIndex].style.animation = 'close 1s ease forwards';
+			aDivList[listIndex].style.webkitAnimation = 'close 1s ease forwards';
+			listIndex--;
+			if(listIndex == -1){
+				listIndex = 0;
+				closeFlag = false;
+				clearInterval(closeTimer);
+			}
+		},300);
+		closeFlag = true;
+	}
+
+
+}
+</pre>
+
+<p class="title">html代码</p>
+<pre>
+&ltp>1: transform:rotateX(xxdeg) rotateY rotateZ&lt/p>
+&ltdiv id="div1">
+	&ltdiv>rotateX&lt/div>
+	&ltdiv>rotateY&lt/div>
+	&ltdiv>rotateZ&lt/div>
+&lt/div>
+
+&ltp>2: 模仿优酷书本折叠效果 transition结合transform&lt/p>
+&ltdiv id="book">
+	&ltdiv class="books">&lt/div>
+	&ltdiv class="books">&lt/div>
+	&ltdiv class="books">&lt/div>
+	&ltdiv class="books">&lt/div>
+	&ltdiv class="books">&lt/div>
+	&ltdiv id="close_book">X&lt/div>
+&lt/div>
+
+&ltp>3: 3D轮播图 animation结合transform&lt/p>
+&ltdiv id="images">
+	&ltimg src="img/img1.jpg" class="show" />
+	&ltimg src="img/img2.jpg" />
+	&ltimg src="img/img3.jpg" />
+	&ltimg src="img/img4.jpg" />
+	&ltimg src="img/img5.jpg" />
+	&ltspan id="prev_image">上一张&lt/span>
+	&ltspan id="next_image">下一张&lt/span>
+&lt/div>
+
+&ltp>4: 折纸下拉菜单 animation结合transform&lt/p>
+&ltdiv id="menu_list">
+	&lth1 id="title">折纸下拉菜单&lt/h1>
+	&ltdiv>选项1&lt/div>
+	&ltdiv>选项2&lt/div>
+	&ltdiv>选项3&lt/div>
+	&ltdiv>选项4&lt/div>
+	&ltdiv>选项5&lt/div>
+	&ltdiv>选项6&lt/div>
+	&ltdiv>选项7&lt/div>
+&lt/div>
+</pre>
+
+
+</body> 
+</html>    
+      
+     
+     
+     

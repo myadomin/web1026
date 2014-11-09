@@ -1,0 +1,186 @@
+<!DOCTYPE html>   		<!-- HTML DTD声明只需要这样写就行了 -->
+<html>  		 		<!-- html标签 后面也xmlns=xxx了 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>HTML5新增标签</title>
+<style type="text/css">
+*{
+	margin: 0px;
+	padding: 0px;
+}
+body{
+	width:1000px;
+	padding-bottom: 100px;
+	margin: 0 auto;
+	/*border: 1px solid #ccc;*/
+	/*font-weight: bold;*/
+}
+header{
+	height: 100px;
+	background: red;
+}
+nav{
+	height: 100px;
+	background: yellow;
+}
+section{
+	width: 680px;
+	height: 400px;
+	float: left;
+	background: #894;
+}
+article{
+	width: 640px;
+	height: 360px;
+	background: #A51;
+}
+article header{
+	width: 600px;
+	height: 50px;
+	background: red;
+}
+article figure{
+	width: 600px;
+	height: 240px;
+	background: yellow;
+}
+article footer{
+	width: 600px;
+	height: 30px;
+	background: #793;
+}
+aside{
+	width: 300px;
+	height: 400px;
+	float: right;
+	background: #913;
+}
+footer{
+	clear: both;
+	height: 100px;
+	background: green;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+</head>
+<body>
+	
+	<p class="title">DEMO演示 html5新增结构标签</p>
+
+	<br/><strong>第一部分：新结构标签 用上这些标签语义化更好 SEO更友好。如果低版本浏览器想兼容结构化标签 可以使用html5shiv.js</strong>
+	<header>
+		header
+	</header>
+	<nav>
+		nav
+	</nav>
+	<section>    
+		section定义一个区域
+		<article>   
+			article定义一篇文章
+			<header>文章标题header</header>
+			<figure>   
+			figure定义图文区域
+				<figcaption>figcaption图文标题</figcaption>
+				<p>图文内容</p>	
+				<meter value="4" min="0" max="10" low="3" high="7"></meter> 4/10 meter IE不支持 3以下7以上变色<br/>
+				<progress value="25" max="100" id="pro"></progress> 25% progress IE10+支持<br/>
+				当前进度<span id="pro_num">25</span>% <input type="button" id="btn1" value="开始进度条">
+				<script type="text/javascript">
+					var oBtn1 = document.getElementById('btn1');
+					var oPro = document.getElementById('pro');
+					var oProNum = document.getElementById('pro_num');
+					var Timer = null;
+					oBtn1.onclick = function(){
+						clearInterval(Timer);
+						Timer = setInterval(function(){
+							oPro.value = oPro.value + 1;
+							oProNum.innerHTML = oPro.value;
+							if(oPro.value == '100'){
+								clearInterval(Timer);
+							}
+						}, 50);
+					}
+				</script>
+			</figure>
+			<footer>文章页脚footer</footer>
+		</article>
+	</section>
+	<aside>
+		aside
+	</aside>
+	<footer>
+		footer
+	</footer>
+	<br/><br/><br/>
+
+
+
+	<strong>第二部分：表单元素不再需要嵌套在form里面 元素只需要加上from="表单id"就能对应到某个表单<br/>
+	新input类型 新表单元素 新表单属性 支持度太差 基本不用</strong><br/><br/><br/>
+
+
+
+	<strong>第三部分：常用被删除的标签</strong><br/>
+	frameset frame noframes被删除 都用iframe<br/>
+	框架集SEO很差 搜索引擎不会抓取框架集内容 所以框架集一般用于不需抓取的后台设计<br/><br/><br/>
+	
+
+<p class="title">html5代码</p>
+<pre>
+&ltheader>
+	header
+&lt/header>
+&ltnav>
+	nav
+&lt/nav>
+&ltsection>    
+	section定义一个区域
+	&ltarticle>   
+		article定义一篇文章
+		&ltheader>文章标题header&lt/header>
+		&ltfigure>   
+		figure定义图文区域
+			&ltfigcaption>figcaption图文标题&lt/figcaption>
+			&ltp>图文内容&lt/p>	
+			&ltmeter value="4" min="0" max="10" low="3" high="7">&lt/meter> 4/10 meter IE不支持 3以下7以上变色&ltbr/>
+			&ltprogress value="25" max="100" id="pro">&lt/progress> 25% progress IE10+支持&ltbr/>
+			当前进度&ltspan id="pro_num">25&lt/span>% &ltinput type="button" id="btn1" value="开始进度条">
+			&ltscript type="text/javascript">
+				var oBtn1 = document.getElementById('btn1');
+				var oPro = document.getElementById('pro');
+				var oProNum = document.getElementById('pro_num');
+				var Timer = null;
+				oBtn1.onclick = function(){
+					clearInterval(Timer);
+					Timer = setInterval(function(){
+						oPro.value = oPro.value + 1;
+						oProNum.innerHTML = oPro.value;
+						if(oPro.value == '100'){
+							clearInterval(Timer);
+						}
+					}, 50);
+				}
+			&lt/script>
+		&lt/figure>
+		&ltfooter>文章页脚footer&lt/footer>
+	&lt/article>
+&lt/section>
+&ltaside>
+	aside
+&lt/aside>
+&ltfooter>
+	footer
+&lt/footer>
+</pre>
+
+
+</body> 
+</html>    
+      
+     
+     
+
+ 
+ 
+

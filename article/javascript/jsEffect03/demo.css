@@ -1,0 +1,80 @@
+﻿body,div,img{
+	margin:0px;
+	padding:0px;
+}
+#small_pic{
+	width:220px;
+	height:220px;
+	border:1px solid red;
+	float:left;
+	margin:20px 0 0 100px;
+  	position:relative;
+  	/*z-index:1;*/
+}
+#img1{
+	height:200px;
+	width:200px;
+  	margin:10px 0 0 10px;
+}
+#mark{
+	display:block;
+	width:200px;
+	height:200px;
+	position:absolute;
+	left:10px;
+	top:10px; 
+	z-index:3;
+	/*IE7+ 这里必须加上background后 oMark.onmouseover才有效*/
+	background: red;
+	opacity: 0;
+	filter:Alpha(opacity=0);
+}
+#float_pic{
+	width:60px;
+	height:60px;
+	background:#ccc;
+	opacity:0.5;
+	filter:Alpha(opacity=50);
+  	position:fixed;
+ 	left:0px;
+ 	top:0px;
+	cursor:crosshair;
+	z-index:2;
+	display:none;
+}
+#big_pic{
+	border:1px solid red;
+	width:300px;
+	height:300px;
+	float:left;
+	margin:50px 0 0 10px;
+  	overflow:hidden;
+  	display:none;
+}
+#img2{
+	position:relative;   
+	left:0px;
+	top:0px;             
+}
+
+/*
+1：这里#small_pic img1原来的区域，本身有一个200*200的图片在，然后通过#mark #float_pic的绝对或者相对定位，才能覆盖到原来的#small_pic img1区域
+通过#mark的position:absolute; 往上父级中#small_pic有  position:relative; 设置left top，让#mark 完全覆盖了原来的img1区域 
+#float_pic通过定位又覆盖了#mark的一部分区域，所以#small_pic img1区域有img1 #mark #float_pic三层。
+2：如果都没有设置CSS的z-index的情况下,这里是 #float_pic覆盖#mark，#mark覆盖img1
+能设置背景的覆盖不能设置背景的。在这里img1本身是图片不能设置背景，所以他永远是被覆盖的。
+都已经设置背景的（假如这里#mark #float_pic都设置了背景）,那就看HTML中，写后面的覆盖前面的，
+这里#float_pic在HTML中位于#mark的后面，所以是#float_pic覆盖#mark。
+3：通过CSS的z-index可以变化谁覆盖谁，z-index越大，越在屏幕外面离用户越近，外面覆盖里面
+(必须是被定位的元素才有z-index属性，这里的img1没有定位，z-index设置无效，被定位的元素z-index是负数就在他后面，正数及0就在他前面)。
+例如这里在不改变HTML写法的情况下，将#mark为z-index:2; 将#float_pic为z-index:1; ，那就是#mark覆盖#float_pic了
+4：这里#mark完全覆盖了img1，如果想#mark既能覆盖，又能完全显现img1，
+那就让他background:none  或者不设置background  或者设置了background但是opacity:0; 就是用这个原理来做遮罩层的
+5：这里为什么要在整个img1上设置一个#mark的遮罩层？
+首先#float_pic必须在img1层之上，因为他要显现或者消失
+而在img1上加上onmouseover out显现消失#float_pic，那之后#float_pic onmousemove的时候，由于鼠标在#float_pic上。
+#float_pic在img1层之上，那img1就无法判断这个时候鼠标是onmouseover 还是out了，然后#float_pic就不断的消失显现。
+为了解决这个问题，在img1上做一个遮罩层#mark，位于#float_pic及img1的前面，并且是透明（background:none  或者不设置background  或者设置background但opacity:0;）
+在透明的#mark上加上onmouseover out，再加上mousemove问题就解决了
+具体到这里就是#mark的z-index大于#float_pic，并且是透明或者不加背景的就可以
+*/

@@ -1,0 +1,530 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>表单美化和进度条</title>
+<style>
+*{
+	margin:0px;
+	padding:0px;
+}
+img{
+	border:none;
+}
+ul{
+	list-style:none;
+}
+#warp{
+	width:500px;
+	height:50px;
+	border:1px solid #ccc;
+	margin:50px 0 0 50px;
+} 
+#progress{
+	width:0px;
+	height:50px;
+	background:#abcedf;
+}
+#warp input{
+	width:50px;
+	text-align:center;
+	height:30px;
+	line-height:30px;
+	font-size:16px;
+	float:left;
+}
+#warp p{
+	width:100px;
+	text-align:center;
+	height:30px;
+	line-height:30px;
+	font-size:16px;
+	float:left;
+}
+
+#file_wrap{
+	width:300px;
+	height:30px;
+	margin:50px 0 0 50px;
+}
+#text{
+	width:200px;
+	text-indent:5px;
+	height:30px;
+	line-height:30px;
+	font-size:16px;
+	border:1px solid #ccc;
+	float:left;	
+	overflow:hidden;
+}
+#file_wrap span{
+	display:block;
+	width:80px;
+	text-align:center;
+	height:28px;
+	line-height:28px;
+	border:2px solid #dea;
+	float:left;
+	cursor:pointer;
+	margin-left:5px;
+	border-radius: 5px;
+}
+#upload{
+	display:none;
+}
+
+#radio_wrap{
+	width:500px;
+	height:30px;
+	margin:50px 0 0 50px;
+}
+#radio_wrap div{
+	width:68px;
+	text-indent:32px;
+	height:28px;
+	line-height:28px;
+	background:url(img/radioOff.jpg) no-repeat 0  0;
+	float:left;
+}
+#radio_wrap .checking{
+	background:url(img/radioOn.jpg) no-repeat 0  0;
+}
+#radio_wrap input{
+	display:none;
+}
+
+#checkbox_wrap{
+	width:500px;
+	height:30px;
+	margin:50px 0 0 50px;
+}
+#checkbox_wrap div{
+	width:88px;
+	text-indent:36px;
+	height:30px;
+	line-height:28px;
+	background:url(img/checkOff.jpg) no-repeat 0  0;
+	float:left;
+}
+#checkbox_wrap .checking{
+	background:url(img/checkOn.jpg) no-repeat 0  0;
+}
+#checkbox_wrap input{
+	display:none;
+}
+
+#select_wrap{
+	width:500px;
+	height:200px;
+	margin:50px 0 0 50px;
+}
+#select_wrap span{
+	float:left;
+}
+#select_wrap .content{
+	display:block;
+	width:200px;
+	text-indent:10px;
+	height:30px;
+	line-height:30px;
+	font-size:18px;
+	border:1px solid #ccc;
+}
+#select_wrap .button{
+	display:block;
+	width:31px;
+	height:32px;
+	background:url(img/select.jpg);
+}
+#select_wrap ul{
+	clear:both;
+	width:200px;
+	border-right:1px solid #ccc;
+	border-left:1px solid #ccc;
+	display:none;
+}
+#select_wrap ul li{
+	width:200px;
+	text-indent:10px;
+	height:30px;
+	line-height:30px;
+	font-size:18px;
+	border-bottom:1px solid #ccc;
+	cursor:pointer;
+}
+#select_wrap select{
+	display:none;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="../../../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+<p class="title">概述 表单美化</p>
+<pre>
+表单美化的最常用做法：
+使用label for 点击&ltdiv>吃饭&lt/div> 就相当于点击了checkbox 
+利用这个特性将input表单隐藏 然后美化&ltdiv>吃饭&lt/div>就可以了
+&ltlabel for="eat">
+	&ltdiv>吃饭&lt/div>
+	&ltinput id="eat" type="checkbox" name="checkbox" checked="checked" value="eat"/>
+&lt/label>
+&ltlabel for="sleep">
+	&ltdiv>睡觉&lt/div>
+	&ltinput id="sleep" type="checkbox" name="checkbox" value="sleep"/>
+&lt/label>
+&ltlabel for="say">
+	&ltdiv>吐槽&lt/div>
+	&ltinput id="say" type="checkbox" name="checkbox" value="say"/>
+&lt/label>
+
+也可以和本DEMO一样 不用label for 用click事件触发表单的click事件
+</pre>
+
+
+<p class="title">DEMO演示 表单美化</p>
+
+<div id="warp">
+	<div id="progress"></div> 
+	<input type="button" value="开始"/>
+	<p>进度：<span>0%</span></p>
+</div>
+
+<div id="file_wrap">
+<input type="text" name="text" id="text"/>
+<span>附件</span>
+<input type="file" name="upload" id="upload"/>
+</div>
+
+<div id="radio_wrap">
+	<div class="checking">男</div>
+	<div>女</div>
+	<div>其他</div>
+	<input type="radio" name="radio" checked="checked" value="boy"/>
+	<input type="radio" name="radio" value="girl"/>
+	<input type="radio" name="radio" value="other"/>
+</div>
+
+<div id="checkbox_wrap">
+	<div class="checking">吃饭</div>
+	<div>睡觉</div>
+	<div>吐槽</div>
+	<input type="checkbox" name="checkbox" checked="checked" value="eat"/>
+	<input type="checkbox" name="checkbox" value="sleep"/>
+	<input type="checkbox" name="checkbox" value="say"/>
+</div>
+
+<div id="select_wrap">
+  	<span class="content"></span>
+	<span class="button"></span>
+	<ul>
+		<li>111</li>
+		<li>222</li>
+		<li>333</li>
+		<li>444</li>
+	</ul>
+	<select>
+		<option>111</option>
+		<option>222</option>
+		<option>333</option>
+		<option>444</option>
+	</select>
+</div>
+	
+
+<p class="title">js代码</p>
+<pre>
+//表单美化
+$(function(){
+	
+	<strong>//1：美化进度条</strong>
+	var flag = true;
+	$("#warp input").click(function(){
+		//只准点击一次按钮 再次点击无效
+		if(flag){                                       
+			var allProgressWidth = $("#warp").width();
+			var nWidth = 0;
+			var nNum = 0;
+			var timer = setInterval(function(){
+				//定时器 nWidth每隔一段时间增加1%的总进度条长度的长度
+				nWidth += allProgressWidth/100;            
+				nNum += 1;
+				if(nWidth == allProgressWidth){
+					clearInterval(timer);
+				}
+			//定时器 每隔一段时间改变div #progress的width
+		  	$("#progress").css("width",nWidth+"px");    
+		  	$("#warp p span").html(nNum+"%");		
+			},50);
+		}
+		flag = false;                                   
+	});
+	
+	
+	<strong>//2：美化上传</strong>
+	$("#file_wrap span").click(function(){
+		//点击已美化的span 就触发#unload的点击事件 相当于点击了被隐藏的type=file的input #unload
+		$("#upload").click();                  
+	});
+	//每当#upload变化一次(点击上传一次) 就重新输出当前被上传的文件名
+	$("#upload").change(function(){           
+		var sVal = $("#upload").val();          
+		$("#text").val(sVal);                   
+	});
+ 	
+ 	
+ 	<strong>//3：美化radio单选</strong>
+  	$("#radio_wrap div").click(function(){
+  		//当第n个被美化的div被点击就 触发第n个radio input的点击事件 相当于第n个radio input被点击
+  		$("#radio_wrap input").eq($(this).index()).click();
+  		//当前被点击的div背景设为class="checking" 兄弟节点div class="" 模拟被点击                             
+  		$(this).attr("class","checking").siblings().attr("class",""); 
+  	});
+  
+  
+  	<strong>//4：美化checkbox</strong>
+  	$("#checkbox_wrap div").click(function(){
+  		//当前第n个div被点击就触发第n个checkbox input的点击事件 相当于第n个checkbox input被点击
+  		$("#checkbox_wrap input").eq($(this).index()).click();
+  		//当前被点击的div背景toggleClass class="checking" 模拟被点击       
+  		$(this).toggleClass("checking");                          
+  	});
+  
+  
+  	<strong>//5：美化select</strong>
+	$("span").click(function(){ 
+		//span区域点击的话 就让ul上拉下拉                               
+		$("#select_wrap ul").slideToggle(50);
+		return false;
+	});
+	$(document).click(function(){
+		$("#select_wrap ul").slideUp(50);
+	});
+	//鼠标移入哪个li 就让哪个li变色 模拟option外观
+	$("#select_wrap ul li").mouseover(function(){               
+		$(this).css("background","#1ae").siblings().css("background","");
+	})
+	.click(function(){
+		$("#select_wrap option").eq($(this).index()).click();	 	//第n个li点击 就触发第n个option的点击
+		$("#select_wrap .content").text($(this).text());       		//第n个li点击 就输入第n个li的文本作为span.content的文本
+		$(this).parent().hide();                                    	//点击事件最后，隐藏ul
+	});
+  
+});
+</pre>
+ 
+<p class="title">html代码</p>
+<pre>
+&ltpre>
+&ltdiv id="warp">
+	&ltdiv id="progress">&lt/div> 
+	&ltinput type="button" value="开始"/>
+	&ltp>进度：&ltspan>0%&lt/span>&lt/p>
+&lt/div>
+
+&ltdiv id="file_wrap">
+&ltinput type="text" name="text" id="text"/>
+&ltspan>附件&lt/span>
+&ltinput type="file" name="upload" id="upload"/>
+&lt/div>
+
+&ltdiv id="radio_wrap">
+	&ltdiv class="checking">男&lt/div>
+	&ltdiv>女&lt/div>
+	&ltdiv>其他&lt/div>
+	&ltinput type="radio" name="radio" checked="checked" value="boy"/>
+	&ltinput type="radio" name="radio" value="girl"/>
+	&ltinput type="radio" name="radio" value="other"/>
+&lt/div>
+
+&ltdiv id="checkbox_wrap">
+	&ltdiv class="checking">吃饭&lt/div>
+	&ltdiv>睡觉&lt/div>
+	&ltdiv>吐槽&lt/div>
+	&ltinput type="checkbox" name="checkbox" checked="checked" value="eat"/>
+	&ltinput type="checkbox" name="checkbox" value="sleep"/>
+	&ltinput type="checkbox" name="checkbox" value="say"/>
+&lt/div>
+
+&ltdiv id="select_wrap">
+  	&ltspan class="content">&lt/span>
+	&ltspan class="button">&lt/span>
+	&ltul>
+		&ltli>111&lt/li>
+		&ltli>222&lt/li>
+		&ltli>333&lt/li>
+		&ltli>444&lt/li>
+	&lt/ul>
+	&ltselect>
+		&ltoption>111&lt/option>
+		&ltoption>222&lt/option>
+		&ltoption>333&lt/option>
+		&ltoption>444&lt/option>
+	&lt/select>
+&lt/div>
+</pre>
+
+<p class="title">css代码</p> 
+<pre>
+*{
+	margin:0px;
+	padding:0px;
+}
+img{
+	border:none;
+}
+ul{
+	list-style:none;
+}
+#warp{
+	width:500px;
+	height:50px;
+	border:1px solid #ccc;
+	margin:50px 0 0 50px;
+} 
+#progress{
+	width:0px;
+	height:50px;
+	background:#abcedf;
+}
+#warp input{
+	width:50px;
+	text-align:center;
+	height:30px;
+	line-height:30px;
+	font-size:16px;
+	float:left;
+}
+#warp p{
+	width:100px;
+	text-align:center;
+	height:30px;
+	line-height:30px;
+	font-size:16px;
+	float:left;
+}
+
+#file_wrap{
+	width:300px;
+	height:30px;
+	margin:50px 0 0 50px;
+}
+#text{
+	width:200px;
+	text-indent:5px;
+	height:30px;
+	line-height:30px;
+	font-size:16px;
+	border:1px solid #ccc;
+	float:left;	
+	overflow:hidden;
+}
+#file_wrap span{
+	display:block;
+	width:80px;
+	text-align:center;
+	height:28px;
+	line-height:28px;
+	border:2px solid #dea;
+	float:left;
+	cursor:pointer;
+	margin-left:5px;
+	border-radius: 5px;
+}
+#upload{
+	display:none;
+}
+
+#radio_wrap{
+	width:500px;
+	height:30px;
+	margin:50px 0 0 50px;
+}
+#radio_wrap div{
+	width:68px;
+	text-indent:32px;
+	height:28px;
+	line-height:28px;
+	background:url(img/radioOff.jpg) no-repeat 0  0;
+	float:left;
+}
+#radio_wrap .checking{
+	background:url(img/radioOn.jpg) no-repeat 0  0;
+}
+#radio_wrap input{
+	display:none;
+}
+
+#checkbox_wrap{
+	width:500px;
+	height:30px;
+	margin:50px 0 0 50px;
+}
+#checkbox_wrap div{
+	width:88px;
+	text-indent:36px;
+	height:30px;
+	line-height:28px;
+	background:url(img/checkOff.jpg) no-repeat 0  0;
+	float:left;
+}
+#checkbox_wrap .checking{
+	background:url(img/checkOn.jpg) no-repeat 0  0;
+}
+#checkbox_wrap input{
+	display:none;
+}
+
+#select_wrap{
+	width:500px;
+	height:300px;
+	margin:50px 0 0 50px;
+}
+#select_wrap span{
+	float:left;
+}
+#select_wrap .content{
+	display:block;
+	width:200px;
+	text-indent:10px;
+	height:30px;
+	line-height:30px;
+	font-size:18px;
+	border:1px solid #ccc;
+}
+#select_wrap .button{
+	display:block;
+	width:31px;
+	height:32px;
+	background:url(img/select.jpg);
+}
+#select_wrap ul{
+	clear:both;
+	width:200px;
+	border-right:1px solid #ccc;
+	border-left:1px solid #ccc;
+	display:none;
+}
+#select_wrap ul li{
+	width:200px;
+	text-indent:10px;
+	height:30px;
+	line-height:30px;
+	font-size:18px;
+	border-bottom:1px solid #ccc;
+	cursor:pointer;
+}
+#select_wrap select{
+	display:none;
+}
+</pre>
+
+
+</body> 
+</html>    
+      
+     
+     
+     

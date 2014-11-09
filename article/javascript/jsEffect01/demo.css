@@ -1,0 +1,155 @@
+﻿
+/*布局注意点：各定位元素的z-index层级*/
+body,ul,li,div{
+	margin:0px;
+	padding:0px;
+}
+ul{
+	list-style-type:none;
+}
+#playimg{
+	width:400px;
+	height:434px;              /*320+114*/
+	position:absolute;
+	left:400px;
+	top:130px;
+	border:1px solid #666;
+	z-index:1;
+}
+#bigimg ul{
+	width:400px;
+	height:320px;
+	z-index:1;
+	position:relative;
+}
+#mark_bottom{
+	width:400px;
+	height:20px;
+	background:black;
+	position:absolute;
+	left:0px;
+	top:300px;
+	z-index:3;
+	opacity:0.5;
+	filter:Alpha(opacity=50);
+}
+#text{
+	width:200px;
+	height:20px;
+	line-height:20px;
+	position:absolute;
+	left:10px;
+	top:300px;
+	z-index:9997;
+	font-size:12px;
+	color:#fff;
+}
+#number{
+	width:20px;
+	height:20px;
+	line-height:20px;
+	position:absolute;
+	left:370px;
+	top:300px;
+	/*层级仅次于按钮遮罩层 不能被大图覆盖*/
+	z-index:9997;   
+	font-size:12px;
+	color:#fff;
+}
+#mark_left{
+	width:200px;
+	height:320px;
+	position:absolute;
+	left:0px;
+	top:0px;
+	z-index:9998;
+	/* IE7+ 这里必须加上background属性后 oMark1.onmouseover才有效*/
+	background:red;                 
+	opacity:0;
+	filter:Alpha(opacity=0);
+}
+#mark_right{
+	width:200px;
+	height:320px;
+	position:absolute;
+	left:200px;
+	top:0px;
+	/*#bigimg ul li的z-index要不断的增大以显现每个大图 所以遮罩层的层级不能低于他们 
+	否则移除事件无效了 他层级只能仅次于按钮*/
+	z-index:9998;
+	/* IE7+ 这里必须加上background属性后 oMark1.onmouseover才有效*/
+	background:red;                 
+	opacity:0;
+	filter:Alpha(opacity=0);
+}
+#prev{
+	width:60px;
+	height:60px;
+	background:url(img/btn.gif);
+	z-index:9999;
+	/*#bigimg ul li的z-index要不断的增大以显现每个大图 所以按钮的层级要最高 不能被覆盖从而点不到*/
+	position:absolute;
+	left:10px;
+	top:140px;
+	opacity:0;
+	filter:Alpha(opacity=0);
+}
+#next{
+	width:60px;
+	height:60px;
+	background:url(img/btn.gif) no-repeat left bottom;
+	z-index:9999;
+	position:absolute;
+	left:330px;
+	top:140px;
+	opacity:0;
+	filter:Alpha(opacity=0);
+}
+#bigimg ul li{
+	width:400px;
+	height:320px;
+	position:absolute;
+	left:0px;
+	top:0px;
+	z-index:1;
+	overflow:hidden;
+}
+#bigimg ul li.active{
+	z-index:2;
+}
+#smallimg{
+	width:400px;
+	height:114px;
+	background:#ccc;
+	position:relative;    
+	/*这里必须设置相对定位点然后overflow:hidden;才能有效隐藏ul溢出部分，
+	如果不设置relative，那子级的ul就会一直往父级找relative
+	一直都找不到就找到了最父级，那他就只相对最父级才会溢出隐藏了*/
+	overflow:hidden;     
+}
+#smallimg ul{
+	height:94px;
+	margin-top:10px;
+	position:absolute;
+	left:0px;
+}
+#smallimg ul li{
+	width:120px;
+	height:94px;
+	float:left;
+	/*aSmallLi用padding-left出边框效果，这样移动一个aSmallLi就行了 以后设计到移动一个li的时候尽量padding不要margin*/
+	padding-left:10px;         
+	opacity:0.6; 
+	filter:Alpha(opacity=60);              
+	cursor:pointer;
+}
+#smallimg ul li.active{
+	opacity:1;
+	filter:Alpha(opacity=100);
+}
+#smallimg ul li img{
+	width:120px;
+	height:94px;
+}
+ 
+ 

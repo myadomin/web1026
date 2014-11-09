@@ -1,0 +1,434 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商品放大镜</title>
+<style>
+*{
+	margin:0px;
+	padding:0px;
+}
+img{
+	border:none;
+}
+ul{
+	list-style:none;
+}
+#zoom{
+	width:674px;
+	height:365px;
+	margin:50px 0 0 50px;
+	-border:1px solid green;
+	position:relative;
+}
+#pic{
+	width:300px;
+	height:300px;
+	border:1px solid #ccc;
+	float:left;
+	position:relative;
+}
+#pic img{
+	width:300px;
+	height:300px;
+	position:absolute;
+	display:none;
+}
+#pic img.show{
+	display:block;
+}
+#pic span{
+	display:block;
+	width:100px;
+	height:100px;
+	background:#ccc;
+	position:absolute;
+	opacity:0.3;
+	left:0px;
+	top:0px;
+	display:none;
+}
+#big_pic_wrap{
+	width:350px;
+	height:350px;
+	border:1px solid #ccc;
+	overflow:hidden;
+	float:left;
+	margin:0 0 0 20px;
+	position:relative;
+	display:none;
+}
+#big_pic_wrap img{
+	width:1050px;
+	height:1050px;
+	position:absolute;
+	left:0px;
+	top:0px;
+	display:none;
+}
+#big_pic_wrap img.show{
+	display:block;
+}
+
+#tab{
+	width:780px;
+	height:60px;
+	position:absolute;
+	left:0px;
+	top:305px;
+}
+#tab div{
+	float:left;
+}
+#tab div.button{
+	width:21px;
+	text-align:center;
+	height:58px;
+	line-height:58px;
+	color:#333;
+	font-size:30px;
+	font-weight:bold;
+	border:1px solid #ccc;
+	cursor:pointer;
+}
+#tab div.tab_wrap{                    /* 64*4=256   */
+	width:256px;
+	height:60px;
+	overflow:hidden;
+	position:relative;
+}
+#tab div.tab_wrap ul{                /* 64*6=384   */
+	width:384px;
+	height:60px;
+	position:absolute;
+}
+#tab div.tab_wrap ul li{            /*一个li的宽度是64*/
+	width:60px;
+	height:60px;
+	float:left;
+	padding:0 2px 0 2px;
+}
+#tab div.tab_wrap ul li img{
+	display:block;
+	width:56px;
+	height:56px;
+	border:2px solid #ccc;
+	cursor:pointer;
+}
+#tab div.tab_wrap ul li.active img{
+	border:2px solid orange;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="../../../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+<p class="title">DEMO演示 商品放大镜</p>
+
+<div id="zoom">
+	<div id="pic">
+		<img class="show" src="img/1.jpg"/>
+		<img src="img/2.jpg"/>
+		<img src="img/3.jpg"/>
+		<img src="img/4.jpg"/>
+		<img src="img/5.jpg"/>
+		<img src="img/6.jpg"/>
+		<span></span>
+	</div> 
+	<div id="big_pic_wrap">
+		<img class="show" src="img/1.jpg"/>
+		<img src="img/2.jpg"/>
+		<img src="img/3.jpg"/>
+		<img src="img/4.jpg"/>
+		<img src="img/5.jpg"/>
+		<img src="img/6.jpg"/> 
+	</div>
+	<div id="tab">
+		<div class="button prev">&lt</div> 
+		<div class="tab_wrap">
+			<ul>
+				<li class="active"><img src="img/1.jpg"/></li>
+				<li><img src="img/2.jpg"/></li>
+				<li><img src="img/3.jpg"/></li>
+				<li><img src="img/4.jpg"/></li>
+				<li><img src="img/5.jpg"/></li>
+				<li><img src="img/6.jpg"/></li>
+			</ul>
+		</div>
+		<div class="button next">&gt</div> 
+	</div> 
+</div> 
+	 
+<p class="title">js代码</p>
+<pre>
+//商品放大镜
+$(function(){
+
+//所有图片 具备放大镜效果
+$("#pic").hover(function(ev){
+	//鼠标放上图片后 显示遮罩层 显示大图
+	$(this).find("span").show(); 	                         
+	$("#big_pic_wrap").show();
+	
+	$(document).mousemove(function(ev){                    
+		var nPicoffsetLeft = $("#pic").offset().left;
+		var nPicoffsetTop = $("#pic").offset().top;
+		var nSpanWidth = $("#pic span").width();
+		var nSpanHeight = $("#pic span").height();
+		var nPicWidth = $("#pic").width();
+		var nPicHeight = $("#pic").height();
+		var nBigPicWidth = $("#big_pic_wrap img").width();
+		var nBigPicHeight = $("#big_pic_wrap img").height();
+		var nBigWrapWidth = $("#big_pic_wrap").width();
+		var nBigWrapHeight = $("#big_pic_wrap").height();
+		var nLeft = ev.pageX - nPicoffsetLeft - nSpanWidth/2;
+		var nTop = ev.pageY - nPicoffsetTop - nSpanHeight/2;
+
+		//限制拖拽范围
+		if(nLeft < 0){
+			nLeft = 0;
+		}
+		if(nLeft > nPicWidth - nSpanWidth){
+			nLeft = nPicWidth - nSpanWidth;
+		}
+		if(nTop < 0){
+			nTop = 0;
+		}
+		if(nTop > nPicHeight - nSpanHeight){
+			nTop = nPicHeight - nSpanHeight;
+		}
+
+		//遮罩层的拖拽
+		$("#pic span").css({left:nLeft+"px",top:nTop+"px"}); 
+
+		//大图移动和遮罩层的移动成一定比例
+		var nBigLeft = -(nBigPicWidth-nBigWrapWidth)/(nPicWidth-nSpanWidth)*nLeft;       
+		var nBigTop = -(nBigPicHeight-nBigWrapHeight)/(nPicHeight-nSpanHeight)*nTop;
+		$("#big_pic_wrap img").css({left:nBigLeft+"px",top:nBigTop+"px"});                
+	});
+},function(){
+	$(this).find("span").hide();
+	$("#big_pic_wrap").hide();
+});
+
+
+//tabSwtich 匿名函数自我执行 创建私有作用域  
+(function(){       			 
+	var iNow = 0;          
+	var iBtn = 0;
+	var liWidth = $(".tab_wrap ul li").innerWidth();
+	var liNum = $(".tab_wrap ul li").size();
+
+	 //当前被放上鼠标的小图 记录index 再执行tab函数
+	$(".tab_wrap ul li").mouseover(function(){
+		iNow = $(this).index();                     
+		tab(iNow);
+	})
+
+	//点击的按钮 移动小图位置 同时改变iNow 以改变图片及小图边框
+	$(".next").click(function(){	                
+		if(iNow == liNum-1){    //限定iNow最大到5
+			iNow = liNum-2;
+		}
+		iNow++;
+		tab(iNow);
+
+		if(iBtn >= 2){      	//限定点击按钮2次到头后跳出函数
+			return;
+		}
+		iBtn++;
+		$(".tab_wrap ul").animate({left:-iBtn*liWidth+"px"},100);
+	})
+	
+	//点击的按钮 移动小图位置 同时改变iNow 以改变图片及小图边框
+	$(".prev").click(function(){
+		if(iNow == 0){
+			iNow = 1;
+		}
+		iNow--;
+		tab(iNow);
+
+		if(iBtn == 0){
+			return;
+		}
+		iBtn--;
+		$(".tab_wrap ul").animate({left:-iBtn*liWidth+"px"},100);
+	});
+
+})();
+
+
+//根据iNow做tab切换
+function tab(iNow){
+	$(".tab_wrap ul li").attr("class","").eq(iNow).attr("class","active");
+	$("#pic img").hide().eq(iNow).show();
+	$("#big_pic_wrap img").hide().eq(iNow).show();
+}
+ 
+});
+</pre> 
+
+<p class="title">html代码</p>
+<pre>
+&ltdiv id="zoom">
+	&ltdiv id="pic">
+		&ltimg class="show" src="img/1.jpg"/>
+		&ltimg src="img/2.jpg"/>
+		&ltimg src="img/3.jpg"/>
+		&ltimg src="img/4.jpg"/>
+		&ltimg src="img/5.jpg"/>
+		&ltimg src="img/6.jpg"/>
+		&ltspan>&lt/span>
+	&lt/div> 
+	&ltdiv id="big_pic_wrap">
+		&ltimg class="show" src="img/1.jpg"/>
+		&ltimg src="img/2.jpg"/>
+		&ltimg src="img/3.jpg"/>
+		&ltimg src="img/4.jpg"/>
+		&ltimg src="img/5.jpg"/>
+		&ltimg src="img/6.jpg"/> 
+	&lt/div>
+	&ltdiv id="tab">
+		&ltdiv class="button prev">&lt&lt/div> 
+		&ltdiv class="tab_wrap">
+			&ltul>
+				&ltli class="active">&ltimg src="img/1.jpg"/>&lt/li>
+				&ltli>&ltimg src="img/2.jpg"/>&lt/li>
+				&ltli>&ltimg src="img/3.jpg"/>&lt/li>
+				&ltli>&ltimg src="img/4.jpg"/>&lt/li>
+				&ltli>&ltimg src="img/5.jpg"/>&lt/li>
+				&ltli>&ltimg src="img/6.jpg"/>&lt/li>
+			&lt/ul>
+		&lt/div>
+		&ltdiv class="button next">&gt&lt/div> 
+	&lt/div> 
+&lt/div> 
+</pre>
+
+<p class="title">css代码</p>
+<pre>
+*{
+	margin:0px;
+	padding:0px;
+}
+img{
+	border:none;
+}
+ul{
+	list-style:none;
+}
+#zoom{
+	width:674px;
+	height:365px;
+	margin:50px 0 0 50px;
+	-border:1px solid green;
+	position:relative;
+}
+#pic{
+	width:300px;
+	height:300px;
+	border:1px solid #ccc;
+	float:left;
+	position:relative;
+}
+#pic img{
+	width:300px;
+	height:300px;
+	position:absolute;
+	display:none;
+}
+#pic img.show{
+	display:block;
+}
+#pic span{
+	display:block;
+	width:100px;
+	height:100px;
+	background:#ccc;
+	position:absolute;
+	opacity:0.3;
+	left:0px;
+	top:0px;
+	display:none;
+}
+#big_pic_wrap{
+	width:350px;
+	height:350px;
+	border:1px solid #ccc;
+	overflow:hidden;
+	float:left;
+	margin:0 0 0 20px;
+	position:relative;
+	display:none;
+}
+#big_pic_wrap img{
+	width:1050px;
+	height:1050px;
+	position:absolute;
+	left:0px;
+	top:0px;
+	display:none;
+}
+#big_pic_wrap img.show{
+	display:block;
+}
+
+#tab{
+	width:780px;
+	height:60px;
+	position:absolute;
+	left:0px;
+	top:305px;
+}
+#tab div{
+	float:left;
+}
+#tab div.button{
+	width:21px;
+	text-align:center;
+	height:58px;
+	line-height:58px;
+	color:#333;
+	font-size:30px;
+	font-weight:bold;
+	border:1px solid #ccc;
+	cursor:pointer;
+}
+#tab div.tab_wrap{                    /* 64*4=256   */
+	width:256px;
+	height:60px;
+	overflow:hidden;
+	position:relative;
+}
+#tab div.tab_wrap ul{                /* 64*6=384   */
+	width:384px;
+	height:60px;
+	position:absolute;
+}
+#tab div.tab_wrap ul li{            /*一个li的宽度是64*/
+	width:60px;
+	height:60px;
+	float:left;
+	padding:0 2px 0 2px;
+}
+#tab div.tab_wrap ul li img{
+	display:block;
+	width:56px;
+	height:56px;
+	border:2px solid #ccc;
+	cursor:pointer;
+}
+#tab div.tab_wrap ul li.active img{
+	border:2px solid orange;
+}
+</pre>
+
+	
+</body> 
+</html>    
+      
+     
+     
+     

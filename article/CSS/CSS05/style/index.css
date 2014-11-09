@@ -1,0 +1,139 @@
+﻿#left{
+	width:371px;
+	height:180px;
+	float:left;
+	margin-top:20px;
+}
+#left h2{
+	width:371px;
+	height:23px;
+	background:url(../img/left_h2.jpg);
+}
+#left h2 a{
+	display:block;
+	width:40px;
+	height:20px;
+	float:right;
+}
+#left dl dt{
+	float:left;
+}
+#left dl dt a{
+	display:block;
+	width:99px;
+	height:73px;
+	padding:10px;
+}
+#left dl dd{
+	float:left;
+	width:250px;
+	height:80px;
+	line-height:16px;
+	margin:5px 0 0 0;
+}
+#left dl dd a{
+	display:block;
+	width:250px;
+	height:30px;
+	line-height:30px;
+	font-weight:bold;
+	color:orange;
+}
+#left dl dd a:hover{
+	color:green;
+}
+#left ul li{
+	width:360px;
+	height:20px;
+	line-height:20px;
+	border-bottom:1px dashed #ccc;
+	float:left;
+}
+#left ul li span{
+	float:right;
+}
+
+#center{
+	width:313px;
+	height:180px;
+	float:left;
+	margin:20px 0 0 30px;
+}
+#center h2{
+	width:313px;
+	height:26px;
+	background:url(../img/center_h2.jpg);
+}
+#center h2 a{
+	display:block;
+	width:40px;
+	height:23px;
+	float:right;
+ 	margin-right:22px;
+}
+#center dl dt{
+	float:left;
+}
+#center dl dt a{
+	display:block;
+	width:77px;
+	height:69px;
+	padding:5px 5px 5px 16px;
+}
+#center dl dd{
+	float:left;
+	width:174px;
+	height:80px;
+	line-height:16px;
+}
+#center dl dd a{
+	display:block;
+	width:174px;
+	height:26px;
+	line-height:26px;
+	font-weight:bold;
+	color:orange;
+}
+#center dl dd a:hover{
+	color:green;
+}
+
+#right{
+	width:179px;
+	height:180px;
+	float:left;
+	margin:20px 0 0 30px;
+}
+#right h2{
+	width:179px;
+	height:20px;
+	background:url(../img/right_h2.jpg);
+}
+#right div{
+	width:182px;
+	height:140px;
+	border:2px solid #ccc;
+	margin:16px 0 0 0;
+}
+#right div h3{
+	width:145px;
+	height:28px;
+	margin:0 auto;
+	background:url(../img/right_h3.jpg);
+}
+#right div p{
+	width:156px;
+	line-height:16px;
+	margin:10px auto;
+}
+#right div ul li{
+	width:80px;
+	padding-left:28px;
+	margin:0 auto;
+}
+#right div ul li.tel{
+	background:url(../img/right_tel.jpg) no-repeat 0 center;
+}
+#right div ul li.fax{
+	background:url(../img/right_fax.jpg) no-repeat 0 center;
+}

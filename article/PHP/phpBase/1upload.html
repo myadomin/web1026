@@ -1,0 +1,98 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PHP文件上传</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+</head>
+<body>
+
+
+<p class="title">笔记 PHP文件上传</p>
+<pre>
+header('Content-Type:text/html; charset=utf-8');
+
+<strong>//第一部分：关于$_FILES['userfile']数组</strong>
+//如果点击了10upload_1.php的上传 就会跳转到这个页面 然后$_FILES数组就有值了
+//Array ( [userfile] => Array ( [name] => mm3.jpg [type] => image/jpeg [tmp_name] => C:\Windows\Temp\phpD7FB.tmp [error] => 0 [size] => 4282 ) )
+echo $_FILES['userfile']['name'];		//mm3.jpg
+echo $_FILES['userfile']['type'];		//image/jpeg
+echo $_FILES['userfile']['tmp_name'];		//C:\Windows\Temp\php1F3C.tmp
+echo $_FILES['userfile']['error'];		//0
+echo $_FILES['userfile']['size'];         	//4282 
+
+
+
+<strong>//第二部分：主文件接收来之10upload_1的图片上传 在10upload_2页面上显示出来</strong>
+//1: 如果上传错误 提示相应信息 然后跳出程序
+if ($_FILES['userfile']['error'] > 0) {
+	switch ($_FILES['userfile']['error']) {
+		case 1: echo "&ltscript>alert('上传文件超过约定值1');history.back();&lt/script>";
+		break;
+		case 2: echo "&ltscript>alert('上传文件超过约定值2');history.back();&lt/script>";
+		break;
+		case 3: echo "&ltscript>alert('部分被上传');history.back();&lt/script>";
+		break;
+		case 4: echo "&ltscript>alert('没有任何文件被上传');history.back();&lt/script>";
+		break;
+	}
+	exit;
+}
+
+//2: 只用于传jpg png gif图片 传其他类型的东西提示后 跳出程序
+switch ($_FILES['userfile']['type']) {
+	case 'image/jpeg' :  	//火狐
+		break;
+	case 'image/pjpeg' : 	//IE
+		break;
+	case 'image/gif' :
+		break;
+	case 'image/png' : 	//火狐
+		break;
+	case 'image/x-png' : 	//IE
+		break;
+	default: echo "&ltscript>alert('本站只允许jpg、gif、png图片！');history.back();&lt/script>";
+	exit;
+}
+
+//3: 确定是否上传到临时文件夹 再确定是否上传到目标文件夹
+//如果全部通过 程序没有跳出 那就上传成功了 把文件从临时路径移动到了目标路径uploads/文件原名称
+//这样每次去10upload_1点击一次上传 就会执行一次这个函数 就上传了一张图片到uploads文件夹里了
+if(is_uploaded_file($_FILES['userfile']['tmp_name'])){ 		//文件上传到了临时文件夹了
+	if(!move_uploaded_file($_FILES['userfile']['tmp_name'], 'uploads/'.$_FILES['userfile']['name'])){
+		echo "&ltscript>alert('文件从临时文件夹移动到目标文件夹不成功,可能目标文件夹不存在');history.back();&lt/script>";
+		exit();   		//跳出
+	}	
+}else{
+	echo "&ltscript>alert('文件还没上传到了临时文件夹路径');history.back();&lt/script>";
+	exit();   
+}
+
+//4: 上传成功后 就跳转到10upload_2.php页面  并且?url=xxxx 便于10upload_2.php页面用get接收url的值 从而得到上传图片的文件名
+echo "&ltscript>alert('文件上传成功');location.href='10upload_2.php?url=".$_FILES['userfile']['name']."';&lt/script>";
+
+
+
+<strong>//相关文件：10upload_1.php</strong>
+&ltmeta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+&ltp>针对 10upload.php&lt/p>
+&ltform enctype="multipart/form-data" action="10upload.php" method="post">
+　	&ltinput type="hidden" name="MAX_FILE_SIZE" value="1000000" />
+　	上传文件: &ltinput type="file" name="userfile"/>  
+	&lt!--点击上传后 就跳到主文件 并让超级全局变量$_FILES数组有值了 -->
+	&ltinput type="submit" value="上传" />   
+&lt/form>
+
+
+<strong>//相关文件：10upload_2.php</strong>
+&lt?php
+$url = $_GET["url"];
+echo "&ltimg src='uploads/".$url."'/>";
+?>
+</pre>
+
+
+
+<body> 
+<html>    
+ 

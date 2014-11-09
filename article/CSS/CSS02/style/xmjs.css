@@ -1,0 +1,44 @@
+﻿#contents{
+height:371px;;
+background:#fff url(../img/intro.jpg) no-repeat left bottom;
+} 
+#contents ul{
+width:778px;
+height:30px;
+line-height:30px;
+text-align:center;
+background:url(../img/tel.gif) no-repeat 91% 35%;
+/*tel.gif是ul框体的背景图像，
+不能保存的到本地的图片就是background做的，
+利用此属性 90%表示相对左边为90% 35%表示相对上面35%，
+或者left bottom right top或者xxpx。*/
+}
+#contents ul li{
+display:inline;
+}
+#contents ul li a{
+color:green;
+text-decoration:none;
+}
+#contents ul li a:hover{
+color:red;
+}
+#contents img{
+margin-left:135px;
+display:block;
+}
+#contents h1{
+font-size:16px;
+width:450px;
+margin-left:300px;
+text-align:center;
+height:35px;
+line-height:35px;
+}
+#contents p{
+width:450px;
+margin-left:300px;
+line-height:180%;  /*行间距是此字体高度的180%*/
+text-indent:28px;
+}
+ 

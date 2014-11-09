@@ -1,0 +1,136 @@
+﻿#sidebar{
+	background:#fff url(../img/weline.gif) no-repeat right center;
+	height:490px;
+	width:251px; 
+	float:left;
+/* ！！重要！！对于siderbar news about estate四个元素。
+要想排版成原网页样子，关键在于float:left 以后会常用
+另外注意，如果这4元素都加了1px的边框，就变成了总宽度大于867px
+大于本身width已规定的正好卡死他们4个的867px，就可能浮动不起来*/
+}
+#sidebar h1{
+	width:123px;
+	height:35px;
+	background:url(../img/wel.gif);
+	margin-top:20px;
+	margin-left:20px;
+}
+#sidebar img{
+	display:block;
+	margin-left:15px;
+	margin-bottom:10px;
+}
+#sidebar ul{
+	line-height:180%;
+	text-indent:20px;
+}
+#sidebar ul li a img{
+	margin-left:20px; 
+}
+#sidebar ul li.line{
+	border-bottom:1px solid #999;
+	margin-left:20px;
+	margin-right:50px;
+	margin-bottom:5px;
+	margin-top:10px;
+	/*设定此线离上下左右的距离。*/
+}
+
+#news{
+	background-color:white;
+	height:300px;
+	width:313px;
+	float:left;
+}
+#news h1{
+	width:123px;
+	height:27px;
+	background:url(../img/news.gif);
+	margin-top:20px;
+	margin-left:20px;
+}	
+#news ul{
+	line-height:160%;
+	margin-top:10px;
+	background:url(../img/weline.gif) no-repeat right center;
+}
+#news ul li{
+ 	margin-left:36px;
+}
+#news ul li.bb{
+	font-weight:bold;
+	color:orange;
+	background:url(../img/ico.gif) no-repeat left center;
+	padding-left:15px;
+	margin-left:20px;
+}
+#news ul li img{
+	margin-top:4px;
+}
+ 
+#about{
+	background-color:white;
+	height:300px;
+	width:303px;
+	float:left;
+}
+#about h1{
+	width:127px;
+	height:26px;
+	background:url(../img/about.gif);
+	margin-top:20px;
+	margin-left:20px;
+}
+#about img{
+	display:block;
+	margin-left:15px;
+	margin-bottom:2px;
+}
+#about p{
+	width:230px;
+	line-height:160%;
+	margin-left:22px;
+}
+#about a img{
+	margin-left:20px;
+	margin-top:8px;
+}
+
+#estate{
+	background-color:white;
+	height:190px;
+	width:616px;
+	float:left;
+}
+#estate #estate1{
+	width:530px;
+	height:180px;
+	margin-left:30px;
+	border-top:1px solid #ccc;	
+}
+#estate1 img{
+	margin-top:16px;
+	float:left;
+}
+#estate1 h1{
+	float:left;
+	width:117px;
+	height:30px;
+	background:url(../img/estate1.gif);
+	margin-top:22px;
+	margin-left:20px;
+}
+#estate1 ul{
+	width:260px;
+	float:left;  
+	/*此div区块里面有 img h1 ul三个区块，
+	利用float left 排版 注意先控制ul宽度，否则浮不上去*/
+	margin-left:20px;
+}
+#estate1 ul li.cc{
+	margin-bottom:5px;
+	margin-top:3px; 	
+}
+#estate1 ul li a img{
+	margin-top:11px;
+}

@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+*{
+	margin:0px;
+	padding:0px;
+}
+h3, p, .start, .reg, .login{
+	margin: 20px;
+	text-align: center;
+}
+

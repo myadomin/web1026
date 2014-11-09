@@ -1,0 +1,846 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>PHP基础语法</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+</head>
+<body>
+
+<h2 style="padding-top:50px;color:green;">PHP基础语法</h2>
+
+
+<p class="title">1：变量及类型及运算符</p>
+<pre>
+//打印
+echo print "我在打印这句话";      		//print的返回值1(print的返回值永远是1)   
+printf("我今天买了5件衣服");        		//打印html的换行 记得php语句必须以分号结尾
+printf("我今天买了%d件衣服",5);			
+echo sprintf("我今天卖了%d件衣服",5);  		//将这句话预留在内存中 前面加上echo才能打印出来  
+	
+//变量的创建  
+$sum = 1;             		//创建整形变量 
+$total = 2.33;        		//创建浮点型变量
+$sum = $total;        		//那sum就变成浮点型变量了 隐式类型转换
+echo $sum;            		//所以输出的时候 echo sum就是输出字符串sum了  
+
+//变量的类型获取getType(xx) 强制类型转换setType(xx,xx)
+$aa = 5;
+$bb = 5.663;
+$cc = true;
+$dd = "i am";
+echo getType($aa);   			//integer 
+echo getType($bb);  			//double 浮点型都会输出double
+echo getType($cc);   		  	//boolean 
+echo getType($dd);  		  	//string 
+setType($aa,"float");      		//类型的强制转换 
+echo setType($aa,"float"); 		//返回值是1
+echo getType($aa);   			//double 
+setType($bb,"string");
+echo getType($bb);   			//string 
+
+//isset()判断某个变量是否存在 unset()销毁某个变量 empty()判断某个变量是否为空 is_string is_integer
+$a = 5;
+echo isset($a);             //isset($a)返回值是布尔值 如果$a变量存在就返回布尔值ture 那就是打印1
+unset($a);                  //销毁变量$a
+echo isset($a);             //isset($a)返回值是布尔值 上面已经销毁了$a变量 所以返回布尔值false 那打印就是空 什么也没有
+echo empty($a);             //$a变量已经被销毁了 所以判断是空成立 所以返回布尔值true 那就打印1
+$c = "";
+echo empty($c);             //$c变量为空 所以判断是空成立 所以返回布尔值true 那就打印1
+$b = "abc";
+echo is_string($b);         //$b变量是字符串 所以返回值是true 所以打印1
+$d = 100;
+echo is_integer($d);        //是整型 返回true 打印的是1
+	
+//intval()
+$e = 22.22;
+echo intval($e);            	//22 转换为整型
+echo getType($e);           	//double 类型还是浮点型
+setType($e,"integer");
+echo getType($e);   	        //integer 这才是真正转换为了整型
+	
+//常量 常量全部大写 一旦定义就不许更改 前面也没有$
+define("TOTAL",100);
+echo TOTAL;
+//echo phpinfo();    		  //打印各种常量 包括HTTP信息
+	
+//单引号和双引号的区别
+$username = "wq";
+echo "his name is $username";
+$username = "武器";
+echo "his name is $username,他19岁了";       	//只支持英文的标点符号,
+echo "他的名字叫".$username."，他19岁了";   
+echo "武器的变量\n是$username";             	//双引号会解析变量和转义符 或者路径里面的 \ /等
+echo '武器的变量\n是$username';             	//单引号不会解析变量和转义符
+	
+//运算符
+$a = 5;
+$b = 6;
+$c = "a";
+$d = $a + $b;
+$e = $a + $c;
+echo $d;             	//11加法运算
+echo $e;             
+echo $a != $b;       	//返回ture 所以打印是1
+	
+//三元运算符
+$total = 100;
+$sum = $total>100 ? "成功" : "失败";
+echo $sum;
+for($i=0 ; $i&lt10 ; $i++){	
+	if($i == 5){             		//0 1 2 3 4 我还是会执行for以外的下面的语句 因为$i=5的时候 就退出当前循环程序了
+		break;	
+	}
+	echo $i;
+		
+}
+echo "我还是会执行for以外的下面的语句";	
+for($i=0 ; $i&lt10 ; $i++){	
+	if($i == 5){          
+		continue;	                //退出当次循环 继续下一次循环 0 1 2 3 4 6 7 8 9
+	}
+	echo $i;
+		
+}
+for($i=0 ; $i&lt10 ; $i++){	
+	if($i == 5){          
+		exit;	               		 //0 1 2 3 4退出整个程序 就算for以外的下面的echo也不执行了
+	}
+	echo $i;
+		
+}
+echo "我还是会执行for以外的下面的语句";
+
+//PHP +及. 通过.进行数字及字符串的链接 通过+如果是数字字符串例如"7"那就可以正常相加 否则不能
+$a = 5;
+$b = "7";
+$c = "a";
+echo $a.$b;               //57  通过.进行字符串连接
+echo $a + $c;             //5   字符串内部是非数字 那相加并不能和js一样字符串连接 只能为5
+echo $a.$c;               //5a  字符串的连接用. 类似js的+
+
+//is_numeric()（是否为数字或数字型字符串）  is_int()  is_float()  rand()  mt_rand()
+$d = "abc";
+$e = "123";
+$f = "123.321";
+$g = 155;
+$h = 155.0;
+if(is_numeric($d)){           //is_numeric($d)返回false 因为他不是数字
+	echo "是数字";
+}else{
+	echo "不是数字";	
+}
+echo is_numeric($e);          //is_numeric是判断是否为数组 或者是否为数字字符串 $e是数组字符串所以也返回true
+echo is_float($f);            //$f不是浮点数字 false
+echo is_int($g);              //$g是整型数字 true
+echo is_float($h);            //$h是浮点数字 true
+echo rand();                  //产生随机整数
+echo rand(0,10);              //产生0-10之间的随机整数
+echo mt_rand(5,32);           //同上rand 但是都用这个 稳定性更好 速度更快
+echo getrandMax();            //32767
+echo mt_getrandMax();         //2147483647
+	
+//数字或者数字字符串格式化 
+$i = 123456.252;               		  //数字或者数字字符串都可以
+echo number_format($i);        		  //123,456 只传一个参数 就是只要整数部分并格式化成 xx,xxx,xxx,xxx
+echo number_format($i,1);      		  //123,456.3 如果传第二个参数就是保留多少位小数 并且四舍五入 
+echo number_format($i,1,"#","*");   //123*456#3  用#替代小数点默认的. 用*替代默认的, 一般不用 这两个参数必须一起设置或者一起不设置
+</pre>
+
+
+<p class="title">2：数组</p>
+<pre>
+$userNames = array("李彦宏","周鸿祎","马云","俞敏洪","李开复","我");
+echo $userNames;        	//不同于js，php是不能直接打印数组的 只能通过下标打印某一个数组里的元素
+echo $userNames[2];     	//马云
+print_r($userNames);    	//只能通过print_r打印出来 ( [0] => 李彦宏 [1] => 周鸿祎 [2] => 马云 [3] => 俞敏洪 [4] => 李开复 [5] => 我 )
+$userNames[5] = "123";  	//改变数组的某项
+echo $userNames[5];
+
+$numbers = range(2,9);  	//创建一个2到9的整型数字数组
+print_r($numbers);	    	//Array ( [0] => 2 [1] => 3 [2] => 4 [3] => 5 [4] => 6 [5] => 7 [6] => 8 [7] => 9 ) 
+$letters = range("e","j");   	//创建一个e到j的字母字符串数组
+print_r($letters);           	//Array ( [0] => e [1] => f [2] => g [3] => h [4] => i [5] => j ) 
+
+echo count($userNames);      	//6 输出数组的长度
+for($i=0 ; $i&ltcount($userNames) ; $i++){    //但是如果数组的下标不是 0 1 2 3....那就没办法了 用下面的foreach
+	echo $userNames[$i];
+	
+}
+
+foreach($userNames as $aaa){               //通过foreach遍历数组 不需要管下标
+	echo $aaa."&ltbr/>";	 
+}
+
+if(is_array($userNames)){                   	//如果是数组
+	foreach($userNames as $key=>$value){    //as  $aaa=>$bbb也可以 都是变量 只要格式对就行
+		echo $key."---".$value."&ltbr/>";	 
+	}
+}else{                                      	//如果不是数组 那一般就是变量 直接打印变量就行
+	echo $userNames;
+}
+
+//创建自定义的下标（键）并追加数组
+$users = array("baidu"=>"李彦宏","taobao"=>"马云","360"=>"周鸿祎");
+echo $users["baidu"];
+echo $users["360"];
+$users["xxx"] = "我";
+echo $users["xxx"];    		//添加一个数组元素
+print_r($users);       		//Array ( [baidu] => 李彦宏 [taobao] => 马云 [360] => 周鸿祎 [xxx] => 我 ) 
+foreach($users as $aaa=>$bbb){
+	echo $aaa."---".$bbb."&ltbr/>";	
+}
+
+//each() reset() list() 之前的$users已经被foreach了 这里再对他each就没作用了 所以另外创建一个数组 或者reset()原数组
+$usersMan = array("baidu"=>"李彦宏","taobao"=>"马云","360"=>"周鸿祎");   
+$eee = each($usersMan); 		//each()后 提取出数组的第一个元素 并包装成一个新数组 同时这个数组的指针往下移一步
+print_r($eee);          		//Array ( [1] => 李彦宏 [value] => 李彦宏 [0] => baidu [key] => baidu ) 
+$eee = each($usersMan); 		//再each()$userMan这个数组的时候 指针已经在之前往下了一步 所以再打印$eee变为如下
+print_r($eee);          		//Array ( [1] => 马云 [value] => 马云 [0] => taobao [key] => taobao ) 
+	
+reset($usersMan);       		//reset这个数组后 之前each改变的指针指向回到初始位置 
+$eee = each($usersMan); 		//所以再each这个数组后 指针还是在初始位置的
+print_r($eee);          		//所以还是打印Array ( [1] => 李彦宏 [value] => 李彦宏 [0] => baidu [key] => baidu ) 
+	
+reset($usersMan);       		//重置之前的each 让指针指向初始位置
+$kkk = each($usersMan);  
+print_r($kkk);           		//Array ( [1] => 李彦宏 [value] => 李彦宏 [0] => baidu [key] => baidu )
+list($company,$name) = $kkk;        	//list(xx,xx)只能识别$kkk这个新数组的0 1 2...之类的下标 并把下标赋给$company 把值赋给$name
+echo $company."---".$name."&ltbr/>";  	//所以输出 baidu---李彦宏
+	
+$kkk = each($usersMan);  
+list($company,$name) = $kkk;  
+echo $company."---".$name."&ltbr/>";  	//同理输出 taobao---马云
+	
+$kkk = each($usersMan);  
+list($company,$name) = $kkk;  
+echo $company."---".$name."&ltbr/>";  	//同理输出 360---周鸿祎 到这时候each已经让指针指到了$usersMan的最后一位了
+
+echo !(list($company,$name) = each($usersMan));   //指针已经是$usersMan的最后一位了 再each也没有了 所以list($company,$name) = each($usersMan)为false
+reset($usersMan);                   	//重置数组 让指针指回初始位置
+
+while(!!list($company,$name) = each($usersMan)){      	//利用上面的分析 用这个while就可以和foreach一样遍历数组了
+	echo $company."---".$name."\n";              	//baidu---李彦宏 taobao---马云 360---周鸿祎 
+}
+
+//array_unique() 移除数组元素中 数组元素值相同的部分
+$number = array(2,3,6,9,5,2,2,3,3,5,6);
+$mmm = array_unique($number);   //移除数组元素值相同的数组元素
+print_r($mmm);     		//Array ( [0] => 2 [1] => 3 [2] => 6 [3] => 9 [4] => 5 ) 
+$nnn = array_flip($mmm);        //交换数组的键和值
+print_r($nnn);    		//Array ( [2] => 0 [3] => 1 [6] => 2 [9] => 3 [5] => 4 ) 
+	
+//数组里面包数组 形成二维三维数组
+$products = array(
+	array("猪肉",6,32.3),
+	array("牛肉",4,22.6),
+	array("苹果",11,39.1)
+);
+print_r($products);    
+//Array ( [0] => Array ( [0] => 猪肉 [1] => 6 [2] => 32.3 ) [1] => Array ( [0] => 牛肉 [1] => 4 [2] => 22.6 ) [2] => Array ( [0] => 苹果 [1] => 11 [2] => 39.1 ) ) 
+echo $products[0][0]."\n".$products[0][1]."\n".$products[0][2]."&ltbr/>".   		//猪肉 6 32.3   形成表格
+		 $products[1][0]."\n".$products[1][1]."\n".$products[1][2]."&ltbr/>". 	//牛肉 4 22.6
+		 $products[2][0]."\n".$products[2][1]."\n".$products[2][2]."&ltbr/>";   	//苹果 11 39.1
+	
+for($i=0 ; $i&ltcount($products) ; $i++){            //双重循环也能输出上面的表格
+	for($j=0 ; $j&ltcount($products[$i]) ; $j++){
+		echo $products[$i][$j]."\n";
+	}
+
+}
+
+for($i=0 ; $i&ltcount($products) ; $i++){       	//也能输出如上表格  
+	foreach($products[$i] as $aaa=>$bbb){     	 
+		echo $bbb."\n";                        
+		reset($products[$i]);  		//这里在下面还要用each($products[$i]所以每次输出完毕 就让$products[$i]指针指回到初始地方 
+	}                                	//如果不reset($products[$i]); 那后续用each($products[$i]就没作用了
+
+}
+
+for($i=0 ; $i&ltcount($products) ; $i++){            	//也能输出如上表格  
+	while(!!list($aaa,$bbb)=each($products[$i])){  //第二层循环时循环array里面的array 假如第二层array使用了自定义下标 而不是0 1 2之类的
+		echo $bbb."\n";                        //那就使用list each也可以
+	}
+
+}
+		
+//sort()排序
+$fruit = array("bananer","orange","apple");
+sort($fruit);         		//注意是先对$fruit排序 再打印$fruit这个变量
+print_r($fruit);   		//Array ( [0] => apple [1] => bananer [2] => orange ) 
+
+$num = array(21,33,1,5,36,47);
+sort($num);
+print_r($num);       //Array ( [0] => 1 [1] => 5 [2] => 21 [3] => 33 [4] => 36 [5] => 47 ) 
+
+$strings = array("21","33","1","5","36","47");
+sort($strings,SORT_STRING);    //按照数字字符串排序 如果不设置这个参数 就相当于参数 SORT_NUMERIC按数字自然大小排序
+print_r($strings);   //Array ( [0] => 1 [1] => 21 [2] => 33 [3] => 36 [4] => 47 [5] => 5 ) 
+
+$num2 = array(21,331,5,1);
+asort($num2);          //值排序 但是键还是原来的键
+print_r($num2);        //Array ( [3] => 1 [2] => 5 [0] => 21 [1] => 331 ) 
+
+$mms = array(1,2,3,4);
+shuffle($mms);              		//随机交换数组的位置
+//$mms1 = array_reverse($mms);  	//反转数组属性 也就是为4 3 2 1了 注意一般array开头的会生成新数组 如果用这句那下面就要改成$mms1[$i]了
+for($i=0 ; $i&ltcount($mms) ; $i++){
+	echo '&ltimg src="img/mm'.$mms[$i].'.jpg" style="margin-left:10px;"/>';
+}
+
+//array_unshift array_push array_shift array_pop array_rand
+$boys = array("aa","bb");
+print_r($boys);
+
+$arr1 = array_unshift($boys,"cc");  	//在数组的前面插入数组元素
+echo $arr1;            			//返回值是数组长度 3
+print_r($boys);       			//Array ( [0] => cc [1] => aa [2] => bb ) 
+
+$arr2 = array_push($boys,"dd");    	//在数组的后面插入数组元素
+echo $arr2;                        	//返回值是数组长度 4
+print_r($boys);      			//Array ( [0] => cc [1] => aa [2] => bb [3] => dd ) 
+
+$index1 = array_rand($boys,1);     
+echo $index1;
+$index2 = array_rand($boys,2);   	//随机获取2个下标 那$index就是一个新数组了 
+echo $index2[0];
+echo $index2[1];
+
+//each() reset() current() next() prev() count() sizeof()
+$some = array("第零个","第一个","第二个","第三个");
+echo current($some)."\n";     //当前指针指向的值 第零个
+echo next($some)."\n";        //当前指针下移一步指向的值 第一个
+echo current($some)."\n";     //当前指针已经指向第一个 所以这个打印还是 第一个 
+echo prev($some)."\n";        //当前指针上移一步指向的值 第零个
+echo current($some)."\n";     //第零个
+echo count($some)."\n";       //4
+echo sizeof($some)."\n";      //同上 一般用上面的
+
+//array_count_values() 
+$other = array(22,62,22,55,62,6,22);   //同级数组元素中某个值出现的个数
+print_r(array_count_values($other));   //Array ( [22] => 3 [62] => 2 [55] => 1 [6] => 1 ) 
+
+//把下标转换为变量 并将值赋值给下标
+$another = array("a"=>111,"b"=>222,"c"=>333);
+extract($another);   	//通过它 下标变成了变量$a 然后把对于的值111赋给了变量$a
+echo $a."\n";
+echo $b."\n";
+echo $c."\n";    	//111 222 333 
+</pre>
+
+
+<p class="title">3：函数</p>
+<pre>
+//之前用的 echo md5() print_r()等都是系统标准函数 除了系统标准函数 我们也可以自定义函数
+function functionAa(){
+	echo "我是一个自建函数，我没有参数，没有返回值";
+}
+functionAa();              		//函数调用不区分大小写 functionaa()和这个一样
+
+function functionArea($radius=1){    	//如果没有传入参数 就默认为1 如果有传参 那$radius就是传入的参数
+	$area = $radius * $radius * pi();
+	return $area;
+}
+echo "半径为5米的圆的面积是：".functionArea(5)."平方米";   //传参
+echo "面积是：".functionArea()."平方米";                   //不传参 就是默认的1 所以是 面积是：3.14159265359平方米
+
+function functionInfo($name,$age,$job){
+	$userInfo = array($name,$age,$job);
+	return $userInfo;
+}
+print_r(functionInfo("luo","30","coder"));  	//Array ( [0] => luo [1] => 30 [2] => coder ) 
+list($name,$age,$job) = functionInfo("luo","30","coder");
+echo $name."||".$age."||".$job."";     		//luo||30||coder
+
+//关于按值传递参数
+$price = 50;
+$tax = 0.5;
+function functionPrices($price,$tax){
+	$price = $price * $price;
+	$tax = $tax * $tax;
+	echo $price."";         //2500
+	echo $tax."";      	//0.25
+} 
+functionPrices($price,$tax);   	//按值传参数进去 此时参数就算写成$aaa $bbb也没关系 只要函数内做相应的更改就可以     
+echo $price."";           	//50  函数内部的$price变化是局部作用域的 出了函数就不影响了 所以影响不了这里的$price
+echo $tax."---";     		//0.5
+  
+//超级全局变量
+$GLOBALS["a"] = 5;
+function fa(){
+	$GLOBALS["a"] = 2;
+}
+fa();
+echo $GLOBALS["a"];    		//2 本来函数内部的变量是局部的应该访问 但是现在这个变量是超级全局变量了 任何地方都能访问
+  
+//调用自建的函数库
+include "xxx/xxx/xxx.php"   	//假如我在此路径下放了一个php文档 文档里面有很多自建的函数 通过这句就相当于加载了这些函数到现在这里来
+include "file.txt";           	//把这个文档的所有内容都放到现在这里来了 
+include "file.txt";           	//再执行一次 就又再多一句this is my php；
+include_once "file.txt";      	//只包含一次 
+include_once "file.txt";      	//在写也不包含了
+require "file.txt";           	//功能同include 推荐用这个 因为如果文件名不存在他会报错 include不会
+require_once "file.txt";      	//功能同include_once; 
+ 
+//魔法常量
+echo __FILE__;      		   	//注意前面是两个下划线 C:\AppServ\www\phpStudy\4function.php  路径常量
+echo dirname(__FILE__);    		//C:\AppServ\www\phpStudy 目录
+echo dirname(__FILE__).'\file.txt';   	//注意这里必须单引号了 否则会认为\是转义字符 C:\AppServ\www\phpStudy\file.txt
+require dirname(__FILE__).'\file.txt'; 	//this is my php  以后可以用这种方式 采用绝对路径引用文档
+echo __LINE__;                          //68 当前行数
+
+function fff(){
+	return __FUNCTION__;    //返回当前函数名  
+}   
+echo fff();          		//fff
+</pre>
+
+
+<p class="title">4：字符串</p>
+<pre>
+//trim()
+$str = "    PHP    ";
+echo $str;    			//虽然在web上好像没有空格 但是查看源代码是有空格的 一旦这个字符串文件发送 空格也会发送
+echo trim($str);  		//经过trim以后 查看源文件就两边都没有空格了
+
+//nl2br()  
+$str1 = "this is a man \n this is a women";  //经过\n的转义 在源文件是换行了 可是web上没换行 不建议用 因为有些操作会过滤掉html标签
+echo $str1;
+echo nl2br($str1);   		//这样 既能源文件换行 又能网页换行
+
+$str2 = "<strong>我的</strong>";
+echo $str2."\n";            	//粗体的 我的
+echo htmlentities($str2);   	//将字符串全部转换为html文本 &ltstrong>我的&lt/strong>
+echo strip_tags($str2);     	//去掉所有html标签 正常的 我的
+
+$str3 = 'this is "luo",\n he is a coder';   //这里是单引号 所以不会解析里面的转义\n
+echo $str3;                      	//this is "luo",\n he is a coder        
+$datastr = addslashes($str3);		//为了保证放入数据库的特殊符号不出现问题在所有的特殊符号前再加一个\
+echo $datastr;                   	//this is \"luo\",\\n he is a coder
+$outstr = stripslashes($datastr);  	//如果从数据库拿出 那就再转换为原来的样子
+echo $outstr;                      	//this is "luo",\n he is a coder
+
+echo strtoupper("abc")."\n";    	//改成大写 ABC
+echo strtolower("ABC")."\n";    	//改成小写 abc
+
+$str4 = "luo";
+echo str_pad($str4,10,"#");    			//luo#######  用#好填充到10个字节 如果不写"#"这个参数 那默认就是空格填充
+echo str_pad($str4,10,"*",STR_PAD_LEFT);  	// *******luo 第四个参数 STR_PAD_LEFT STR_PAD_RIGHT STR_PAD_BOTH	左边填充右边填充两边均匀填充
+
+$email = explode("@","adomin@163.com");  	//用@将字符串切割成多段 形成一个数组 每段是数组的一个元素
+print_r($email);   //Array ( [0] => adomin [1] => 163.com )  
+
+$attr = array("adomin","163.com"); 
+$email2 = join("@",$attr);  //将数组合并为字符串
+echo $email2;               //adomin@163.com
+
+$str5 = "i will#back*home";
+$tok = strtok($str5," #*");
+while($tok){
+	echo $tok;
+	$tok = strtok(" #*");   //利用循环 能切掉所有的 空格# *这些符号
+}
+
+$str6 = "i am a man";
+echo substr($str6,3,3);   	//m a  从第三个字符取3个字符 如果不写第三个参数 就是从第三个字符一直取到最后
+print_r(str_split($str6));  	//Array ( [0] => i [1] => [2] => a [3] => m [4] => [5] => a [6] => [7] => m [8] => a [9] => n ) 
+echo strrev($str6);         	//反转字符串 nam a ma i
+
+echo strcmp("a","b");    	//-1 如果是"c","b"那就是1  如果是"b","b"那就是0 不区分大小写
+echo strcmp("2","10");    	//1  说明"2"大于"10" 这个不是按自然比较的
+echo strnatcmp("2","10");   	//-1 说明"2"小于"10" 这个是按自然比较的
+echo strlen($str6);         	//10 字符串长度是10
+
+echo strstr("adomin@163.com","@");   	//@163.com 输出@及之后的所有字符串
+echo strpos("adominadomin","d");     	//1 查找d第一次出现的位置
+echo strrpos("adominadomin","d");    	//7 查找d最后一次出现的位置
+echo str_replace("lee","luo","my name is lee");  //my name is luo 把lee替换成luo
+echo substr_replace("adomin","##",0,5);   	//##n 从第0个位置开始拿出去5个字符串 然后用##填充这5个字符串
+
+$someman = "我是一个人，是不是";
+echo mb_strlen($someman,"UTF-8");             //9 取中文字符长度 所有对中文字符串的操作方法都是mb_ 后面要加上中文编码格式 "GBK"
+echo mb_substr($someman,1,2,"UTF-8");         //是一
+echo mb_strpos($someman,"是",0,"UTF-8");      //1 第一次出现是第一个位置 一定要加第三个参数0
+echo mb_strrpos($someman,"是",0,"UTF-8");     //8 最后一次出现是第八个位置
+</pre>
+
+
+<p class="title">5：时间与日期</p>
+<pre>
+//bool checkdate ( int $month , int $day , int $year )
+if(checkdate(7,16,2010)){     //如果代表日期的这三个整型数字和合乎日期的 就返回true
+	echo "合法日期";
+}else{
+	echo "不合法日期";
+}
+
+echo date("Y")."\n";    	//2014 年
+echo date("y")."\n";    	//14   年
+echo date("M")."\n";    	//Feb  月
+echo date("m")."\n";    	//02   月
+echo date("D")."\n";    	//Thu  星期几
+echo date("d")."\n";    	//13   日
+echo date("H")."\n";    	//6    时 H代表24小时制 但是本地当前时间是14点 他这个给的是东0区标准时间 而我们是东8区所以要加8是14点  
+echo date("h")."\n";    	//6    时 h代表12小时制 
+echo date("i")."\n";    	//20   分  
+echo date("s")."\n";    	//36   秒  
+
+echo date("Y-m-d H:i:s");     		//2014-02-13 06:21:18  常用的写法 -和:在第一个参数的手册里不存在 就不会解析
+//以上的date()函数只写了第一个参数，如果不写第二个参数 那就是当前的时间
+//如果写了第二个参数，那就返回第二个参数的时间，第二个参数必须是秒数型的时间戳
+echo date("Y-m-d H:i:s",255122564);   	//1978-01-31 19:22:44 如果是1那就是1970-01-01 00:00:01
+
+print_r(getdate());    			//不传参数就是当前时间
+//Array ( [seconds] => 38 [minutes] => 35 [hours] => 6 [mday] => 13 [wday] => 4 [mon] => 2 [year] => 2014 [yday] => 43 [weekday] => Thursday [month] => February [0] => 1392273338 ) 
+$aa = getdate(2255266555566);   	//传入秒数的时间戳 就是这个时间戳对于的时间
+echo $aa["year"];   			//1982
+	
+//获得当前时间戳
+echo time();                    	//1392273620获取当前时间戳 所有获得的时间戳都是东0区的秒数型数字 如果要转为我们的本地时间如下
+echo date("Y-m-d H:i:s",time()+(8*60*60));    //2014-02-13 14:44:14 我们是东八区 所以要在时间戳上加上8*60*60秒
+echo date("Y-m-d H:i:s",time()+(8*60*60)+(-7*24*60*60));    //2014-02-06 14:44:14 一周以前的事件 -7*24*60*60
+
+//获得指定日期的时间戳
+echo mktime(14,1,2,12,9,2007);   //1197208862  获得2007年12月9号14点1分2秒的时间戳
+echo "\n";
+$sec = mktime(14,1,2,12,9,2007);
+$sec1 = strtotime("2007-12-09 14:01:02");   //推荐使用这种 
+echo date("Y-m-d H:i:s",$sec);   //2007-12-09 14:01:02
+
+//计算当前时间戳和指定日期时间戳的差值
+$now = time();
+$sec = mktime(14,1,2,12,9,2007);
+echo $now - $sec;           		//195065700 相差这么多秒
+echo "\n\n\n";
+echo round(($now-$sec)/60/60/24);    	//相差2258天
+
+//通过strtotime() 获取时间戳 推荐使用
+$a = strtotime("2010-7-16 15:16:15")-strtotime("2010-7-16 15:15:15");
+if($a>=60){
+	echo "请这位先生休息一会儿,等下再发帖";
+}else{
+	echo "xxxx";
+}
+	
+//获取当前时区 设置当前时区
+echo date_default_timezone_get();  //UTC 获取的当前时区为UTC标准时区
+echo "\n";
+echo date("Y-m-d H:i:s");          //2014-02-13 07:18:04 标准时区的时间        
+date_default_timezone_set("Asia/Shanghai");   //设置时区为中国时区
+echo date_default_timezone_get();  //Asia/Shanghai 获取的当前时区是中国时区了
+echo "\n";
+echo date("Y-m-d H:i:s");          //2014-02-13 15:19:30 中国时区的时间
+
+//同时获取时间戳和毫秒数
+echo microtime();   //返回的是字符串 0.45626100 1392276399
+list($microsec,$sec) = explode(" ",microtime());   //通过空格 把字符串切成2个字符串 分别赋给变量$microsec和$sec
+echo $microsec."秒";
+echo $sec."秒";
+echo ($sec + $microsec)."秒";   //1392276644.33秒
+
+//计算for循环执行用的秒数
+function sec(){                //封装成函数 获取精确到毫秒的秒数
+	list($a,$b) = explode(" ",microtime());
+	return $a+$b;
+}
+$starttime = sec();
+echo $starttime."";      	//虽然这里的输出只能1392277255.76 但是其实没舍掉 后续相减还是能正确精确要小数点后很多位
+for($i=0 ; $i&lt100000 ; $i++){
+	//
+}
+$endtime = sec();
+echo $endtime."";        	//1392277255.79
+echo $endtime - $starttime;   	//0.0253958702087 这样就可以知道for循环用了这么多秒执行
+echo round(($endtime-$starttime),4);  	//0.0254 保留4位
+</pre>
+
+
+<p class="title">6：正则表达式</p>
+<pre>
+echo preg_match('/PHP/','PHP').'\n';    	//匹配 返回1
+echo preg_match('/PHP/','pHP');   		//不匹配 返回0 区分大小写
+	
+// $mode = '/php/';
+// $string = 'xxxphpxxxxx';      		//也是匹配 只要字符串有连在一起的php三个字母 都能匹配 区分大小写
+// $mode = '/ph+p/';                   		//包含1个或多个h
+// $string = 'xxxphhhhpxxx';           		//匹配
+// $mode = '/ph*p/';                   		//包含0个或多个h
+// $string = 'xxxppxxx';            	  	//匹配
+// $mode = '/ph?p/';                   		//包含0个或一个h
+// $string = 'xxxphpxxx';              		//匹配
+// $mode = '/p..p/';                  		//一个点对于一个任意的字符 必须一一对应 不能多一个或少一个
+// $string = 'xxxpaixpxxx';            		//匹配
+// $mode = '/p.*p/';                 		//包括0个或多个任意的字符
+// $string = 'xxxpa阿斯蒂芬ixpxxx';    		//匹配pp之间 0个或多个任意字符都可以
+// $mode = '/ph{3,7}p/';               		//包含3-7个h
+// $string = 'xxxphhhhpxxx';           		//匹配 4个h
+// $mode = '/ph{3,}p/';               		//包含3个以上的h
+// $string = 'xxxphhhhhhhhhhhpxxx';    		//匹配 是3个以上的h
+// $mode = '/php$/';                  		//从尾部匹配php三个字母
+// $string = 'xsfs阿多xxphp';     	  	//匹配 是最尾部匹配的php
+// $mode = '/^php/';                 		//从头部匹配php三个字母
+// $string = 'php啊3df';      			//匹配 是最尾部匹配的php
+// $mode = '/^php$/';                 		//从头部匹配php并且从尾部也匹配php三个字母
+// $string = 'php';     			//匹配 这就是相等了
+// $mode = '/php|asp/';             	  	//匹配php或者asp都算匹配了
+// $string = 'asp';      	   		//匹配 这就相当于相等了
+
+// $mode = '/[a-z]/';             	//匹配默认从前往后匹配(相当于前面加了^) 一旦匹配到一个a-z的小写字母就算匹配了
+// $string = 'p2sdfsdfer';     	      	//匹配 第一个开始匹配的就是p p是小写字母 所以算匹配了 后面就不再判断匹配了  
+// $mode = '/[a-z]$/';             	//这个是从后面开始匹配 后面第一个是r 就算匹配成功了 后面不再判断匹配了 
+// $string = '2sdfsdfer';     	    	//匹配  如果这里不用$ 默认就从前开始匹配 第一个是2那就不匹配了
+// $mode = '/^[a-z]|[a-z]$/';          	//从前面从后面第一次匹配的都是字母
+// $string = '1aaa';     	        //匹配 因为从后面第一次匹配到的是字母  aaa1也匹配 1aaa1就不匹配了
+// $mode = '/[a-zA-Z0-9_]/';           	//从头开始匹配 只要第一个准备匹配的是小写大写字母 0-9以及_都可以
+// $string = '1aaa';     	        //匹配 因为从后面第一次匹配到的是字母  aaa1也匹配 1aaa1就不匹配了
+// $mode = '/[^a-e]/';       	//只要第一个准备匹配的不是a-e的字母就行 写进中括号里面的^代表非
+// $string = '1aaa';	
+// $mode = '/\w/';           	//匹配所有 小写大写字母0-9 
+// $string = 'ADFaaa';	
+// $mode = '/\W/';           	//匹配所有 非小写大写字母0-9 
+// $string = '￥ADFaaa';	
+// $mode = '/\d/';           	//匹配所有 数字字符
+// $string = '3aaa';	
+// $mode = '/\d/';           	//匹配所有 非数字字符
+// $string = '啊3aaa';	
+// $mode = '/php\b/';        	//\b前面的p是单词边界 也就是是文本最后 或者后面是空格
+// $string = 'php a';	   	//匹配 后面是空格
+// $mode = '/ph\+p/';        	//\+ 把+功能去掉 他就是字符+
+// $string = 'ph+p';	        //匹配  
+// $mode = '/php/i';         	//i 不区分大小写
+// $string = 'PHP';	        //匹配 
+// $mode = '/php/i';         	//i 不区分大小写
+// $string = 'PHP';	        //匹配  
+$mode = '/ph p/x';        		//x 忽略规则中的空格
+$string = 'php';	        	//匹配 如果没有x 那就必须 ph p才能匹配了  
+if(preg_match($mode,$string)){
+	echo '匹配了';
+}else{
+	echo '不匹配';
+}
+		
+//preg_grep
+$language = array('php','asp','jsp','ruby','python');
+$newarray = preg_grep('/p$/',$language);   //第一个参数是规则 第二个参数是被放入的数组 函数最终返回的是一个新数组
+print_r($newarray);    		//Array ( [0] => php [1] => asp [2] => jsp ) 
+$newarray2 = preg_grep('/^p/',$language);  //找出$language数组中开头是p的数组元素 返回新数组
+print_r($newarray2);     	//Array ( [0] => php [4] => python ) 
+	
+//验证电子邮件 注意一定要前面加^ 后面加$ 否则之后判断匹配$string的第一个
+//$mode = '/(用户名)@(网址).(域名)/'; 
+//用户名可以是所有的大小写字母及数字 以及_ . 以及只能2-255位 所以是([a-zA-Z0-9_\.]{2,255})
+//网址可以是所有的大小写字母及数组 以及- 以及只能1-255位 所以是([a-zA-Z0-9\-]{1,255})
+//域名部分可以是所有的小写字母 以及2-4位 所以是 ([a-z]{2,4})
+//$mode = '/^([a-zA-z0-9_\.]{2,255})@([a-zA-Z0-9\-]{1,255}).([a-z]{2,4})$/';  //将[a-zA-Z0-9_]用[\w]代替
+$mode = '/^([\w\.]{2,255})@([\w\-]{1,255}).([a-z]{2,4})$/';          
+$string = 'aA4do.m_in@1Aa6-3.com';              //符合规则   
+if(preg_match($mode,$string)){
+	echo '电子邮件合法';
+}else{
+	echo '电子邮件不合法';
+}
+
+preg_match_all('/php[1-6]/','php5dsphp6asfsphp7',$out);
+print_r($out);   // Array ( [0] => php5 [1] => php6 ) ) 
+	
+echo preg_replace('/php[1-6]/','python','this is a php5,this is a php6');
+//this is a python,this is a python 将符合/php[1-6]/规则的字符串替换成python
+
+//解决贪婪问题
+//$mode = '/([b])(.*)([/b])/';    	//先分组 分三组 中间一组是任意字符. 0个或多个*  
+//$mode = '/(\[b\])(.*)(\[\/b\])/';    	//然后[ ] / 全部要转义 所以都加上\
+$mode = '/(\[b\])(.*)(\[\/b\])/U';     	//这样的规则 会匹配第一个[b] 一直到最后一个[/b] 所以要禁止贪婪 加上U
+$replace = '&ltstrong>\2&lt/strong>';      	//两个标签之间 可以填充任何符合 \2的规则 也就是规则中的中间一组的规则
+$string = 'this is a [b]php5[/b],this is a [b]php6[/b]';
+echo preg_replace($mode,$replace,$string);
+	
+print_r(preg_split('/[\.@]/','adomin.aa@163.com'));
+//Array ( [0] => adomin [1] => aa [2] => 163 [3] => com ) 
+//用.以及@切割字符串 记得外围一定要加[]S
+</pre>
+
+
+<p class="title">7：文件与目录操作</p>
+<pre>
+header("Content-Type:text/html; charset=UTF-8");
+
+$path1 = 'C:\AppServ\www\phpStudy\demo\3file.php';  //绝对路径 注意 要用单引号 用双引号的话就解析里面的\
+echo $path1;              	//绝对路径 C:\AppServ\www\phpStudy\demo\3file.php
+echo dirname($path1);     	//目录 C:\AppServ\www\phpStudy\demo
+echo basename($path1); 	  	//文件名  3file.php
+print_r(pathinfo($path1));	//Array ( [dirname] => C:\AppServ\www\phpStudy\demo [basename] => 3file.php [extension] => php [3filename] => 3file ) 
+
+$path2 = '3file.php';        	//相对路径 
+echo realpath($path2);      	//打印这个相对路径的绝对路径
+
+$path3 = 'C:\AppServ\www\phpStudy\demo\3file.php'; 
+echo filesize($path3);  		//882字节 参数绝对路径相对路径都可以
+echo round(filesize($path3)/1024);  	//1KB
+
+echo round(disk_free_space('C:')/1024/1024/1024).'GB'; 		//C盘 229GB磁盘剩余空间
+echo round(disk_total_space('C:')/1024/1024/1024).'GB'; 	//C盘 341GB总空间
+	
+echo fileatime($path1);   	//1396704556 文件最后访问时间 毫秒时间戳
+echo filectime($path1);   	//文件改变事件 删除之类的操作
+echo filemtime($path1);   	//文件内容变化时间
+
+date_default_timezone_set('Asia/ShangHai');  	//设置时区为中国时区 如果不设置下面输出本地时间就是伦敦标准事件
+echo date('Y-m-d H:i:s');   			//2014-04-05 22:10:32
+echo date('Y-m-d H:i:s', '1396704556');  	//2014-04-05 21:29:16 可以传第二个参数 将事件戳改为相应的时间
+
+$fp1 = fopen('3file_w.txt', 'w');   		//w只写模式 如果文件不存在 就自动创建这个文本 如果有这个文本而且文本有内容 那就清空原内容 写入下面的内容 返回值$fp是资源句柄
+$outstring1 = "this is luo\r\nhe is a coder";  	//这里必须双引号 才能解析内部的\r\n
+//fwrite($fp, $outstring, 6);     		//写入文本到文件 并且只要前6个字符 this i
+fwrite($fp1, $outstring1, strlen($outstring1));  //写入文本到文件 并且只字符本身长度的字符  
+fclose($fp1);  					//最后记得关闭已打开的文件资源句柄 以避免浪费资源
+//file_put_contents('text.txt', '啊啊啊')  	//最简洁的写法 上面的操作合成这一句 写入啊啊啊
+
+$fp2 = fopen('3file_a.txt', 'a');  		//a追加写入模式 刷新一次 就追加写入一次下面的字符串
+$outstring2 = "this is luo\nhe is a coder\n";
+fwrite($fp2, $outstring2);
+fclose($fp2);
+
+$fp3 = fopen('3file_r.txt', 'r');  	//r 只读模式
+echo fgetc($fp3)."\n";   		//w 读出文本的一个字符 并指针下移一位 只能读英文 因为中文是2个字符
+echo fgetc($fp3)."\n";   		//o 指针下移一位
+echo fgetc($fp3)."\n";   		//s
+//echo fgets($fp3);        		//hizhidu 读出一行 这里指针已经到h了 所以不完整
+//echo fgets($fp3, 4);     		//hiz 必须先注释掉上一句 否则指针到最后了没有输出 第二个参数4带面输出指针开始 4-3个字符
+//echo fgetss($fp3);       		//读出一行 并且忽略掉HTML标签
+//echo fread($fp3, 4);     		//输出4个 而不是fgets的4-1个 
+while (!feof($fp3)){       		//一直循环 直到资源句柄的指针指到最后为止
+	echo fgetc($fp3);      		//一个个字符读出打印  hizhidu di er hang di san hang
+}
+rewind($fp3);   			//经过上面的操作 指针到末尾了 让指针回到起始位置
+echo fgetc($fp3)."\n"; 			//这样又有输出了 w
+echo ftell($fp3)."\n"; 			//1 得出现在的指针是1
+fseek($fp3, 4); 			//i 将指针直接直到4 
+echo fgetc($fp3);
+fclose($fp3);
+
+print_r(file('3file_r.txt')); 		//Array ( [0] => woshizhidu ) 以数组形式输出页面内容
+$arr1 = file('3file_r.txt');
+echo $arr1[2];                		//di san hang 数组第三个元素 就是第三行
+echo file_get_contents('3file_r.txt'); //以字符串方式 读出所有的内容 woshizhidu di er hang di san hang
+
+if (file_exists('3file.php')){
+	echo "3file.php文件存在";
+}else{
+	echo "3file.php文件不存在";
+}
+echo filesize('3file.php');  	//4715B大小
+//unlink('ssssdsfsdss.txt');  	//删除文件ssssdsfsdss.txt
+
+$dir = opendir('C:\AppServ\www\phpStudy\demo');  //打开这个目录
+while(!!$file = readdir($dir)){ 	//每次循环 就执行一次readdir($dir)读取一次当前目录下的一个文件名
+	echo $file;       		//然后打印出这个文件 一直循环打印 直到当前目录下文件名全读取过了readdir($dir)执行后会返回false从而结束循环
+}          //. .. .buildpath .project .settings 3file.php 3file_a.txt 3file_r.txt 3file_w.txt目录下所有的文件名
+closedir($dir);  //最后关闭这个目录
+
+print_r(scandir('C:\AppServ\www\phpStudy\demo')); //以数组形式 返回这个目录下的所有文件
+//rmdir('fds/sdf/sdf/pdfd');  		//删掉这个目录
+//rename('a123.txt', 'b123.txt') 	//把a123.txt文件名改成b123.txt 这里传入目录 也可以改目录名
+</pre>
+
+
+<p class="title">8：表单操作</p>
+<pre>
+//header的用法
+/*header('Location:demo2.php');  			//一刷新这个页面 就自动跳转到demo2.php页面
+header('Location:http://www.baidu.com'); 		//跳到百度的网站 记得加http
+header('Content-Type:text/html; charset=utf-8'); 	//设置页面编码 因为IDE设置为了UTF-8 所以页面编码也必须设置为UTF-8
+echo '我是utf-8';
+//header之前不能有任何的输出 比如echo print_r之类的否则会报错 在输出前加上ob_start()开启缓冲区 先缓冲了输出内容那就没关系
+//在某些编辑器中可以设置文件编码为UTF-8带BOM头 其实这也是输出了 之后用header设置编码也会报如下错误
+//Cannot modify header information - headers already sent by (output started at C:\AppServ\www\phpStudy\demo\8form.php:5)
+//而且这里指的输出也包括&lt?php之上的空格 所以&lt?php 之上不能有空格输出 或者在空格之上第一行加上php语句ob_start() 缓冲空格
+
+//接收来之8form_1的表单数据 &ltform method="post" action="8form.php"> 
+//如果get发送 会在url上显示username=xxxxx 而且还可以改动 所以一般表单提交都用post
+if(isset($_POST["username"])){     
+	echo "提交了&ltbr/>";
+	$username = $_POST["username"];  		//获取输入框输入的内容 也就是name="username"这个input的value
+	$username = trim($username);     		//去掉这个内容的空格
+	$username = htmlspecialchars($username);  	//如果这个内容包括html标签 不解析这个标签
+	if(strlen($username)&lt2){                  	//如果这个内容字符串长度小于2位 后续这里可以用正则做筛选
+		echo "用户名不能小于2位&ltbr/>";         	//在8form.php文档中输出这句提示用户
+		exit;                                   //程序跳出 后续不会在8form.php文档中输出这个内容
+	}
+	echo '我的用户名是：'.$username."&ltbr>"; 	//在8form.php文档中输出这个内容
+}else{                             //如果get方法 或者没有 name="username"这个input 那就是非法提交
+	echo "非法提交&ltbr/>";
+}*/
+
+//基本的表单验证流程  接收来自8form_2.php的表单数据 &ltform method="post" action="8form.php">
+header('Content-Type:text/html; charset=utf-8');
+//1：验证是否是8form_2.php提交过来的
+if(!isset($_POST["send"])||$_POST["send"]!="提交"){  	//如果不是name="send"的按钮提交过来的 或者按钮的value!="提交" 
+	//echo "不是我要的页面提交的";                      
+	header("Location:8form_2.php");  		//那页面还是指向到自己的原页面form.php并不跳转到这个页面 注意header()前面不能有任何html输出 
+	exit;                           	 	//并且程序退出 
+}
+
+//2：接收所有数据 就是通过他们的name接收他们的value
+$username = trim($_POST["username"]);     	//过滤左右两边的空格
+$password = $_POST["password"];
+$email = $_POST["email"];
+$code = trim($_POST["code"]);             	//过滤掉左右两边的空格 便于后面的字符串长度判断
+$content = htmlspecialchars($_POST["content"]);  //不解析html标签
+
+//3：设置验证
+if(strlen($username)&lt3||strlen($username)>10){   //如果用户名输入的字符串 小于2位大于10位
+	echo "&ltscript>alert('用户名不能小于3位，不能大于10位');history.back();&lt/script>";  //用js弹窗 同时返回到上个页面 也就是不会进入现在这个php页面
+	exit;     //程序跳出
+}
+if(strlen($code)!=4||!is_numeric($code)){        //如果验证码输入的字符串 不是4位 或者不是全数字
+	echo "&ltscript>alert('验证码必须是4位，必须是纯数字');history.back();&lt/script>";
+	exit;
+}
+if(!preg_match('/^([\w\.]{2,255})@([\w\-]{1,255}).([a-z]{2,4})$/',$email)){   //如果电子邮件格式不符合正则表达式
+	echo "&ltscript>alert('电子邮件不合法');history.back();&lt/script>";
+	exit;
+}
+
+//4：执行此php文档的相应操作
+echo "用户名：".$username."&ltbr/>";
+echo "密　码：".$password."&ltbr/>";
+echo "邮　箱：".$email."&ltbr/>";
+echo "验证码：".$code."&ltbr/>";
+echo "简　介：".$content."&ltbr/>";
+</pre>
+
+
+<p class="title">9：cookie and session</p>
+<pre>
+ob_start();		//cookie和session的操作之前不能有echo等输出 如果希望能输出 那就必须先开启缓冲区
+header('Content-Type:text/html; charset=utf-8');
+
+//cookie存在客户端 而且只能存储50个左右 不安全 但是不占用服务器资源
+setcookie('name', 'luo', time()+(7*24*60*60)); 	//设置出一个cookie 名称是name 内容是luo 过期时间是7天后
+// setcookie('name', 'luo', time()-1);   	//删除cookie 
+echo $_COOKIE['name'];  			//读取名称为name的cookie的内容
+if(isset($_COOKIE['name'])){
+	echo '名称是name的cookie是存在的';
+}else{
+	echo '名称是name的cookie是不存在的';
+}
+
+//session存在服务器端比较安全 无数量限制 一般存放1440秒 会自动销毁 如果关闭了浏览器也自动销毁了
+session_start();   		//使用session在多个网页间传值 必须先开启这句
+$_SESSION['name'] = 'luo';  	//设置session
+// unset($_SESSION['name']);   	//销毁session
+if(isset($_SESSION["name"])){
+	echo $_SESSION["name"];
+}else{
+	echo '不存在此人';
+}
+session_destroy();   		//最后销毁所有的session
+
+//cookie使用于会员登录 购物车等 会员比较多 如果用session会占用太多的服务器资源
+//session一般用于少量的页面间的数据传输 例如验证码 或者后台管理登录 保证安全 
+</pre>
+
+
+<body> 
+<html>    
+ 

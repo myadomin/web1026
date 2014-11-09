@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>基础笔记---字符串及正则操作实例</title>
+<style>
+body{
+	font-size: 16px;
+	padding: 0px 0 50px 100px;
+}
+</style>
+</head>
+<body>
+
+<pre>
+<h2>字符串及正则操作</h2>
+
+window.onload = function(){
+
+//1：连字符转驼峰
+var str1 = 'border-bottom-color';
+//-后的字母1个且全局 匹配到2次 函数执行2次
+str1 = str1.replace(/-(\w{1})/g, function(all, arg1){return arg1.toUpperCase()});	
+// alert(str1);
+
+
+//2：转驼峰 数组操作方法
+var str2 = 'border-bottom-color';
+var arr2 = str2.split('-');
+for(var i=1; i&ltarr2.length; i++){
+	arr2[i] = arr2[i].charAt(0).toUpperCase() + arr2[i].substring(1);
+}
+str2 = arr2.join('');
+// alert(str2);
+
+
+//3：驼峰转连字符
+var str3 = 'borderBottomColor';
+//全局 找到大写字母 转为-小写字母 匹配到2次 函数执行2次
+str3 = str3.replace(/([A-Z]{1})/g, function(all, arg1){return '-' + arg1.toLowerCase()});
+// alert(str3);
+
+
+//4：首字母大写
+var str4 = 'we are the abc';
+var arr4 = str4.split(' ');
+for(var i=0; i&ltarr4.length; i++){
+	arr4[i] = arr4[i].charAt(0).toUpperCase() + arr4[i].substring(1);
+} 
+str4 = arr4.join(' ');
+// alert(str4);
+
+
+//5: 找出'sdjksfssscfssdd'中出现次数最多的字母 并且指出出现了几次
+var str5 = 'sdjksfssscfssdd';
+function fn5(str){
+	var json = {};
+	var num = 0;
+	var value = '';
+
+	//形成json = {"s":["s", "s", "s"...], "d":["d", "d"...], "j":["j"..], ..}
+	for(var i=0; i&ltstr.length; i++){
+		if(!json[str[i]]){
+			json[str[i]] = [];
+		}
+		json[str[i]].push(str[i]);
+	}
+
+	//遍历json
+	for(var attr in json){
+		if(num &lt json[attr].length){
+			num = json[attr].length;
+			value = json[attr][0];
+		}
+	}
+
+	return '出现次数最多的字母是：' + value + '，共出现了：' + num + '次';
+}
+// alert(fn5(str5));
+
+
+//6: 找出'sdjksfssscfssdd'中出现次数最多的字母 并且指出出现了几次 正则方法
+var str6 = 'sdjksfssscfssdd';
+function fn6(str){
+	//得到cdddffjksssssss
+	var arr = str.split('');
+	var num = 0;
+	var value = '';
+	arr.sort();
+	str = arr.join('');
+
+	//相同字母为一组(\w)\1 一组或多组+  全局
+	str.replace(/(\w)\1+/g, function(all, arg1){
+		//匹配到6次 函数执行6次
+		if(num &lt all.length){
+			num = all.length;
+			value = arg1;
+		}
+	});
+
+	return '出现次数最多的字母是：' + value + '，共出现了：' + num + '次';
+}
+// alert(fn6(str6));
+
+
+//7：给'4585427741'加上千分符 
+var str7 = '4585427741';
+function fn7(str){
+	var iNum = str7.length%3;
+	//分成prevStr = 4  nextStr = 585427741 两个字符串
+	var prevStr = str.substring(0, iNum);
+	var nextStr = str.substring(iNum);
+	var arr = [];
+	
+	//[585,427,741]数组
+	for(var i=0; i&ltnextStr.length/3; i++){
+		//str.substring()的返回值是被切除的字符串 赋值给arr[i] 
+		//而str本身并没有变 所以可以一直循环切
+		arr[i] = nextStr.substring(3*i, 3*i+3);
+	}
+
+	//如果prevStr存在
+	if(prevStr){
+		str = prevStr + ',' + arr.join(',');
+	}else{		//不存在
+		str = arr.join(',');
+	}
+	
+	return str;
+}
+// alert(fn7(str7));
+
+
+//8: 字符串(数组)去重
+// alert(fn8('asdfdsssssfsdsdfwreeeees'));
+function fn8(str){
+	var json = {};
+	var resStr = '';
+	var len = str.length;
+
+	for(var i=0; i&ltlen; i++){
+		if(!json[str[i]]){
+			json[str[i]] = true;
+			resStr += str[i];
+		}
+	}
+
+	return resStr;
+}
+
+
+//9：切除数组的重复元素 返回这个数组及被切除的元素组成的数组
+Array.prototype.distinct = function(){
+	var resArr = [];
+	for(var i=0; i&ltthis.length; i++){
+		for(var j=i+1; j&ltthis.length;){
+			if(this[j] == this[i]){
+				// 如果找到的重复元素 this.splice(j, 1)切出去
+				// this.splice(j, 1)执行后原数组this变化(长度减1) 所以不要j++ 还是当前j继续执行这里
+				resArr.push(this.splice(j, 1)[0]);
+			}else{
+				//如果没有找到重复元素 j++ 找下一个元素
+				j++;
+			}
+		}
+	}
+	return '切除重复元素后的数组是：' + this + '，被切除的元素组成的数组是：' + resArr;
+}
+// 原型方法是函数声明 所以这两句执行语句要写在声明后
+// alert(['s','s','s','s','s','s','s','s','s'].distinct());
+// alert(['a','c','c','d','b','e','f','a','d'].distinct());
+
+
+//10：编写一个函数 把URL参数解析为一个对象
+var url = 'http://witmax.cn/index.php?aaa=0&bbb=1&ccc=2';
+function parse(str){
+	var json = {};
+	var arr1 = str.split('?');
+	var arr2 = arr1[1].split('&');
+
+	for(var i=0; i&ltarr2.length; i++){
+		var arrRes = arr2[i].split('=');
+		json[arrRes[0]] = arrRes[1];
+	}
+
+	return json;
+}
+// console.log(parse(url));
+
+
+//11：前补零
+function addZero(str, num){
+	var str = str + '';
+	var num = num - str.length;
+	while(num > 0){
+		str = '0' + str;
+		num--;
+	}
+	return str;
+}
+// alert(addZero(112,5));
+
+
+//12：根据每个元素的i属性值 由小到大排序如下数组 
+var arr3=[{i:5, v:1}, {i:2, v:4}, {i:3, v:2}, {i:1, v:5}, {i:4, v:3}];
+//sort里的function会遍历所有数组元素 每两项进行比较排序 
+arr3.sort(function(arg1, arg2){		
+	return arg1.i - arg2.i;
+})
+// console.log(arr3);
+
+
+//13：把一个字符串里的所有单词的第一个字符变大写？
+function fn13(str){
+	var arr = str.split(/\s+/);	
+
+	for(var i=0; i&ltarr.length; i++){
+		// alert(arr[i][0]);	
+		arr[i] = arr[i][0].toUpperCase() + arr[i].substring(1);
+	}
+
+	return arr.join(' ');
+};
+// alert(fn13('wo shi  shui he   he'));
+
+
+//14: 求一个字符串的字节长度
+// alert(fn14('撒旦法sss的sseee是'));	//18		 
+function fn14(str){
+	var j=0;
+
+	for(var i=0; i&ltstr.length; i++){
+		//大于255说明是汉字 占两个字节
+		if(str.charCodeAt(i) > 255){
+			j++;
+		}
+	}
+
+	return str.length + j;
+}
+
+
+//15：去除字符串的前后空格 验证身份证
+String.prototype.myTrim = function(){
+	return this.replace(/(^\s+)|(\s+$)/g, '');
+}
+// alert('[' + '  sdf df    df sss  '.myTrim() + ']');
+
+
+//16: 打印出1-10000之间的所有对称数（例如 11 121 1331 12821等）
+// alert(getSymNum(10000));
+function getSymNum(max){
+	var resArr = [];
+	var prevStr = '';
+	var nextStr = '';
+
+	for(var i=10; i&ltmax; i++){
+		var str = i + '';
+		var length = str.length;
+
+		//如果这个数是奇数位 例如121 那就切出前一位 后一位
+		if(length%2){
+			prevStr = str.substring(0, Math.floor(length/2));
+			nextStr = str.substring(Math.ceil(length/2));
+		}else{ 	//如果这个数是偶数位 例如1331 那就切出前两位 后两位
+			prevStr = str.substring(0, length/2);
+			nextStr = str.substring(length/2);
+		}
+
+		//将切出的前半部分字符串变数组再反转再组成字符串 判断是否和后半部分字符串相等
+		prevStr = prevStr.split('').reverse().join('');
+		if(prevStr == nextStr){
+			resArr.push(str);
+		}
+	}
+
+	return resArr;
+}
+
+
+//17: 不使用第三个变量 交换a17 b17两个变量的变量值
+var a17 = 'hello';
+var b17 = 'hi';
+a17 = [a17, b17];
+b17 = a17[0];
+a17 = a17[1]; 		//赋值a17必须写后面
+// alert(a17);
+// alert(b17);
+
+
+//18：n=5 不用for循环 得到[1,2,3,4,5]的数组 用递归
+var arr18 = [];
+var n = 5;
+(function fn18(){
+	if(n == 0){				//规
+		return;
+	}
+
+	arr18.unshift(n);
+	n--;
+
+	arguments.callee();		//递
+})();
+// alert(arr18);
+
+
+//19：n=5 不用for循环 得到[1,2,3,4,5]的数组 用正则匹配回调函数
+var arr19 = [];
+var arrRes = [];
+var n = 5;
+arr19.length = n + 1;
+str19 = arr19.join('a');		//str19 = 'aaaaa';
+
+str19.replace(/a/g, function(){	//匹配到5次 回调5次函数
+	arrRes.unshift(n--);
+})
+// alert(arrRes);
+
+
+//20：一个数n 如果小于100就返回n 否则返回100
+var n = 150;
+function fn20(num){
+	//用if else
+	/*if(num >= 100){
+		return 100;
+	}else{
+		return num;
+	}*/
+
+	//用三目
+	// return num = num >= 100 ? 100 : num;
+
+	//用switch
+	/*switch(n >= 100){
+		case true:
+			return 100;
+			break;
+		case false:
+			return n;
+			break;
+		default:
+			break;
+	}*/
+
+	//用Math.min()
+	// return Math.min(n, 100);
+
+	//用数组sort
+	/*var arr20 = [n, 100];
+	arr20.sort(function(arg1, arg2){return arg1 - arg2});
+	return arr20[0];*/
+
+	//用for循环 srt20.length>=3并且n>0 说明n大于100
+	/*var str20 = n + '';
+	for(var i=2; i&ltstr20.length && n>0; i++){
+		return parseInt(str20);
+	}
+	return n;*/
+
+	//用for in 
+	/*var json20 = {"key": "value"};
+	var m = n&lt100 || json;	//n&lt100 m就是true 就不可以for in  否则m是json
+	for(var i in m){
+		return 100;
+	}
+	return n;*/
+
+	//用&& ||
+	var m = n>=100 && 100;
+	return m = m || n;
+
+}
+// alert(fn20(n));
+
+}
+</pre>
+
+</body> 
+</html>    
+      
+     
+     
+     

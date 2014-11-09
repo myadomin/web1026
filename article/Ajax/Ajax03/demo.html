@@ -1,0 +1,336 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Ajax瀑布流--定位布局</title>
+<style>
+*{
+	margin:0px;
+	padding:0px;
+}
+img{
+	border:none;
+}
+ul{
+	list-style: none;
+}
+#wrap{
+	width:770px;
+	height:1100px;
+	position:relative;
+	margin:50px auto;
+}
+#wrap li{
+	position:absolute;
+	 /*每张图片，都动态调节每个图片的left top一次*/
+	left:0px;              
+	top:0px;
+}
+#wrap li img{
+	/*宽度设定为250px后 不管是img实际宽度是多少 都会等比例缩放到宽度250px*/
+	width:250px;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="../../../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+	
+
+<p class="title">概述 Ajax瀑布流--定位布局</p>
+布局方法：只有一个ul，ul内的每个li代表一个图文信息。通过定位每三个li铺成一行<br />
+某个ul的最后一个li出现在可视区后(此例中就是最右边的999图片) 就开始ajax请求一批新数据 <br />
+请求得到json数据后生成li 然后一次性给ul标签9个li 然后通过定位让每三个li铺成一行 实现瀑布流展示<br />
+DEMO演示见页面底部 具体ajax请求可用firebug网络XHR查看
+
+<p class="title" style="clear:both;" id="jscode">js代码</p>
+<pre>
+//Ajax--瀑布流--定位布局
+$(function(){
+
+    //一刷新进入页面 先瀑布流展示一次
+    layout();
+
+
+    //ajax请求数据 得到数据生成性新li后 再次调用layout()
+    var flag = true;    //onscorll开关
+    var batchNum = 1;   //当前图片批次
+    $(window).scroll(function(){
+        //获取最后三张图片中top值最小的那个图片的top值nMinTop
+        var nTop1 = parseInt($('#wrap li').eq(-1).css('top'));
+        var nTop2 = parseInt($('#wrap li').eq(-2).css('top'));
+        var nTop3 = parseInt($('#wrap li').eq(-3).css('top'));
+        var nMinTop = Math.min(nTop1, nTop2, nTop3) + $('#wrap').offset().top;
+
+        //当最后三张图片的某张出现在视窗的时候 并且onscroll开起
+        if((($(window).height() + $(window).scrollTop()) > nMinTop) && flag){
+            //flag开关的作用！！！！！关键点！！！！！
+            //onscroll会瞬间触发多次 此时的(($(window).height() + $(window).scrollTop()) > nMinTop)还没计算完成
+            //所以只有马上改变flag才能阻止瞬间多次触发
+            //所以onscroll第一次触发后flag就为flase 保证瞬间只一次ajax请求
+            flag = false;
+
+            //请求第batchNum批数据
+            $.ajax({
+                url: "data.php?batch="+batchNum,
+                dataType: "json",         //返回json对象
+                success: function(json){
+                    //遍历出所有数据 生成li
+                    for(var i in json.list[0].src){
+                       $('#wrap').append('&ltli>&ltimg src="'+json.list[0].src[i]+'"/>&ltp>'+json.list[0].title[i]+'&lt/p>&lt/li>');
+                    }
+                    
+                    //生成新li后 调用函数再次js定位布局
+                    layout();
+
+                    //当次ajax请求后 再打开触发onscroll的开关 以备触发下一批次的ajax请求
+                    //此时已是若干秒后 (($(window).height()+$(window).scrollTop())>nMinTop)计算已完成 能正确用于if判断了
+                    if(batchNum &lt 10){  //第10批是最后一批 之后不再开启onscroll开关
+                      flag = true;
+                    }
+
+                    //ajax请求完毕后 批次数累加1 为下一批次数据准备
+                    batchNum++;
+                }
+            });
+        }
+    });
+
+
+    //瀑布流定位布局 函数封装
+    function layout(){
+        //预存当前列的高度
+        var boxHeight = {   
+            leftBox:[],
+            centerBox:[],
+            rightBox:[]
+        }
+
+        $('#wrap li').each(function(){
+            var now = ($(this).index())%3;               //now形成case0 1 2 将图片分成3组(036 147 258) 集体设置left
+            var now2 = Math.floor(($(this).index())/3);  //now2形成每个case里面的0 1 2 top通过now2分别设置
+            
+            switch(now){
+                case 0:
+                    $(this).css("left",0+"px");                //第0 3 6张 left都为0
+                    boxHeight.leftBox.push($(this).height());  //预存0 3 6张的图片高度
+                                                                
+                    if(now2 == 0){                             //第0 3 6张经过now2计算后变成case0里面的0 1 2张 
+                        $("#wrap li").eq(0).css("top",0+"px");   //第0张top为0
+                    }else{                     
+                        var nTop = 0;                                
+                        for(var j=0 ; j&ltnow2 ; j++){             //now2为1就循环一次 相当于nTop = boxHeight.leftBox[0] + 10;
+                            nTop += boxHeight.leftBox[j] + 10;     //now2为2就循环两次 相当于nTop = boxHeight.leftBox[0] + 10 + boxHeight.leftBox[1] + 10;
+                        }
+                        $(this).css("top",nTop+"px");
+                    }
+                break;
+                  
+                case 1:
+                    $(this).css("left",260+"px");
+                    boxHeight.centerBox.push($(this).height());
+                    
+                    if(now2 == 0){
+                        $(this).css("top",0+"px");
+                    }else{
+                        var nTop = 0;
+                        for(var j=0 ; j&ltnow2 ; j++){
+                            nTop += boxHeight.centerBox[j] + 10;
+                        }
+                        $(this).css("top",nTop+"px");
+                    }
+                break;
+                  
+                case 2:
+                    $(this).css("left",520+"px");
+                    boxHeight.rightBox.push($(this).height());
+                    
+                    if(now2 == 0){
+                        $(this).css("top",0+"px");
+                    }else{
+                        var nTop = 0;
+                        for(var j=0 ; j&ltnow2 ; j++){
+                            nTop += boxHeight.rightBox[j] + 10;
+                        }
+                        $(this).css("top",nTop+"px");
+                    }
+                break;
+            }
+        });
+    }
+
+  	
+});
+</pre>
+
+<p class="title">html代码</p>
+<pre>
+&ltul id="wrap">
+	&ltli>
+		&ltimg src="img/1.jpg" alt="">
+		&ltp>1111111&lt/p>
+	&lt/li>
+	&ltli>
+		&ltimg src="img/2.jpg" alt="">
+		&ltp>22222222&lt/p>
+	&lt/li>
+	&ltli>
+		&ltimg src="img/3.jpg" alt="">
+		&ltp>33333333&lt/p>
+	&lt/li>
+	&ltli>
+		&ltimg src="img/4.jpg" alt="">
+		&ltp>4444444&lt/p>
+	&lt/li>
+	&ltli>
+		&ltimg src="img/5.jpg" alt="">
+		&ltp>55555555&lt/p>
+	&lt/li>
+	&ltli>
+		&ltimg src="img/6.jpg" alt="">
+		&ltp>666666666666&lt/p>
+	&lt/li>
+	&ltli>
+		&ltimg src="img/7.jpg" alt="">
+		&ltp>77777777&lt/p>
+	&lt/li>
+	&ltli>
+		&ltimg src="img/8.jpg" alt="">
+		&ltp>888888888888888&lt/p>
+	&lt/li>
+	&ltli>
+		&ltimg src="img/9.jpg" alt="">
+		&ltp>999999&lt/p>
+	&lt/li>
+&lt/ul>
+</pre>
+
+<p class="title">css代码</p>
+<pre>
+*{
+	margin:0px;
+	padding:0px;
+}
+img{
+	border:none;
+}
+ul{
+	list-style: none;
+}
+#wrap{
+	width:770px;
+	height:1100px;
+	position:relative;
+	margin:50px auto;
+}
+#wrap li{
+	position:absolute;
+	 /*每张图片，都动态调节每个图片的left top一次*/
+	left:0px;              
+	top:0px;
+}
+#wrap li img{
+	/*宽度设定为250px后 不管是img实际宽度是多少 都会等比例缩放到宽度250px*/
+	width:250px;
+}
+</pre>
+
+<p class="title">php代码 模拟后台数据</p>
+<pre>
+//模拟后台数据
+$dataArr = array();
+
+for($i=1; $i<=10; $i++){
+	$temp = '{
+		"batch": '.($i).',
+		"list": [
+			{
+				"src": [
+					"img/1.jpg", 
+					"img/2.jpg", 
+					"img/3.jpg",
+					"img/4.jpg", 
+					"img/5.jpg", 
+					"img/6.jpg",
+					"img/7.jpg", 
+					"img/8.jpg", 
+					"img/9.jpg"
+				],
+				"title": [
+					"新的第'.($i).'批图片111", 
+					"新的第'.($i).'批图片222", 
+					"新的第'.($i).'批图片333",
+					"新的第'.($i).'批图片444", 
+					"新的第'.($i).'批图片555", 
+					"新的第'.($i).'批图片666",
+					"新的第'.($i).'批图片777", 
+					"新的第'.($i).'批图片888", 
+					"新的第'.($i).'批图片999"
+				]
+			}
+		]
+	}';
+	//形成10个json字符串 存入$dataArr数组中 
+	array_push($dataArr, $temp);
+
+	//根据不同的?xxxx 输出相应批次的数据
+	if($_GET['batch'] == $i){
+		echo $dataArr[$i-1];		//例如?batch=2就输出$dataArr[1] 也就是第二批数据
+	}
+
+}
+
+// echo $dataArr[1];
+// echo '{"batch":1}';
+</pre>
+
+
+<p class="title">DEMO演示 Ajax瀑布流--定位布局 共10批数据</p>
+
+<ul id="wrap">
+	<li>
+		<img src="img/1.jpg" alt="">
+		<p>1111111</p>
+	</li>
+	<li>
+		<img src="img/2.jpg" alt="">
+		<p>22222222</p>
+	</li>
+	<li>
+		<img src="img/3.jpg" alt="">
+		<p>33333333</p>
+	</li>
+	<li>
+		<img src="img/4.jpg" alt="">
+		<p>4444444</p>
+	</li>
+	<li>
+		<img src="img/5.jpg" alt="">
+		<p>55555555</p>
+	</li>
+	<li>
+		<img src="img/6.jpg" alt="">
+		<p>666666666666</p>
+	</li>
+	<li>
+		<img src="img/7.jpg" alt="">
+		<p>77777777</p>
+	</li>
+	<li>
+		<img src="img/8.jpg" alt="">
+		<p>888888888888888</p>
+	</li>
+	<li>
+		<img src="img/9.jpg" alt="">
+		<p>999999</p>
+	</li>
+</ul>
+
+
+</body> 
+</html>    
+      
+     
+     
+     

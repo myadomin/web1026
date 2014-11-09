@@ -1,0 +1,288 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>oop_login</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+</head>
+<body>
+
+
+<p class="title">概述 面向对象的登录设计</p>
+<pre>
+设计一个简单的登录注册会员系统 会员信息用XML文件保存
+从而理解PHP面向对象的层级划分 理解封装继承多态
+</pre>
+
+<p class="title">inc文件 各个页面</p>
+<pre>
+1：start.inc.php 初始进入的页面
+&lth3>欢迎光临会员俱乐部&lt/h3>
+&ltdiv class="start">
+	&lta href="index.php?index=login">登录&lt/a> | 
+	&lta href="index.php?index=reg">注册&lt/a>
+&lt/div>
+
+2：reg.inc.php 注册页面
+&lth3>请注册您的个人信息&lt/h3>
+&ltdiv class="reg"> 
+	&ltform method="post" action="">
+		&ltp>用 户 名：&ltinput type="text" name="username" />&lt/p>
+		&ltp>密　　码：&ltinput type="password" name="password" />&lt/p>
+		&ltp>密码确认：&ltinput type="password" name="notpassword" />&lt/p>
+		&ltp>电子邮件：&ltinput type="text" name="email" />&lt/p>
+		&ltp>&ltinput type="submit" name="send" value="注册" />&lt/p>
+		&ltp>[&lta href="index.php">返回上一层&lt/a>]&lt/p>
+	&lt/form>
+&lt/div>
+
+3：login.inc.php 登录页面
+&lth3>请登录您的账号&lt/h3>
+&ltdiv class="login"> 
+	&ltform method="post" action="">
+		&ltp>用 户 名：&ltinput type="text" name="username" />&lt/p>
+		&ltp>密　　码：&ltinput type="password" name="password" />&lt/p>
+		&ltp>&ltinput type="submit" name="send" value="登录" />&lt/p>
+		&ltp>[&lta href="index.php">返回上一层&lt/a>]&lt/p>
+	&lt/form>
+&lt/div>
+
+4：member.inc.php 会员中心页面
+&lth3>个人中心&lt/h3>
+&ltdiv class="start">
+	&ltp>欢迎您归来，&lt?php echo $_COOKIE["username"]?>&lt/p>  &lt!-- 读取cookie -->
+&lt/div>
+
+5：style.css css文件
+@CHARSET "UTF-8";
+*{
+	margin:0px;
+	padding:0px;
+}
+h3, p, .start, .reg, .login{
+	margin: 20px;
+	text-align: center;
+}
+</pre>
+
+<p class="title">index.php 主文件</p>
+<pre>
+&lt?php ob_start()?>		&lt!-- 开启缓冲区  为了后面的setcookie("username", $this->_username) -->
+&lt!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+&lthtml xmlns="http://www.w3.org/1999/xhtml">
+&lthead>
+&ltmeta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+&lttitle>会员系统&lt/title>
+&ltlink rel="stylesheet" type="text/css" href="style.css"/>
+&lt/head>
+&ltbody>
+
+&lt?php 
+	
+	//魔术方法 new的时候自动加载相应类文件
+	function __autoload($_className){
+		require $_className . '.class.php';
+	}
+	
+	//根据url ?xxx 开始进入主类Main
+	if( isset($_GET["index"]) ){
+		$_main = new Main($_GET["index"]);
+	}else{
+		$_main = new Main();
+	}
+	
+	$_main->run();
+	
+?>
+
+&lt/body>
+&lt/html>
+</pre>
+
+<p class="title">Main.class.php 主类</p>
+<pre>
+&lt?php
+
+//主类 控制界面载入 处理数据
+class Main{
+	private $_index;	//$_GET["index"]
+	private $_send;		//$_GET["send"]
+	
+	//构造方法  接收参数$_GET["index"]
+	public function __construct($_index = ''){
+		$this->_index = $_index;
+		//$_GET["index"]是空  或者$_GET["index"].inc.php这个文件不存在  那都引用的是start.inc.php
+		if( empty($this->_index) || !(file_exists($this->_index.".inc.php")) ){
+			$this->_index = "start";
+		}
+		//如果点击了登录  那_send属性就是登录  如果点击了注册  那_send属性就是注册
+		if( isset($_POST["send"]) ){
+			$this->_send = $_POST["send"];
+		}
+	}
+	
+	//总调度
+	public function run(){
+		//根据不同的$_GET["index"] 引用相应的inc文件
+		require $this->_index.".inc.php";	
+		//通过判断设置后的_send属性值  判断是注册还是登录  做相应的操作
+		if( $this->_send == "注册" ){
+			$this->_exec(new Reg($_POST['username'], $_POST['password'], $_POST['notpassword'], $_POST['email']));
+		}else if( $this->_send == "登录" ){
+			$this->_exec(new Login($_POST['username'], $_POST['password']));
+		}
+	}
+	
+	//多态 传入不同的$_page实例化对象 执行不同的效果
+	private function _exec($_page){
+		//在Reg或者Login等类中 执行验证功能_check()
+		if($_page->_check()){
+			//如果验证通过 进行_query操作
+			$_page->_query();
+		}else{
+			Tool::alertBack("不能为空");
+		}
+	}
+}
+
+
+?>
+</pre>
+
+<p class="title">User.class.php 抽象类</p>
+<pre>
+&lt?php
+
+//定义抽象类  作为Login.class.php及Reg.class.php的父类  规范login reg的属性和方法
+abstract class User{
+	//具备的属性
+	protected $_username;
+	protected $_password;
+	protected $_notpassword;
+	protected $_email;
+	
+	//注册及登录类需要覆写的抽象方法  
+	//点击注册生成XML 点击登录就读取XML 多态 
+	abstract function _query();
+
+	//注册及登录类需要覆写的抽象方法  
+	//登录验证  注册验证  多态
+	abstract function _check();
+}
+
+?>
+</pre>
+
+<p class="title">Tool.class.php 工具类</p>
+<pre>
+&lt?php
+
+//定义工具类  放一些常用的静态方法
+//此类不能被继承  都是静态方法  不需要new就能直接调用方法
+final class Tool{		//与java不同  不能写成public final class Tool
+	//弹出信息  跳到指定页面的静态方法
+	public static function alertLocaton($info, $url){
+		echo "&ltscript type='text/javascript'>alert('$info');location.href='$url';&lt/script>";
+		exit();
+	}
+	
+	//弹出信息  返回原页面
+	public static function alertBack($info){
+		echo "&ltscript type='text/javascript'>alert('.$info.');history.back();&lt/script>";
+		exit();	
+	}
+}
+
+?>
+</pre>
+
+<p class="title">Reg.class.php 注册类  继承User.class.php抽象类 具体实现注册功能</p>
+<pre>
+&lt?php
+
+//注册类  继承User抽象类  
+class Reg extends User{
+	//构造方法  接收$_POST["xx"]等传参  把接收的参数设置为父类定义好的_username等的属性值
+	public function __construct($userName, $passWord, $notPassWord, $eMail){
+		$this->_username = $userName;
+		$this->_password = $passWord;
+		$this->_notpassword = $notPassWord;
+		$this->_email = $eMail;
+	}
+	
+	//覆写_query()方法  生成XML
+	public function _query(){
+		//生成$_xml字符串  _xml这四个字母的前后不能有任何空格
+		$_xml = &lt&lt&lt_xml
+		&lt?xml version="1.0" encoding="utf-8"?>
+		&ltuser>
+		&ltusername>$this->_username&lt/username>
+		&ltpassword>$this->_password&lt/password>
+		&ltemail>$this->_email&lt/email>
+		&lt/user>
+		_xml;
+		//生成XML 每个标签内容值就是传入的参数$_POST[xxx]
+		$_sxe = new SimpleXMLElement($_xml);
+		$_sxe->asXML("user.xml");	
+		//注册成功后  跳到login.inc.php
+		Tool::alertLocaton("恭喜，注册成功", "index.php?index=login");
+	}
+	
+	//覆写_check()方法  做注册验证  返回true或false
+	public function _check(){
+		if(empty($this->_username) || empty($this->_password) || empty($this->_notpassword) || empty($this->_email)){
+			return false;
+		}else{
+			return true;
+		}
+	}
+}
+
+?>
+</pre>
+
+<p class="title">Login.class.php 登录类  继承User.class.php抽象类 具体实现登录功能</p>
+<pre>
+&lt?php
+
+//登录类  继承User抽象类  
+class Login extends User{
+	//构造方法  接收$_POST["xx"]等传参  把接收的参数设置为父类定义好的_username等的属性值
+	public function __construct($userName, $passWord){
+		$this->_username = $userName;
+		$this->_password = $passWord;
+	}
+	
+	//覆写_query()方法 读取XML对比用户填写的用户名密码
+	public function _query(){
+		$_sxlf = simplexml_load_file("user.xml");
+		//读取之前注册生成好的XML文档username标签值  这个值就是用户注册填的用户名
+		$_usernameInXml = $_sxlf->username[0];	
+		$_passwordInXml = $_sxlf->password[0];	
+		//如果用户填写的用户名密码都等于读取XML的用户名密码  那就是登录成功  否则登录失败
+		if($_usernameInXml == $this->_username && $_passwordInXml == $this->_password){
+			//登录成功 就生成cookie 必须在index.php的html标签前ob_start()
+			setcookie('username', $this->_username);	
+			Tool::alertLocaton("登录成功".$this->_username, "index.php?index=member");
+		}else{
+			Tool::alertBack("登录失败，用户名或者密码错误");
+		}
+	}
+	
+	//覆写_check()方法  做登录验证  返回true或false
+	public function _check(){
+		if(empty($this->_username) || empty($this->_password)){
+			return false;
+		}else{
+			return true;
+		}
+	}
+}
+
+?>
+</pre>
+
+
+<body> 
+<html>    
+ 

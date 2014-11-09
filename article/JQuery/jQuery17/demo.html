@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>jQuery源码分析6--功能检测$.support</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+</head>
+<body>
+<pre>
+<p class="title">概述</p>
+本文主要介绍源码的功能检测$.support。
+功能检测都是专门为源码内部准备的，深入学习意义不大。
+
+<strong>1：大概结构</strong>
+//匿名函数自我执行接收参数{}给参数support，最终返回这个support，然后赋值给$.support
+//所以$.support是一个json对象 可以通过console.log($.support)查看
+$.support = ( function( support ) {
+	xxxx;
+	return support;
+} )( {} );
+// console.log($.support);
+
+<strong>2：作用</strong>
+$.support主要用于jQuery内部的功能检测 如果不具备某种功能再用jQuery.valHooks做相应的兼容处理
+
+<p class="title">$.support源码分析</p>
+jQuery.support = (function( support ) {
+	var input = document.createElement("input"),
+		fragment = document.createDocumentFragment(),
+		div = document.createElement("div"),
+		select = document.createElement("select"),
+		opt = select.appendChild( document.createElement("option") );
+
+	//基本所有浏览器document.createElement("input").type都有默认值'text' 这句没什么意义
+	if ( !input.type ) {
+		return support;
+	}
+	
+	//然后把type改为"checkbox"
+	input.type = "checkbox";
+	
+	//用如下测试代码
+	//var input = document.createElement("input");
+	//input.type="checkbox"
+	//alert(input.value);
+	//低版本safari会弹出"" 所以support.checkOn是flase 其他浏览器会弹出"on" 所以support.checkOn是true
+	support.checkOn = input.value !== "";
+
+	//IE下opt.selected是flase 其他是true
+	support.optSelected = opt.selected;
+
+	//初始值 因为这三个要等页面加载完才能判断 所以在下面的$(function(){xxx})里面再判断赋值
+	support.reliableMarginRight = true;
+	support.boxSizingReliable = true;
+	support.pixelPosition = false;
+
+	//IE下复制的节点.checked是flase 其他是true
+	input.checked = true;
+	support.noCloneChecked = input.cloneNode( true ).checked;
+
+	//老版本WebKit下select被禁止 它的options也会被禁止 所以返回false
+	select.disabled = true;
+	support.optDisabled = !opt.disabled;
+
+	//IE下线设置value为"t" 再将input类型从默认的"text"变成"radio" value会变成"on"而不是"t" 所以返回false
+	input = document.createElement("input");
+	input.value = "t";
+	input.type = "radio";
+	support.radioValue = input.value === "t";
+
+	//老版本WebKit返回false
+	input.setAttribute( "checked", "t" );
+	input.setAttribute( "name", "t" );
+	fragment.appendChild( input );
+	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
+
+	//除了IE支持onfocusin返回true 其他都是false
+	support.focusinBubbles = "onfocusin" in window;
+	div.style.backgroundClip = "content-box";
+	div.cloneNode( true ).style.backgroundClip = "";
+	support.clearCloneStyle = div.style.backgroundClip === "content-box";
+
+	//某些功能检测必须DOM加载完毕后才能检测，所以下面的代码用$(function(xxx))包裹，在DOM加载完毕后执行
+	jQuery(function() {
+		var container, marginDiv,
+			//content-box区分标准模式 怪异模式
+			divReset = "padding:0;margin:0;border:0;display:block;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box",
+			body = document.getElementsByTagName("body")[ 0 ];
+
+		if ( !body ) {
+			//框架模式没有body
+			return;
+		}
+
+		//创建父div及样式(标准模式) 子div及样式(怪异模式) 为后续判断准备
+		container = document.createElement("div");
+		container.style.cssText = "border:0;width:0;height:0;position:absolute;top:0;left:-9999px;margin-top:1px";
+		body.appendChild( container ).appendChild( div );
+		div.innerHTML = "";
+		div.style.cssText = "-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;position:absolute;top:1%";
+
+		//通过swap进行css瞬间交换 判断support.boxSizing 低版本IE返回flase 其他都true
+		jQuery.swap( body, body.style.zoom != null ? { zoom: 1 } : {}, function() {
+			support.boxSizing = div.offsetWidth === 4;
+		});
+
+		// Use window.getComputedStyle because jsdom on node.js will break without it.
+		if ( window.getComputedStyle ) {
+			//低版本safari support.pixelPosition返回false 其他true
+			support.pixelPosition = ( window.getComputedStyle( div, null ) || {} ).top !== "1%";
+			//IE返回false 其他true
+			support.boxSizingReliable = ( window.getComputedStyle( div, null ) || { width: "4px" } ).width === "4px";
+
+			marginDiv = div.appendChild( document.createElement("div") );
+			marginDiv.style.cssText = div.style.cssText = divReset;
+			marginDiv.style.marginRight = marginDiv.style.width = "0";
+			div.style.width = "1px";
+			//低版本webkit返回false 其他true
+			support.reliableMarginRight =
+				!parseFloat( ( window.getComputedStyle( marginDiv, null ) || {} ).marginRight );
+		}
+
+		body.removeChild( container );
+	});
+
+	return support;
+})( {} ); 
+
+
+</pre>
+</body>
+</html>

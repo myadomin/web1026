@@ -1,0 +1,343 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>图片居中无缝轮播图</title>
+<style>
+*{
+	padding:0px;
+	margin:0px;
+}
+body{
+	padding: 0 0 100px 0px;
+	font-size: 16px;
+}
+.title{
+	font-size: 20px;
+	font-weight: bold;
+	color: green;
+	width: 1000px;
+	height: 100px;
+	line-height: 160px;
+	border-bottom: 1px solid #ccc;
+	padding-left: 200px;
+}
+pre{
+	padding-left: 200px;
+}
+ul{
+	list-style: none;
+}
+
+#wrap{
+	height: 396px;
+	position: relative;
+	overflow: hidden;
+}
+#wrap ul{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+#wrap ul li{
+	float: left;
+}
+#wrap ul li img{
+	position: relative;		/*如果left: -200px;那图片就左移动200 通过在js中设置left值 让图片大小不变化的情况下 看起来居中*/
+}
+ 
+#wrap .button{
+	position: absolute;
+	bottom: 0px;
+	width: 100%;			/*整个.button的div宽度是100% 内部居中 这样不管可视区域如何变化 三个a永远居中*/
+	text-align: center;
+}
+#wrap .button a{
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin: 5px;
+	background: #aaa;
+}
+#wrap .button a.active{
+	background: orange;
+}
+</style>
+<script type="text/javascript" src="../../../js/move.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+<div id="wrap">
+	<ul>
+		<li><img src="img/1.jpg" /></li>
+		<li><img src="img/2.jpg" /></li>
+		<li><img src="img/3.jpg" /></li>
+	</ul>
+	<div class="button">
+		<a href="javascript:;" class="active"></a>
+		<a href="javascript:;"></a>
+		<a href="javascript:;"></a>
+	</div>
+</div>
+
+<p class="title">DEMO演示 图片居中 自适应窗口宽度 无缝轮播图</p>
+
+<p class="title">js代码</p>
+<pre>
+//图片居中无缝轮播图 
+//1 应用relative布局让图片永远居中
+//2 通过改变相对定位的left形成无缝轮播 
+window.onload = function(){
+	var oUl = document.getElementById('wrap').getElementsByTagName('ul')[0];
+	var aLi = oUl.getElementsByTagName('li');
+	var oImg1 = aLi[0].getElementsByTagName('img')[0];
+	var aA = document.getElementsByTagName('a');
+	var nImgWidth = oImg1.offsetWidth;					//一个图片的宽度	
+	oUl.style.width = nImgWidth * aLi.length + 'px';	//ul的宽度等于图片宽度乘图片个数 后续任何宽度任何个数图片都能适应
+	var iNow = 0;		//保存当前图片的索引 被点击轮播自动轮播共享使用
+	var Timer = null;
+	var oMark = document.getElementById('mark');
+
+	//大于1000的任何屏幕宽度 永远显示图片中间部分
+	center();							//刷新进来执行一次
+	window.onresize = function(){		
+		clearInterval(Timer);			//如果缩放 就停止自动轮播
+		setTimeout(autoPlay(), 100);	//缩放完毕 100毫秒后再开启自动轮播
+		center();						//每次缩放窗口执行一次
+	}
+
+	//点击轮播
+	for(var i=0; i&ltaA.length; i++){
+		aA[i].index = i;
+		aA[i].onclick = function(){
+			iNow = this.index;
+			for(var i=0; i&ltaA.length; i++){
+				aA[i].className = '';
+			}
+			aA[iNow].className = 'active';
+			//注意 任何的绝对定位改变left的运动 在IE下必须先设定好left:0px top:0px 否则不会动
+			bufferMove( oUl, { "left": -iNow*nImgWidth+'px' } );	
+		}
+		//三个a按钮层级高于oUl 所以也要加入移入移出开启停止自动轮播
+		aA[i].onmouseover = function(){		
+			clearInterval(Timer);
+		}
+		aA[i].onmouseout = function(){
+			autoPlay();
+		}
+	}
+
+	//开启自动轮播 
+	autoPlay();
+
+	//移入停止自动轮播 移出开启自动轮播
+	oUl.onmouseover = function(){
+		clearInterval(Timer);
+	}
+	oUl.onmouseout = function(){
+		autoPlay();
+	}
+
+	//自动轮播
+	function autoPlay(){
+		Timer = setInterval(function(){
+			iNow ++;
+			for(var i=0; i&ltaA.length; i++){
+				aA[i].className = '';
+			}
+			//无缝轮播(另一种实现方法：将这里的三张图再复制出三张图 放在后面)
+			if( iNow == (aA.length) ){								
+				aA[0].className = 'active';	
+				//当移到最后一张图的时候 通过改变相对定位的left 将第一张图拉到最后一张图后面
+				oImg1.style.left = (aA.length)*nImgWidth + 'px';	
+				flag = false;
+				//被拉到最后位置的第一张图开始移动 加入(nImgWidth-getInner().width)/2是让任何宽度的显示器看见的都是图片中间部分
+				bufferMove( oUl, {"left": -(aA.length)*nImgWidth - (nImgWidth - getInner().width)/2 + 'px'}, function(){
+					//移动完后 将第一张图还原到原来的位置 将整个ul还原到刷新进来的位置
+					iNow = 0;										
+					oImg1.style.left = -(nImgWidth - getInner().width)/2 + 'px';	 
+					oUl.style.left = 0 + 'px';						 
+				});
+			}else{
+				aA[iNow].className = 'active';
+				bufferMove( oUl, { "left": -iNow*nImgWidth+'px' } );
+			}	
+		}, 3000);
+	}
+
+	//永远显示图片的中间部分
+	function center(){
+		for(var i=0; i&ltaLi.length; i++){
+			var nViewWidth = getInner().width;	
+			if(nViewWidth > 1000){
+				//如果当前显示器宽度大于1000 那动态变化img relative的left 永远显示图片的中间部分		
+				aLi[i].getElementsByTagName('img')[0].style.left = -(nImgWidth - nViewWidth)/2 + 'px';
+			}else{	
+				//否则img relative的left值固定					
+				aLi[i].getElementsByTagName('img')[0].style.left = -(nImgWidth - 1000)/2 + 'px';
+			}
+		}
+	}
+
+}
+
+
+//获取当前视窗宽度高度
+function getInner(){
+	if(typeof window.innerWidth){    	//高版本各浏览器 W3C标准
+		return{
+			width:window.innerWidth,	//返回字面量形式 getInner().width = window.innerWidth
+			height:window.innerHeight
+		}
+	}else{
+		return{                     	//兼容IE低版本浏览器
+			width:document.documentElement.clientWidth,  
+			height:document.documentElement.clientHeight
+		}
+	}
+} 
+
+
+/* 缓冲运动
+ * obj 运动对象
+ * json 运动目标属性 如{"left":"800px","opacity":"0.5"} 
+ * fn 回调函数
+ */
+function bufferMove(obj,json,fn){  
+	var iCur = 0;
+	var iTarget = 0;
+	var iSpeed = 0;  
+	var bStop = true;        
+	clearInterval(obj.fMove);
+
+	obj.fMove = setInterval(function(){
+		bStop = true;                       	//每次定时器一开始 就设置bStop为ture
+		
+		for(attr in json){                  	//for in json 同时做n个属性的缓冲型数值变化
+			if(attr == 'opacity'){   
+				//对于opacity属性 传入0.x 然后放大100倍进行操作 后续赋值再除以100         
+				iCur = parseInt(parseFloat(getStyle(obj,attr)) * 100);	
+				iTarget = parseInt(parseFloat(json[attr]) * 100);		 
+			}else{
+				iCur = parseInt(getStyle(obj,attr)); 
+				iTarget = parseInt(json[attr]);                       
+			}
+			iSpeed = (iTarget - iCur)/8;                                 
+			
+			if(iSpeed > 0){
+				iSpeed = Math.ceil(iSpeed);
+			}
+			if(iSpeed < 0){
+				iSpeed = Math.floor(iSpeed);
+			}
+			
+			//每个定时器周期里 for in 循环了n次 有n个同时进行的bufferMove函数 从而变化属性值 
+			//n个bufferMove函数里只要有任意一个函数里的属性值还没到达终点 都会把bStop变为false  
+			//当所有属性值都到达终点后 也就是n个bufferMove函数都不执行这句的时候  
+			//这次定时器周期最后的bStop没有被变化为false 还是true   
+			//当这次定时器周期的bStop还是ture的话 在定时器周期函数最后判断bStop为ture 那就关闭定时器了                     	
+			if(iTarget != iCur){   
+				bStop = false;          	
+			}                           	
+                                          	
+			if(attr == 'opacity'){                                       
+				obj.style[attr] = (iCur + iSpeed)/100 + '';            
+				obj.style.filter = 'alpha(opacity:'+(iCur+iSpeed)+')';  
+			}else{
+				obj.style[attr] = iCur + iSpeed + 'px';                
+			}		
+		}
+		
+		if(bStop){                     		//只要有任意一个还没到达终点 bStop会被变成false 不停止定时器
+			clearInterval(obj.fMove);  		//当所有属性值都到达终点后 bStop不会变false 还是原来的true 停止定时器         
+			if(fn){                                                    
+				fn();                                                  
+			}
+		}
+	},20);
+}
+</pre>
+
+
+<p class="title">html代码</p>
+<pre>
+&ltdiv id="wrap">
+	&ltul>
+		&ltli>&ltimg src="img/1.jpg" />&lt/li>
+		&ltli>&ltimg src="img/2.jpg" />&lt/li>
+		&ltli>&ltimg src="img/3.jpg" />&lt/li>
+	&lt/ul>
+	&ltdiv class="button">
+		&lta href="javascript:;" class="active">&lt/a>
+		&lta href="javascript:;">&lt/a>
+		&lta href="javascript:;">&lt/a>
+	&lt/div>
+&lt/div>
+</pre>
+
+<p class="title">css代码</p>
+<pre>
+*{
+	padding:0px;
+	margin:0px;
+}
+body{
+	padding: 0 0 100px 0px;
+	font-size: 16px;
+}
+.title{
+	font-size: 20px;
+	font-weight: bold;
+	color: green;
+	width: 1000px;
+	height: 100px;
+	line-height: 160px;
+	border-bottom: 1px solid #ccc;
+	padding-left: 200px;
+}
+pre{
+	padding-left: 200px;
+}
+ul{
+	list-style: none;
+}
+
+#wrap{
+	height: 396px;
+	position: relative;
+	overflow: hidden;
+}
+#wrap ul{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+#wrap ul li{
+	float: left;
+}
+#wrap ul li img{
+	position: relative;		/*如果left: -200px;那图片就左移动200 通过在js中设置left值 让图片大小不变化的情况下 看起来居中*/
+}
+ 
+#wrap .button{
+	position: absolute;
+	bottom: 0px;
+	width: 100%;			/*整个.button的div宽度是100% 内部居中 这样不管可视区域如何变化 三个a永远居中*/
+	text-align: center;
+}
+#wrap .button a{
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin: 5px;
+	background: #aaa;
+}
+#wrap .button a.active{
+	background: orange;
+}
+</pre>
+
+
+</body>
+</html>

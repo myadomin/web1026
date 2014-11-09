@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>联动下拉菜单</title>
+<style>
+body, div, select, p, pre{
+	padding:0px;
+	margin:0px;
+}
+#div1{
+	width: 400px;
+	margin: 50px auto;
+}
+select{
+	width: 120px;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="../../../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+<p class="title">DEMO演示 联动下拉菜单</p>
+
+<div id="div1"></div>
+
+<p class="title">js代码</p>
+<pre>
+//联动下拉菜单
+$(function(){
+
+	//模拟后台json数据
+	var data = {
+		"provinces":[
+			{
+				"name":"广东",
+				"area":2000,
+				"cities":[
+					{
+						"name": "深圳",
+						"area":200,
+						"districts": [
+							{"name":"南山区", "area":111}, 
+							{"name":"福田区", "area":222}, 
+							{"name":"罗湖区", "area":333}
+						]
+					},
+					{
+						"name": "广州",
+						"area":201,
+						"districts": [
+							{"name":"广州一区", "area":111}, 
+							{"name":"广州二区", "area":222}, 
+							{"name":"广州三区", "area":333}
+						]
+					},
+					{
+						"name": "珠海",
+						"area":202,
+						"districts": [
+							{"name":"珠海一区", "area":111}, 
+							{"name":"珠海二区", "area":222}, 
+							{"name":"珠海三区", "area":333}
+						]
+					}
+				]
+			},
+			{
+				"name":"湖南",
+				"area":2100,
+				"cities":[
+					{
+						"name": "衡阳",
+						"area":210,
+						"districts": [
+							{"name":"衡阳一区", "area":111}, 
+							{"name":"衡阳二区", "area":222}, 
+							{"name":"衡阳三区", "area":333}
+						]
+					},
+					{
+						"name": "长沙",
+						"area":211,
+						"districts": [
+							{"name":"长沙一区", "area":111}, 
+							{"name":"长沙二区", "area":222}, 
+							{"name":"长沙三区", "area":333}
+						]
+					},
+					{
+						"name": "株洲",
+						"area":212,
+						"districts": [
+							{"name":"株洲一区", "area":111}, 
+							{"name":"株洲二区", "area":222}, 
+							{"name":"株洲三区", "area":333}
+						]
+					}
+				]
+			},
+			{
+				"name":"江西",
+				"area":2200,
+				"cities":[
+					{
+						"name": "南昌",
+						"area":220,
+						"districts": [
+							{"name":"南昌一区", "area":111}, 
+							{"name":"南昌二区", "area":222}, 
+							{"name":"南昌三区", "area":333}
+						]
+					},
+					{
+						"name": "九江",
+						"area":221,
+						"districts": [
+							{"name":"九江一区", "area":111}, 
+							{"name":"九江二区", "area":222}, 
+							{"name":"九江三区", "area":333}
+						]
+					},
+					{
+						"name": "宜春",
+						"area":222,
+						"districts": [
+							{"name":"宜春一区", "area":111}, 
+							{"name":"宜春二区", "area":222}, 
+							{"name":"宜春三区", "area":333}
+						]
+					}
+				]
+			}
+		]
+	}
+	// alert(data.provinces[1].cities[2].districts[0].name);
+	
+	var arrOp = ['&ltoption>省份&lt/option>', "&ltoption>城市&lt/option>", '&ltoption>区域&lt/option>']
+
+	//data有多少个省就动态生成多少个selecta标签 放入div下
+	for( var i in data.provinces ){
+		$('#div1').append('&ltselect>&lt/select>');
+	}
+
+	//第一个select标签动态放入n个option 分别是省份 省份1 省份2 ... 省份x
+	var str0 = arrOp[0];
+	for( var i in data.provinces ){
+		str0 += '&ltoption>' + data.provinces[i].name + '&lt/option>';
+	}
+	$('#div1 select').eq(0).html(str0);
+
+	//第二个select初始只生成一个option(城市) 第三个select初始只生成一个option(区域)
+	$('#div1 select').eq(1).html(arrOp[1]);
+	$('#div1 select').eq(2).html(arrOp[2]);
+
+	//点击第一个select下面的option(广东等) 生成第二个select下不同的option 例如点击广东 第二个select就生成深圳 广州 珠海三个option
+	$('#div1 select').eq(0).find('option').click(function(){
+		var _this = this;
+		if( $(_this).index() == 0 ){
+			//如果点击第一个select下面的省份 第二个第三个select初始化
+			$('#div1 select').eq(1).html(arrOp[1]);
+			$('#div1 select').eq(2).html(arrOp[2]);
+			return;
+		}
+		$('#div1 select').eq(2).html(arrOp[2]);
+		//生成第二个select下的option
+		var str1 = arrOp[1];
+		for( var k=0; k&ltdata.provinces[$(_this).index()-1].cities.length; k++ ){
+			str1 += '&ltoption>' + data.provinces[$(_this).index()-1].cities[k].name + "&lt/option>";
+		}
+		$('#div1 select').eq(1).html(str1);
+
+		//点击第二个select下面的option(深圳等) 生成第三个select下不同的option 例如点击深圳 第三个select就生成南山 福田 罗湖三个option
+		$('#div1 select').eq(1).find('option').click(function(){
+			if( $(this).index() == 0 ){
+				//如果点击第二个select下面的城市 第三个select初始化
+				$('#div1 select').eq(2).html(arrOp[2]);
+				return;
+			}
+			//生成第三个select下的option
+			var str2 = arrOp[2];
+			for( var k=0; k&ltdata.provinces[$(_this).index()-1].cities[$(this).index()-1].districts.length; k++ ){
+				str2 += '&ltoption>' + data.provinces[$(_this).index()-1].cities[$(this).index()-1].districts[k].name + "&lt/option>";
+			}
+			$('#div1 select').eq(2).html(str2); 
+		});	 
+	});
+
+	//在IE6-8及chrome中 option的click事件偶尔会无响应 实际开发中用ul li代替select option就能解决这个问题
+	//在IE6-8中 使用原生js innerHTML赋值时 第一个option标签会无故消失掉 jquery html()方法无此问题
+});	
+</pre>
+
+<p class="title">html代码</p>
+<pre>
+&ltdiv id="div1">&lt/div>
+</pre>
+
+<p class="title">css代码</p>
+<pre>
+body, div, select, p, pre{
+	padding:0px;
+	margin:0px;
+}
+#div1{
+	width: 400px;
+	margin: 50px auto;
+}
+select{
+	width: 120px;
+}
+</pre>
+
+
+</body>
+</html>

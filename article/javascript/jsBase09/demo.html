@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>正则表达式</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+</head>
+<body>
+
+
+<p class="title">正则表达式总结</p>
+<pre>
+window.onload = function(){
+ 
+	<strong>//1：字符串操作</strong>
+	var str = "abcdef";
+	alert(str.search("b"));     	//1 search方法的意思就是找到字符串b所处于str的位置，0 1 2....位
+	alert(str.search("g"));     	//-1 查找的字符在str内没有 都会返回-1
+	alert(str.charAt(0));       	//a  第零个
+	alert(str.substring(1));    	//bcdef
+	alert(str.substring(0,3));  	//abc  第零个到二个 这样不包括第三个
+	var str1 = "abv-sd44-44d-qq"
+	var arr = str1.split("-");     	//以 - 切开字符串为数组
+	alert(arr);        		//abv,sd44,44d,qq
+	alert(arr[0]);     		//abv
+	var str2 = arr.join("-+-");    	//已 -+- 把数组各元素连接成字符串
+	alert(str2);                   	//abv-+-sd44-+-44d-+-qq
+
+	<strong>//2：字符串大小比较</strong>
+	alert('58a8' < '9');   			//true  只会比较第一位 第一位'5'<'9' 
+	alert('abs' < 'dad');  			//true  只会比较第一位 第一位'a'<'d' 这里a d会转变为编码97 100
+
+	<strong>//3：RegExp对象的方法 正则对象.test('xx') 返回值为布尔值 </strong>
+	var re1 = /ab/;            
+	var re2 = /bd/;
+	var re3 = /b\w+d/;         		//bd中间一个或多个字母或数字或下划线
+	alert(re1.test('abcde'));  		//可以匹配到ab 返回true 
+	alert(re2.test('abcde'));  		//匹配不到bd 返回false 
+	alert(re3.test('abcde'));  		//true 
+	alert(re3.test('ab23de'));  		//true 
+	alert(re3.test('ab_sss33de'));  	//true 
+
+	<strong>//4：匹配中文</strong>
+	var str1 = "as sd 93(*23+()(/sf_34= s"
+	var str2 = "as sd 啊(*23+()(/sf_34= s"
+	var str3 = "阿斯蒂芬aa";
+	var str4 = "啊地方地方"
+	var re1 = /[\u4e00-\u9fa5]/;        	//中文字符 [abc]查找方括号内的字符
+	var re2 = /^[\u4e00-\u9fa5]+$/g;    	//行首到行尾 中文字符 一个或多个 所以从起始到结束都必须中文字符
+	alert(re1.test(str1));    		//false
+	alert(re1.test(str2));    		//ture	有包含中文字符
+	alert(re2.test(str2));    		//false
+	alert(re2.test(str3));    		//false
+	alert(re2.test(str4));    		//ture	行首行尾 中文字符 一个或多个
+
+	<strong>//5: 匹配数字字符串</strong>
+	re = /^\d+$/g;      			// \d+ 数字一个或多个
+	alert(re.test('4444'));
+	alert(re.test('4a4r'));
+
+	<strong>//6：String对象的方法 String.match(regExp) 返回匹配的多个字符串组成的数组</strong>
+	var str = "dfd de342 55 6g6 23t55 dddw 98";
+	alert(str.match(/\d/));     		//3 因为规则是找出数字 而match到的第一个数字就是3
+	alert(str.match(/\d/g));    		//3,4,2,5,5,6,6,2,3,5,5,9,8  规则是找出数字并且全局找 所以返回这个数组
+	alert(str.match(/\d+/g));		//342,55,6,6,23,55,98 找到一个或多个并且全局找 6g6有点麻烦
+
+	<strong>//7：String对象的方法 String.search(regExp) 如果匹配到就返回位置 没有匹配到返回-1 类似indexOf()</strong>
+	var str = "AbCdef815467";
+	alert(str.search(/cd/));   			//-1 因为在str中没有找到c  
+	alert(str.search(/cd/i));  			//2 因为忽略了大小写 在第二个位置开始找到了Cd
+	alert(str.search(/\d/));   			//6 找到字符串中 第一次出现数字的文字
+
+	<strong>//8：String对象的方法 String.replace(regExp) 匹配的字符串用指定字符串替换掉 返回替换完毕后的字符串</strong>
+	var str = "acdabdAds12"
+	alert(str.replace("a","T"));   	   		//TcdabdAds12   
+	alert(str.replace(/a/g,"T")); 	   		//TcdTbdAds12  正则规定的是全局a 所以一次替换完毕
+	alert(str.replace(/a/gi,"T")); 	   		//TcdTbdTds12   全局a并且忽略大小写
+	alert(str.replace(/a|b|c/gi,"*")); 		//*d**d*ds12   全局a并且忽略大小写 a或b或c全被替换* 关键词过滤
+	alert(str.replace(/[acd]/gi,"1"));      	//1111b111s12  将a或者c或则d 替换成1
+	alert(str.replace(/[^acd]/gi,"1"));     	//acda1dAd111  除了a或者c或则d 都替换成1
+	alert(str.replace(/[0-9]/gi,"T"));      	//acdabdAdsTT  将0-9的数字 都替换成T
+	alert(str.replace(/[^0-9]/gi,"T"));     	//TTTTTTTTT12  除了0-9的数字 都替换成T
+	alert(str.replace(/[a-z]/gi,"T"));      	//TTTTTTTTT12  将a-z的字母 都替换成T
+	alert(str.replace(/[^a-z]/gi,"T"));     	//acdabdAdsTT  除了a-z的字母 都替换成T
+
+	<strong>//9：利用replace方法 去掉行首行尾的空格</strong>
+	var str = "   ffs  sdf  sf fdsf    "
+	var re = /^\s+|\s+$/g;                   //头一个或多个空格 以及尾一个或多个空格 替换成空
+	alert("[" + str.replace(re,"") + "]");   //[ffs  sdf  sf fdsf] 
+
+	<strong>//10：利用replace方法 过滤敏感字符</strong>
+	var str = '我们将把所有的花括号替换为直引';
+	var re = /我们|花括号/g;   				//假设我们 花括号是敏感字符 分别替换为** ***
+	alert(str.replace(re, "*"));    			//这里我们 花括号都只能替换成*
+	alert(str.replace(re, function(theStr){  		//这里的参数theStr就依次分别是 我们 花括号
+		tmp = '';
+		for(var i=0; i&lttheStr.length; i++){   		//当是我们的时候 循环两次 形成** 最后return出**
+			tmp += "*";                      	//当时花括号的时候 循环三次 形成*** return
+		}
+		return tmp;
+	}));
+
+	<strong>//11：[]的用法 [abc] [^abc] [0-9] [a-z] [A-Z] [0-9A-Z]</strong>
+	var re1 = /a[sdf]c/;     		//[sdf]相当于一个s或一个d或一个f
+	var re2 = /a[^sdf]c/;    		//[^sdf]相当于ac中间的必须是一个 而且不能是一个s或一个d或一个f
+	var re3 = /a[sdf]+c/;     		//ac中间 一个或多个s或d或f
+	alert(re1.test('asc'));   		//true 'asc' 'adc' 'afc'都会返回true
+	alert(re2.test('adc'));   		//false
+	alert(re2.test('aac'));   		//true
+	alert(re2.test('addc'));   		//false ac中间不是一个了 有两个
+	alert(re3.test('asdfdfc'));		//true 一个或多个s或d或f
+
+	<strong>//12：元字符 \w \W \d \D \s \S \b \B 用\b完成getByClass函数</strong>
+	function getByClass(oParent,sClass){
+		var aElem = oParent.getElementsByTagName("*");
+		var aResult = [];
+		var re = new RegExp("\\b" + sClass + "\\b","i") 	//sClass左边右边必须是单词边界(\转义\b 所以是\\b)
+		for(var i=0 ; i&ltaElem.length ; i++){            	//也就是sClass左右不能再是字母 而是空格或=等
+			if(re.test(aEle[i].className)){ 		//这样就算class= aa bb cc 这里也是真 就能选取aElem[i]了
+				aResult.push(aElem[i]);
+			}
+		}
+		return aResult;
+	}
+
+	<strong>//13：量词 n+ n* n{X} n{X,Y} n{X,} match得到匹配到的QQ号</strong>
+	var re = /[1-9]\d{4,10}/g;			//第一位是0-9 然后数字4-10个 QQ规则
+	var str = "我的qq是9968493，你的qq是44590211";
+	alert(str.match(re));    			//9968493,44590211  匹配qq号
+
+	<strong>//14：邮箱验证</strong>
+	//邮箱规则  	sadf_34sf33_as      @  sdf23       .   xxx
+	//邮箱规则  一串字母或数字或下划线  @  英文或数字  .   一串英文(长度是2-4位)
+	//正则规则          \w+             @  [a-z0-9]+   \.  [a-z]{2,4}
+	//正则规则   /\w+@[a-z0-9]+\.[a-z]{2,4}/
+	//但是上面有个问题  例如 啊啊adx_324s@163.com 这个字符串也有一部分adx_324s@163.com符合上面的规则
+	//但是他并不是邮箱 所以最终要加上行首^行尾$ 也就是行首行尾内就是这个规则
+	//最终规则   /^\w+@[a-z0-9]+\.[a-z]{2,4}$/
+	var re = /^\w+@[a-z0-9]+\.[a-z]{2,4}$/;
+	alert(re.test('adsdf@66sd.com'));
+
+}
+</pre>
+	 
+
+</body> 
+</html>    
+      
+     
+     
+     

@@ -1,0 +1,265 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>图片延迟加载</title>
+<style type="text/css">
+*{
+	margin: 0px;
+	padding: 0px;
+}
+.first{
+	border: 1px solid #ccc;
+	width: 1320px;
+	height: 540px; 
+	margin-top: 10px;
+}
+.dealy_load{
+	border: 1px solid #ccc;
+	width: 1320px;
+	height: 540px; 
+	margin-top: 500px;
+}	
+img{
+	display: block;
+	float: left;
+	border: none;
+	width: 200px;
+	height: 250px;
+	margin: 10px;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="../../../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+
+
+<p class="title">图片延迟加载 实现原理</p>
+如果未做图片延迟加载，那页面一刷新就会加载所有的图片。<br /> 
+而用户经常是进入页面后，只看了下首屏图片就跳转到了其他页面。<br />
+页面底部那些加载的图片并没被看到，所以造成了图片加载的浪费。<br /> 
+为了避免浪费加载图片，所以使用图片延迟加载技术。<br />
+当用户往下拉，快看到底部某张图片的时候 才加载这些对应的图片。<br />
+如本DEMO所示，用firebug或chrome F12查看，一刷新进来只加载了p1.jpg p2.jpg。<br />
+往下拖动快到某个图片的时候，才加载p3 4 5 6 7 8 9 10.jpg。<br />
+实现原理：对于非首屏的图片，src个占位小图片，一旦图片快出现，就替换src为真实图片地址。<br />
+具体代码实现见底部的js代码
+
+<p class="title">DEMO演示 图片延迟加载</p>
+
+<div class="first">
+	<img src="img/p1.jpg"/>
+	<img src="img/p1.jpg"/>
+	<img src="img/p1.jpg"/>
+	<img src="img/p1.jpg"/>
+	<img src="img/p1.jpg"/>
+	<img src="img/p1.jpg"/>
+	<img src="img/p2.jpg"/>
+	<img src="img/p2.jpg"/>
+	<img src="img/p2.jpg"/>
+	<img src="img/p2.jpg"/>
+	<img src="img/p2.jpg"/>
+	<img src="img/p2.jpg"/>
+</div>
+
+<div class="dealy_load">
+	<img src="img/wait_load.jpg" xsrc="img/p3.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p3.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p3.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p3.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p3.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p3.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p4.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p4.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p4.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p4.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p4.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p4.jpg"/>
+</div>
+
+<div class="dealy_load">
+	<img src="img/wait_load.jpg" xsrc="img/p5.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p5.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p5.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p5.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p5.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p5.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p6.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p6.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p6.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p6.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p6.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p6.jpg"/>
+</div>
+
+<div class="dealy_load">
+	<img src="img/wait_load.jpg" xsrc="img/p7.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p7.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p7.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p7.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p7.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p7.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p8.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p8.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p8.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p8.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p8.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p8.jpg"/>
+</div>
+
+<div class="dealy_load">
+	<img src="img/wait_load.jpg" xsrc="img/p9.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p9.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p9.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p9.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p9.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p9.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p10.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p10.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p10.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p10.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p10.jpg"/>
+	<img src="img/wait_load.jpg" xsrc="img/p10.jpg"/>
+</div>
+
+<p class="title">js代码</p>
+<pre>
+//图片延迟加载
+$(function(){
+	//下拉 滚动条事件
+	$(window).scroll(function(){
+		//延迟100毫秒执行scroll事件 效果一样但是更平滑  
+		setTimeout(function(){ 
+			//尽量在each外面提取预存scrollTop等 如果在each内重复提取 浪费资源
+			var scrollTop = $(window).scrollTop();  
+			var windowHeight = $(window).height();   
+
+			//每次scroll就循环每一张需要延迟加载的图片
+			$('.dealy_load img').each(function(){
+				//如果视窗高度加上滚动条高度大于此图片相对顶部偏移高度 也就是拖滚动条马上要看见图片的时候
+				if((scrollTop + windowHeight) >= $(this).offset().top){
+					//把图片的src替换成真正的图片地址
+					$(this).attr('src', $(this).attr('xsrc'));
+				}
+			});
+		}, 100);    
+	});
+
+});
+</pre>
+
+<p class="title">html代码</p>
+<pre>
+&ltdiv class="first">
+	&ltimg src="img/p1.jpg"/>
+	&ltimg src="img/p1.jpg"/>
+	&ltimg src="img/p1.jpg"/>
+	&ltimg src="img/p1.jpg"/>
+	&ltimg src="img/p1.jpg"/>
+	&ltimg src="img/p1.jpg"/>
+	&ltimg src="img/p2.jpg"/>
+	&ltimg src="img/p2.jpg"/>
+	&ltimg src="img/p2.jpg"/>
+	&ltimg src="img/p2.jpg"/>
+	&ltimg src="img/p2.jpg"/>
+	&ltimg src="img/p2.jpg"/>
+&lt/div>
+
+&ltdiv class="dealy_load">
+	&ltimg src="img/wait_load.jpg" xsrc="img/p3.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p3.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p3.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p3.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p3.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p3.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p4.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p4.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p4.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p4.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p4.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p4.jpg"/>
+&lt/div>
+
+&ltdiv class="dealy_load">
+	&ltimg src="img/wait_load.jpg" xsrc="img/p5.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p5.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p5.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p5.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p5.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p5.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p6.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p6.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p6.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p6.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p6.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p6.jpg"/>
+&lt/div>
+
+&ltdiv class="dealy_load">
+	&ltimg src="img/wait_load.jpg" xsrc="img/p7.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p7.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p7.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p7.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p7.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p7.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p8.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p8.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p8.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p8.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p8.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p8.jpg"/>
+&lt/div>
+
+&ltdiv class="dealy_load">
+	&ltimg src="img/wait_load.jpg" xsrc="img/p9.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p9.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p9.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p9.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p9.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p9.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p10.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p10.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p10.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p10.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p10.jpg"/>
+	&ltimg src="img/wait_load.jpg" xsrc="img/p10.jpg"/>
+&lt/div>
+</pre>
+
+<p class="title">css代码</p>
+<pre>
+*{
+	margin: 0px;
+	padding: 0px;
+}
+.first{
+	border: 1px solid #ccc;
+	width: 1320px;
+	height: 540px; 
+	margin-top: 10px;
+}
+.dealy_load{
+	border: 1px solid #ccc;
+	width: 1320px;
+	height: 540px; 
+	margin-top: 500px;
+}	
+img{
+	display: block;
+	float: left;
+	border: none;
+	width: 200px;
+	height: 250px;
+	margin: 10px;
+}
+</pre>
+
+
+</body> 
+</html>    
+      
+     
+     
+     

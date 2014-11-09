@@ -1,0 +1,332 @@
+﻿ul,li,h1,div,img,dl,dt,dd,body,p{
+	margin:0px;
+	padding:0px;
+}
+body{
+	font-size:12px;
+	margin:0 auto;
+	width:760px;
+	color:#725006;
+	background:url(../img/bg.gif);
+	/*如果body上面上面都没写，这个背景就充满电脑屏幕，
+	之后写的每个东西的css都会有背景，
+	慢慢的body里面的那些元素在body部分就覆盖了这个背景*/
+}
+ul{
+	list-style-type:none;
+}
+
+#header{
+	height:303px;
+	background:url(../img/header.jpg);
+}
+#header ul{
+	padding:272px 0 0 32px;
+}
+#header li{
+	float:left;
+	/*两种方式能够让li从列排列变成行排列。
+	一种是用float:left;之后li还是区块，还可以设置li宽度高度。
+	一种是display:inline;如果这样li就不是区块了，后续无法设置他的宽度高度了。*/
+	display:inline;
+	width:77px;
+	height:18px;
+}
+#header li a{
+	display:block;
+	width:77px;
+	height:18px;
+	/* a必须先转换为区块后，设置高度宽度才有用，
+	如果不设置a的高度宽度的话，那只有点到a之间的字才能点链接*/
+	text-indent:-9999px;
+	/*两种方式，一种让a之间的字飞走，一种a之间直接不写字*/
+}
+
+#sidebar{
+	height:420px;
+	width:203px;
+	float:left;
+	background:url(../img/sidebar_down.jpg) no-repeat bottom;
+}
+#sidebar h1{
+	width:203px;
+	height:54px;
+	background:url(../img/sidebar_header.jpg);
+}
+#sidebar ul{
+	background:url(../img/sidebar_bg.jpg);
+	padding-top:10px;
+	padding-bottom:10px;
+}
+#sidebar ul li{
+	text-indent:15px;
+	height:20px;
+	color:#333;
+}
+#sidebar ul li a{
+	color:#333;
+	text-decoration:none;
+}
+#sidebar ul li a:hover{
+	color:red;
+	text-decoration:none;
+}
+#sidebar dl{
+	background:url(../img/../img/sidebar_bg.jpg);
+	color:#333;
+	height:240px;
+	/*如果出现各浏览器不兼容，就在个dd li间不用line-height设置间距，
+	因为各浏览器对line-height理解不同，改用直接对dd li设置height.*/
+}
+#sidebar dl dt{
+	border-top:1px solid #666;
+	width:160px;
+	margin:0 auto;
+	padding-top:10px;
+	padding-bottom:10px;
+}
+#sidebar dl dd{
+	text-indent:20px;
+	height:20px;
+}
+#sidebar dl dd label{
+	display:block;
+	width:240px;
+	/*加上background:red;就知道label在哪里了，
+	必须先设置label为区块，然后才能给他定义宽度，
+	之后只要在此宽度下都算点到了label 而label是for到loveX的。*/
+}
+#sidebar dl dd#aa{
+	padding-top:5px;
+}
+
+#news{
+	height:420px;
+	width:557px;
+	float:left;
+	background:url(../img/news_down.jpg) no-repeat bottom;
+	position:relative;
+}
+#news h1{
+	width:557px;
+	height:80px;
+	background:url(../img/news_header.jpg);
+}
+#newsbg{
+	/*为了加上背景，多设置了这个标签，内容是空的。下面的标签和他是并行兄弟关系，那下面的标签写出来后就在此背景框体以外了，所以必须定位进去此背景框体。
+	另外一种方法就是下面的所有标签都进入他里面成为子标签，那下面的标签写出来后就在此背景框体里面，可以浮动做（不建议，嵌套太多）也可以定位做。*/
+	height:327px;
+	background:url(../img/news_bg.jpg);
+}
+#news dl{
+	width:143px;
+}
+#news dl dt{
+	border:1px solid #a3720b;
+	width:143px;
+	height:108px;
+	background:#eed8a7;
+}
+#news dl dt img{
+	display:block;
+	margin:0 auto;
+	margin-top:3px;
+}
+#news dl dd{
+	width:143px;
+	color:#333;
+	padding:5px 0;
+	text-align:center;
+}
+#news dl.dl1{
+	position:absolute;
+	top:85px;
+	left:40px;
+}
+#news dl.dl2{
+	position:absolute;
+	top:235px;
+	left:40px;
+}	
+#news ul{
+	width:331px;
+	height:301px;
+	background:url(../img/news_listbg.jpg);
+	padding-top:8px;
+	position:absolute;
+	top:58px;
+	left:200px;
+}	
+#news ul li{
+	line-height:160%;
+	width:95%;
+	text-indent:16px;
+}
+#news ul li span{
+	float:right;
+	font-style:normal;
+}
+#news ul li a{
+	text-decoration:none;
+	color:#725006;
+}
+#news ul li a:hover{
+	color:red;
+}
+#news p{
+	width:510px;
+	height:34px;
+	background:url(../img/news_call.jpg);
+	text-align:center;
+	color:#725006;
+	line-height:34px;
+	position:absolute;
+	top:375px;
+	left:30px;
+}
+
+#pics{
+	height:256px;
+	background:url(../img/pics_bg.jpg) no-repeat;
+	clear:both;
+}
+#pics h1{
+	width:80px;
+	height:251px;
+	background:url(../img/pics_header.jpg) no-repeat right bottom;
+	/*背景套在大背景上调整相对位置的方法，可以调整h1框体的大小稍微大于图片，
+	然后结合background的 right top等属性调图片的相对父框体的位置。*/
+	float:left;
+}
+#pics dl{
+	width:143px;
+	float:left;
+	padding:15px 0 0 13px;
+}
+#pics dl dt{
+	border:1px solid #a3720b;
+	width:143px;
+	height:108px;
+	background:#eed8a7;
+}
+#pics dl dt img{
+	display:block;
+	margin:0 auto;
+	margin-top:3px;
+}
+#pics dl dd{
+	width:143px;
+	color:#333;
+	padding:5px 0;
+	text-align:center;
+}
+#morebg{
+	width:655px;
+	height:91px;
+	background:url(../img/pics_more.jpg);
+	float:left;
+	margin-left:5px;
+}
+#morebg ul{
+	width:320px;
+	height:83px;
+	padding-top:8px;
+	float:left;
+}	
+#morebg ul li{
+	line-height:160%;
+	width:95%;
+	text-indent:16px;
+}
+#morebg ul li span{
+	float:right;
+	font-style:normal;
+}
+#morebg ul li a{
+	text-decoration:none;
+	color:#725006;
+}
+#morebg ul li a:hover{
+	color:red;
+} 
+
+#con{
+	height:373px;
+	/*他存在的作用就是形成#con ul再做css而不是ul上做css，
+	如果直接ul上做css就会影响body下面其他区块用到的ul，
+	如果用#con1 ul做css就需要做#con2 ul及#con3 ul，代码无意义重复。 
+	！！！！！重要 另外还有一个方法 运用 <div class="con conX">这种class选择器！！！！ 
+	不要最上层的<div id="con">，
+	直接<div class="con con1">
+	  <div class="con con2">      
+	  <div class="con con3">      
+	  对于共性的ul部分 用div.con ul做。
+	  对于非共性的h1用div.con1 h1   div.con2 h1   div.con3 h1做
+	  对于非共性的下部背景用div.con1   div.con2   div.con3做
+	如果这样那下面的footer块体上面就直接是con1 2 3，而con1 2 3都float了，所以footer记得clear就行*/
+}
+#con div.con1{
+	background:url(../img/cartoon_down.jpg) no-repeat bottom;
+	width:253px;
+	height:373px;
+	float:left;
+}
+#con div.con2{
+	background:url(../img/cartoon_down.jpg) no-repeat bottom;
+	width:253px;
+	height:373px;
+	float:left;
+}
+#con div.con3{
+	background:url(../img/cartoon_down.jpg) no-repeat bottom;
+	width:254px;
+	height:373px;
+	/*253+253+254=760，所以con3要宽度加1px*/
+	float:left;
+}
+
+#con div.con1 h1{
+	height:71px;
+	background:url(../img/cartoon_header.jpg);
+}	
+#con div.con2 h1{
+	height:71px;
+	background:url(../img/daily_header.jpg);
+}
+#con div.con3 h1{
+	height:71px;
+	background:url(../img/tearoom_header.jpg);
+}	
+/*!!!!!!!!重要!!!!!!!下面都是#con ul 
+而不是#con.con1 ul	#con.con2 ul #con.con3 ul
+直接跳过了.conx 这样就节约了1/3代码。*/
+#con ul{
+	height:290px;
+	background:url(../img/cartoon_bg.jpg);
+	padding-top:3px;	
+}	
+#con ul li{
+	line-height:160%;
+	width:95%;
+	text-indent:20px;
+}
+#con ul li span{
+	float:right;
+	font-style:normal;
+}
+#con ul li a{
+	text-decoration:none;
+	color:#725006;
+}
+#con ul li a:hover{
+	color:red;
+}
+				
+#footer{
+	height:66px;
+	background:url(../img/footer.jpg);
+}
+#footer p{
+	text-align:center;
+	line-height:66px;
+}

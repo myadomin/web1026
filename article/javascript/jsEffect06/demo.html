@@ -1,0 +1,525 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>qq幻灯片</title>
+<style type="text/css">
+*{
+	margin:0px;
+	padding:0px;
+}
+ul{
+	list-style-type:none;
+}
+img{
+	border:none;
+}
+body{
+	/*background:black;*/
+}
+#box{
+	height:330px;
+	width:660px;
+	border:1px solid black;
+	margin:50px auto;
+	position:relative;
+}
+#ico_range{
+	height:44px;
+	width:504px;
+	position:relative;
+	overflow:hidden; 
+	left:0px;
+	top:-50px;               /*#ico_range div自己相对定位  用相对定位调自己对于#box div的位置*/
+}
+#ico{
+	height:44px;
+	width:1008px;             /* (68+2+2)*14 = 1008px */
+	position:absolute;        /*需要动的是这个ul 他外部被#ico_range div包裹一半并溢出隐藏 他要绝对定位（相对父级就是#ico_range div）*/
+	left:0px;
+	top:0px;
+}
+#ico li{
+	float:left;
+	height:44px;              /*img有2px的边框所以li宽度高度都加4，34+4边框之后,由于要加背景a_hover.gif所以还要加上6px；同时让子元素img margin-top:6px;*/
+	width:68px;              
+	padding-left:2px;         /*这样一个li的宽度就是68+2+2了（为了让下面的背景好居中 所以一边padding一个2px）*/
+	padding-right:2px;        /*li最好别用margin,用了margin后,后续续移动ul那一段距离 就需要li.offsetWidth + margin距离了*/
+	cursor:pointer;
+	opacity:0.6;
+	filter:Alpha(opacity=60);
+}
+#ico li.active{            	/*加class active 一旦有这个class 那li不透明加背景 同时子元素的img边框变3 img自身高度宽度减2*/
+	opacity:1;
+	filter:Alpha(opacity=100);
+	background:url(img/a_hover.gif) no-repeat center top;
+}
+#ico li.active img{
+	border:3px solid white;
+	height:32px;
+	width:62px;
+	margin-top:6px;
+}
+#ico li img{
+	border:2px solid white;
+	height:34px;
+	width:64px;
+	margin-top:6px;          
+}
+
+#box span{
+	display:block;
+	width:37px;
+	height:38px;
+	cursor:pointer;
+}
+#box span.move_end{
+	opacity:0.5;
+	filter:Alpha(opacity=50);
+	cursor:default;
+}
+#btn1{
+	background:url(img/btn.gif) no-repeat 0 0;
+	position:absolute;
+	top:284px;
+	left:560px;
+}
+#btn2{
+	background:url(img/btn.gif) no-repeat -37px 0;
+	position:absolute;
+	top:284px;
+	left:600px;
+}
+
+#pic{
+	width:660px;
+	height:330px;
+	z-index:9999;
+}
+ 
+#pic li {
+ 	width:660px;
+	height:330px;
+	opacity:0;
+	position:absolute;         /*所有pic li全部通过绝对定位叠在一起 一刷新进来除了第一张全部透明 js中变化某张的透明度为1 从而显现某张图*/
+}
+#pic li.pic_show{
+	opacity:1;
+}
+
+#text{
+	position:absolute;
+	left:50px;
+	top:245px;
+}
+#text li{
+	font-size:24px;
+	color:white;
+	display:none;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+<script type="text/javascript" src="../../../js/move.js"></script>
+<script type="text/javascript" src="demo.js"></script>
+</head>
+<body>
+		
+<p class="title">DEMO演示 腾讯视频TabSwtich</p>
+
+<div id="box">
+ 	<ul id="pic">
+		<li class="pic_show"><a href="http://www.baidu.com"><img src="img/pic_1.jpg"/></a></li>
+		<li><a href="http://www.baidu.com"><img src="img/pic_2.jpg"/></a></li>
+		<li><a href="http://www.baidu.com"><img src="img/pic_3.jpg"/></a></li>
+		<li><a href="http://www.baidu.com"><img src="img/pic_4.jpg"/></a></li>
+		<li><a href="http://www.baidu.com"><img src="img/pic_5.jpg"/></a></li>
+		<li><a href="http://www.baidu.com"><img src="img/pic_6.jpg"/></a></li>
+		<li><a href="http://www.baidu.com"><img src="img/pic_7.jpg"/></a></li>
+		<li><a href="http://www.baidu.com"><img src="img/pic_8.jpg"/></a></li>
+		<li><a href="http://www.baidu.com"><img src="img/pic_9.jpg"/></a></li>
+		<li><a href="http://www.baidu.com"><img src="img/pic_10.jpg"/></a></li>
+		<li><a href="http://www.baidu.com"><img src="img/pic_11.jpg"/></a></li>
+		<li><a href="http://www.baidu.com"><img src="img/pic_12.jpg"/></a></li>
+		<li><a href="http://www.baidu.com"><img src="img/pic_13.jpg"/></a></li>
+		<li><a href="http://www.baidu.com"><img src="img/pic_14.jpg"/></a></li>
+	</ul>
+	<div id="ico_range">
+		<ul id="ico">
+			<li class="active"><img src="img/ico_1.jpg"/></li>
+			<li><img src="img/ico_2.jpg"/></li>
+			<li><img src="img/ico_3.jpg"/></li>
+			<li><img src="img/ico_4.jpg"/></li>
+			<li><img src="img/ico_5.jpg"/></li>
+			<li><img src="img/ico_6.jpg"/></li>
+			<li><img src="img/ico_7.jpg"/></li>
+			<li><img src="img/ico_8.jpg"/></li>
+			<li><img src="img/ico_9.jpg"/></li>
+			<li><img src="img/ico_10.jpg"/></li>
+			<li><img src="img/ico_11.jpg"/></li>
+			<li><img src="img/ico_12.jpg"/></li>
+			<li><img src="img/ico_13.jpg"/></li>
+			<li><img src="img/ico_14.jpg"/></li>
+		</ul>		
+	</div>				  
+	<span id="btn1" class="move_end"></span>
+	<span id="btn2"></span>
+	<ul id="text">
+		<li>111111111111111111111111111</li>
+		<li>222222222222222222222222222222</li>
+		<li>333333333333333333333333333333333</li>
+		<li>4444444444444444444444444444444444444</li>
+		<li>5555555555555555555555555555555555555</li>
+		<li>6666666666666666666666666666666</li>
+		<li>77777777777777777777777777777777777777777</li>
+		<li>8888888888888888888888888888888888888888</li>
+		<li>999999999999999999999999999999999</li>
+		<li>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</li>
+		<li>bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</li>
+		<li>cccccccccccccccccccccccccccccccccccccc</li>
+		<li>ddddddddddddddddddddddddddddddddddddd</li>
+		<li>eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee</li>
+	</ul>
+</div>
+
+<p class="title">js代码</p>
+<pre>
+//腾讯视频tabSwtich
+//主要原理
+//所有大图全部通过绝对定位叠在一起 一刷新进来除了第一张全部透明 
+//点击小图js中变化某张大图的透明度为1 从而显现这样大图
+//通过按钮的点击 让小图形成的ul运动 
+window.onload = function(){
+	var oDiv = document.getElementById("box");
+	var oIco = document.getElementById('ico');
+	var oPic = document.getElementById('pic');
+	var oText = document.getElementById('text');
+	var oBtn1 = document.getElementById('btn1');
+	var oBtn2 = document.getElementById('btn2');
+	var aIcoLi = oIco.getElementsByTagName('li');
+	var aPicLi = oPic.getElementsByTagName('li');
+	var aTextLi = oText.getElementsByTagName('li');
+	var iNow = 0;
+	var iBtn = 0;
+	var timer = null;
+	aTextLi[0].style.display = "block";
+	
+	//给每个icoLi加上index 每个被点击icoLi的index给到全局iNow 然后调用tab()
+	for(var i=0 ; i&ltaIcoLi.length ; i++){
+		aIcoLi[i].index = i;                   
+		aIcoLi[i].onclick = function(){	
+			iNow = this.index;	                
+			tab();	
+		}
+	}
+	
+	//自动播放
+	var timer = setInterval(autoPlay,3000);       
+	oDiv.onmouseover = function(){
+		clearInterval(timer);
+	}
+	oDiv.onmouseout = function(){
+		timer = setInterval(autoPlay,3000);
+	}	
+
+	//以iBtn记录被点击的次数 做相应的ul移动
+	oBtn2.onclick = function(){                      
+		if(iBtn &lt aIcoLi.length/2){                                  
+ 			iBtn++;
+			bufferMove(oIco, {"left":-(iBtn) * aIcoLi[0].offsetWidth});	
+		}
+		BtnStyle();
+	}
+	oBtn1.onclick = function(){
+	 	if(iBtn > 0){ 
+ 			iBtn--;
+			bufferMove(oIco, {"left":-(iBtn) * aIcoLi[0].offsetWidth});	
+		}		
+		BtnStyle();
+	}
+
+	//通过iNow的自动加1 调用tab()
+  	function autoPlay(){ 
+		iNow++;                         
+		if(iNow == aIcoLi.length){
+			iNow = 0;	 
+		}
+		tab();	
+								
+		if(iNow >= iBtn + aIcoLi.length/2){                //通过当前的iNow 转化为相应的iBtn 从而变化ul left
+			iBtn = iNow - (aIcoLi.length/2 - 1);                    
+		}else if(iNow&ltiBtn){
+			iBtn = iNow;
+		}
+		bufferMove(oIco, {"left":-(iBtn) * aIcoLi[0].offsetWidth});	
+		BtnStyle();			 
+	}
+
+	//根据不同的iNow 做对应的图片淡入淡出 对应的字体现实 对应的icoLi样式变化
+	function tab(){                             
+		for(var i=0 ; i&ltaIcoLi.length ; i++){
+			aIcoLi[i].className = '';
+			aTextLi[i].style.display = 'none';
+			aPicLi[i].style.opacity = 0;
+		}
+		aIcoLi[iNow].className = 'active';
+		aTextLi[iNow].style.display = 'block';
+		bufferMove(aPicLi[iNow], {opacity:"1"});
+	}
+
+	//左右按钮的样式变化
+	function BtnStyle(){
+		oBtn1.className = "";
+		oBtn2.className = "";
+		if(iBtn == aIcoLi.length/2){
+			oBtn2.className = "move_end";
+		}
+		if(iBtn == 0){
+			oBtn1.className = "move_end";
+		}		
+	}
+	 
+}
+
+
+/* 缓冲运动
+ * obj 运动对象
+ * json 运动目标属性 如{"left":"800px","opacity":"0.5"} 
+ * fn 回调函数
+ */
+function bufferMove(obj,json,fn){  
+	var iCur = 0;
+	var iTarget = 0;
+	var iSpeed = 0;  
+	var bStop = true;        
+	clearInterval(obj.fMove);
+
+	obj.fMove = setInterval(function(){
+		bStop = true;                       	//每次定时器一开始 就设置bStop为ture
+		
+		for(attr in json){                  	//for in json 同时做n个属性的缓冲型数值变化
+			if(attr == 'opacity'){   
+				//对于opacity属性 传入0.x 然后放大100倍进行操作 后续赋值再除以100         
+				iCur = parseInt(parseFloat(getStyle(obj,attr)) * 100);	
+				iTarget = parseInt(parseFloat(json[attr]) * 100);		 
+			}else{
+				iCur = parseInt(getStyle(obj,attr)); 
+				iTarget = parseInt(json[attr]);                       
+			}
+			iSpeed = (iTarget - iCur)/8;                                 
+			
+			if(iSpeed > 0){
+				iSpeed = Math.ceil(iSpeed);
+			}
+			if(iSpeed < 0){
+				iSpeed = Math.floor(iSpeed);
+			}
+			
+			//每个定时器周期里 for in 循环了n次 有n个同时进行的bufferMove函数 从而变化属性值 
+			//n个bufferMove函数里只要有任意一个函数里的属性值还没到达终点 都会把bStop变为false  
+			//当所有属性值都到达终点后 也就是n个bufferMove函数都不执行这句的时候  
+			//这次定时器周期最后的bStop没有被变化为false 还是true   
+			//当这次定时器周期的bStop还是ture的话 在定时器周期函数最后判断bStop为ture 那就关闭定时器了                     	
+			if(iTarget != iCur){   
+				bStop = false;          	
+			}                           	
+                                          	
+			if(attr == 'opacity'){                                       
+				obj.style[attr] = (iCur + iSpeed)/100 + '';            
+				obj.style.filter = 'alpha(opacity:'+(iCur+iSpeed)+')';  
+			}else{
+				obj.style[attr] = iCur + iSpeed + 'px';                
+			}		
+		}
+		
+		if(bStop){                     		//只要有任意一个还没到达终点 bStop会被变成false 不停止定时器
+			clearInterval(obj.fMove);  		//当所有属性值都到达终点后 bStop不会变false 还是原来的true 停止定时器         
+			if(fn){                                                    
+				fn();                                                  
+			}
+		}
+	},20);
+}
+</pre>
+
+<p class="title">html代码</p>
+<pre>
+&ltdiv id="box">
+ 	&ltul id="pic">
+		&ltli class="pic_show">&lta href="http://www.baidu.com">&ltimg src="img/pic_1.jpg"/>&lt/a>&lt/li>
+		&ltli>&lta href="http://www.baidu.com">&ltimg src="img/pic_2.jpg"/>&lt/a>&lt/li>
+		&ltli>&lta href="http://www.baidu.com">&ltimg src="img/pic_3.jpg"/>&lt/a>&lt/li>
+		&ltli>&lta href="http://www.baidu.com">&ltimg src="img/pic_4.jpg"/>&lt/a>&lt/li>
+		&ltli>&lta href="http://www.baidu.com">&ltimg src="img/pic_5.jpg"/>&lt/a>&lt/li>
+		&ltli>&lta href="http://www.baidu.com">&ltimg src="img/pic_6.jpg"/>&lt/a>&lt/li>
+		&ltli>&lta href="http://www.baidu.com">&ltimg src="img/pic_7.jpg"/>&lt/a>&lt/li>
+		&ltli>&lta href="http://www.baidu.com">&ltimg src="img/pic_8.jpg"/>&lt/a>&lt/li>
+		&ltli>&lta href="http://www.baidu.com">&ltimg src="img/pic_9.jpg"/>&lt/a>&lt/li>
+		&ltli>&lta href="http://www.baidu.com">&ltimg src="img/pic_10.jpg"/>&lt/a>&lt/li>
+		&ltli>&lta href="http://www.baidu.com">&ltimg src="img/pic_11.jpg"/>&lt/a>&lt/li>
+		&ltli>&lta href="http://www.baidu.com">&ltimg src="img/pic_12.jpg"/>&lt/a>&lt/li>
+		&ltli>&lta href="http://www.baidu.com">&ltimg src="img/pic_13.jpg"/>&lt/a>&lt/li>
+		&ltli>&lta href="http://www.baidu.com">&ltimg src="img/pic_14.jpg"/>&lt/a>&lt/li>
+	&lt/ul>
+	&ltdiv id="ico_range">
+		&ltul id="ico">
+			&ltli class="active">&ltimg src="img/ico_1.jpg"/>&lt/li>
+			&ltli>&ltimg src="img/ico_2.jpg"/>&lt/li>
+			&ltli>&ltimg src="img/ico_3.jpg"/>&lt/li>
+			&ltli>&ltimg src="img/ico_4.jpg"/>&lt/li>
+			&ltli>&ltimg src="img/ico_5.jpg"/>&lt/li>
+			&ltli>&ltimg src="img/ico_6.jpg"/>&lt/li>
+			&ltli>&ltimg src="img/ico_7.jpg"/>&lt/li>
+			&ltli>&ltimg src="img/ico_8.jpg"/>&lt/li>
+			&ltli>&ltimg src="img/ico_9.jpg"/>&lt/li>
+			&ltli>&ltimg src="img/ico_10.jpg"/>&lt/li>
+			&ltli>&ltimg src="img/ico_11.jpg"/>&lt/li>
+			&ltli>&ltimg src="img/ico_12.jpg"/>&lt/li>
+			&ltli>&ltimg src="img/ico_13.jpg"/>&lt/li>
+			&ltli>&ltimg src="img/ico_14.jpg"/>&lt/li>
+		&lt/ul>		
+	&lt/div>				  
+	&ltspan id="btn1" class="move_end">&lt/span>
+	&ltspan id="btn2">&lt/span>
+	&ltul id="text">
+		&ltli>111111111111111111111111111&lt/li>
+		&ltli>222222222222222222222222222222&lt/li>
+		&ltli>333333333333333333333333333333333&lt/li>
+		&ltli>4444444444444444444444444444444444444&lt/li>
+		&ltli>5555555555555555555555555555555555555&lt/li>
+		&ltli>6666666666666666666666666666666&lt/li>
+		&ltli>77777777777777777777777777777777777777777&lt/li>
+		&ltli>8888888888888888888888888888888888888888&lt/li>
+		&ltli>999999999999999999999999999999999&lt/li>
+		&ltli>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&lt/li>
+		&ltli>bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb&lt/li>
+		&ltli>cccccccccccccccccccccccccccccccccccccc&lt/li>
+		&ltli>ddddddddddddddddddddddddddddddddddddd&lt/li>
+		&ltli>eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee&lt/li>
+	&lt/ul>
+&lt/div>
+</pre>
+
+<p class="title">css代码</p>
+<pre>
+*{
+	margin:0px;
+	padding:0px;
+}
+ul{
+	list-style-type:none;
+}
+img{
+	border:none;
+}
+body{
+	/*background:black;*/
+}
+#box{
+	height:330px;
+	width:660px;
+	border:1px solid black;
+	margin:50px auto;
+	position:relative;
+}
+#ico_range{
+	height:44px;
+	width:504px;
+	position:relative;
+	overflow:hidden; 
+	left:0px;
+	top:-50px;               /*#ico_range div自己相对定位  用相对定位调自己对于#box div的位置*/
+}
+#ico{
+	height:44px;
+	width:1008px;             /* (68+2+2)*14 = 1008px */
+	position:absolute;        /*需要动的是这个ul 他外部被#ico_range div包裹一半并溢出隐藏 他要绝对定位（相对父级就是#ico_range div）*/
+	left:0px;
+	top:0px;
+}
+#ico li{
+	float:left;
+	height:44px;              /*img有2px的边框所以li宽度高度都加4，34+4边框之后,由于要加背景a_hover.gif所以还要加上6px；同时让子元素img margin-top:6px;*/
+	width:68px;              
+	padding-left:2px;         /*这样一个li的宽度就是68+2+2了（为了让下面的背景好居中 所以一边padding一个2px）*/
+	padding-right:2px;        /*li最好别用margin,用了margin后,后续续移动ul那一段距离 就需要li.offsetWidth + margin距离了*/
+	cursor:pointer;
+	opacity:0.6;
+	filter:Alpha(opacity=60);
+}
+#ico li.active{            	/*加class active 一旦有这个class 那li不透明加背景 同时子元素的img边框变3 img自身高度宽度减2*/
+	opacity:1;
+	filter:Alpha(opacity=100);
+	background:url(img/a_hover.gif) no-repeat center top;
+}
+#ico li.active img{
+	border:3px solid white;
+	height:32px;
+	width:62px;
+	margin-top:6px;
+}
+#ico li img{
+	border:2px solid white;
+	height:34px;
+	width:64px;
+	margin-top:6px;          
+}
+
+#box span{
+	display:block;
+	width:37px;
+	height:38px;
+	cursor:pointer;
+}
+#box span.move_end{
+	opacity:0.5;
+	filter:Alpha(opacity=50);
+	cursor:default;
+}
+#btn1{
+	background:url(img/btn.gif) no-repeat 0 0;
+	position:absolute;
+	top:284px;
+	left:560px;
+}
+#btn2{
+	background:url(img/btn.gif) no-repeat -37px 0;
+	position:absolute;
+	top:284px;
+	left:600px;
+}
+
+#pic{
+	width:660px;
+	height:330px;
+	z-index:9999;
+}
+ 
+#pic li {
+ 	width:660px;
+	height:330px;
+	opacity:0;
+	position:absolute;         /*所有pic li全部通过绝对定位叠在一起 一刷新进来除了第一张全部透明 js中变化某张的透明度为1 从而显现某张图*/
+}
+#pic li.pic_show{
+	opacity:1;
+}
+
+#text{
+	position:absolute;
+	left:50px;
+	top:245px;
+}
+#text li{
+	font-size:24px;
+	color:white;
+	display:none;
+}
+</pre>
+
+	 
+</body> 
+</html>    
+      
+     
+     
+     

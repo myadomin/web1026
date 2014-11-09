@@ -1,0 +1,518 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>简单工具库封装</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+</head>
+<body>
+	
+ 
+<p class="title">自身工具库的封装 持续更新</p>
+<pre>
+//工具库封装
+
+//跨浏览器事件绑定 能在一个对象上同时绑定多个事件 而不是前一个被后一个事件覆盖
+function myAddEvent(obj, sEv, fn){
+	if(obj.attachEvent){				      		//IE低版本
+		obj.attachEvent('on'+sEv, function(){
+			//由于IE下这里的this永远指向window 所以用对象冒充让this正确指向到obj 
+			//如果fn回调函数中return flase 那就执行if里的阻止冒泡及默认事件  
+			if(false == fn.call(obj)){	
+				//阻止冒泡及默认事件   			  
+				event.cancelBubble = true;       
+				return false;    
+			}                      
+		});
+	}else{								//w3c IE高版本
+		obj.addEventListener(sEv, function(ev){
+			//本来w3c下直接fn 并不需要function(){fn.call(obj)}对象冒充的 
+			//如果fn回调函数中return flase 那就执行if里的阻止冒泡及默认事件 
+			if(false == fn.call(obj)){  
+				//阻止冒泡及默认事件          
+				ev.stopPropagation();
+				ev.preventDefault();
+			}
+		}, false);  
+	}
+}
+
+
+//跨浏览器删除事件
+function removeEvent(obj,type,fn){
+	if(obj.removeEventListener){   			//W3C
+		obj.removeEventListener(type,fn,false); 
+	}else if(obj.detachEvent){  			//兼容IE低版本
+		obj.detachEvent('on'+type,fn);
+	}
+}
+
+
+//阻止冒泡
+function stopPropagation(ev){  
+	var oEvent = ev || window.event;  
+	if(oEvent.stopPropagation){ 		//W3C阻止冒泡方法  
+	    oEvent.stopPropagation();  
+	}else{  
+	    oEvent.cancelBubble = true; 	//IE阻止冒泡方法  
+	}  
+}  
+
+
+//阻止默认行为
+function preDef(ev){
+	var oEvent = ev||event;
+	if (oEvent.preventDefault) {   			//W3C
+		oEvent.preventDefault();
+	} else {					//IE
+		oEvent.returnValue = false;
+	}
+} 
+
+
+//class获取元素
+function getByClass(oParent,sClass){
+	var aElem = oParent.getElementsByTagName("*");
+	var aResult = [];
+	var re = new RegExp("\\b" + sClass + "\\b","i") 	//sClass左边右边必须是单词边界(\转义\b 所以是\\b)
+	for(var i=0 ; i&ltaElem.length ; i++){            	//也就是sClass左右不能再是字母 而是空格或=等
+		if(re.test(aElem[i].className)){ 		//这样就算class= aa bb cc 这里也是真 就能选取aElem[i]了
+			aResult.push(aElem[i]);
+		}
+	}
+	return aResult;
+}
+
+
+//获取计算后的CSS样式
+function getStyle(obj,attr){
+	if(obj.currentStyle){                   //IE
+		return obj.currentStyle[attr];
+	}else{                                  //W3C
+		return getComputedStyle(obj,false)[attr];
+	}
+}
+
+
+//获取窗口大小 不管是否缩都能准确的得到当前窗口的高度宽度 
+function getInner(){
+	if(window.innerWidth){    	//高版本各浏览器 W3C标准
+		//返回json形式 getInner().width = window.innerWidth
+		return{
+			width:window.innerWidth,      
+			height:window.innerHeight
+		}
+	}else{				//兼容IE6等低版本浏览器
+		return{          		
+			width:document.documentElement.clientWidth, 
+			height:document.documentElement.clientHeight
+		}
+	}
+} 
+
+
+//跨浏览器获取滚动条数值 返回json
+function getScroll(){
+	//返回json形式 getScroll().top = document.documentElement.scrollTop || document.body.scrollTop
+	return{
+		//前面标准 后面低版本chrome
+		top : document.documentElement.scrollTop || document.body.scrollTop,
+		left : document.documentElement.scrollLeft || document.body.scrollLeft
+	}
+}
+
+
+//获取到窗口顶部的距离
+function getTop(obj){
+	var top = 0; 
+	//低版本IE的offsetTop是相对父级的距离 offsetParent是相对父级
+	//标准浏览器的offsetTop是相对窗口顶部的距离 offsetParent是documentElement 		   					 
+	while(obj){    
+		//如果obj还存在offsetParent 就一直循环累加obj的offsetTop
+		//所以低版本IE会一直累加top 标准浏览器循环到第二次是documentElement.offsetParent为空 停止循环           	 
+		top += obj.offsetTop;       
+		obj = obj.offsetParent;  
+	} 
+	return top;
+}
+
+
+//mousewheel全兼容函数封装
+function mousewheel(obj, fn){
+	if(/firefox/ig.test(window.navigator.userAgent)){
+		//如果是firefox浏览器 必须用事件绑定DOMMouseScroll 不能onDOMMouseScroll
+		obj.addEventListener('DOMMouseScroll',function(ev){   
+			//firefox不需要ev兼容处理
+			//ev.detail往上滚轮-3 往下滚轮3 所以/3
+			var data = ev.detail/3;
+			//回调函数传入ev及data参数 在回调函数中通过data参数处理需求 
+			fn(ev, data);
+		});
+	}else{
+		//非firefox
+		obj.onmousewheel = function(ev){
+			//低版本IE需要ev兼容处理
+			//ev.wheelDelta往上120 往下滚轮-120 所以/-120
+			var ev = ev || window.event;   
+			var data = ev.wheelDelta/-120;   
+			fn(ev, data); 
+		}
+	}
+}
+// 示例 往上滚轮-1 往下滚轮1
+// mousewheel(document, function(ev, data){
+// 	alert(data);	
+// })
+
+
+//设置cookie
+function setCookie(name, value, iDay){
+	var oDate = new Date();
+	//过期时间
+	oDate.setDate(oDate.getDate() + iDay);
+	document.cookie = name +"="+ value +";expires="+ oDate;
+}
+
+
+//获取cookie属性值
+function getCookie(name){ 
+	//例如cookie是username=abc; password=123; aaaa=111ssaf; bbbb=assdf
+	//以冒号及空格为准 切成一个数组 arr=["username=abc","password=123","aaaa=111ssaf","bbbb=assdf"]               
+	var arr = document.cookie.split("; ");  
+	for(var i=0 ; i&ltarr.length ; i++){
+		//arr的每个数组元素 例如arr[0]就再被切成arr2=["username","abc"]
+		var arr2 = arr[i].split("=");
+		//这样判断arr2数组的第0个元素 也就是属性名 是不是等于参数         
+		if(arr2[0]==name){ 
+		 	//如果等于就返回arr2[1] 也就是cookie属性值                  
+			return arr2[1];                    
+		} 	
+	}
+	return "";
+}
+
+
+//删除cookie
+function removeCookie(name){								 
+	//设置属性名name为任意值 并昨天过期 那系统就把他删除了
+	setCookie(name,"任意值都可以",-1);       
+}
+
+
+//ajax封装
+function ajax(method, url, data, fnSucc) {
+	//1.创建Ajax对象
+	var xhr = null;
+	if(window.XMLHttpRequest) {
+		xhr= new XMLHttpRequest();
+	} else {	//兼容低版本IE
+		xhr= new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	
+	//2.连接服务器
+	//如果是get方式 数据被附带到url?后提交
+	if (method == 'get' && data) {
+		url += '?' + data;
+	}
+	xhr.open(method, url, true);
+	
+	//3.发送请求  
+	if (method == 'get') {
+		xhr.send();
+	} else {	
+		//如果是post方式 数据被做为send参数提交
+		xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+		xhr.send(data);
+	}
+	
+	//4.接收服务器的返回  
+	xhr.onreadystatechange = function() {
+		if ( xhr.readyState == 4 ) {
+			if ( xhr.status == 200 ) {
+				//成功 获取的响应数据xhr.responseText作为回调函数的参数
+				fnSucc && fnSucc(xhr.responseText);
+			} else {
+				//失败
+				alert('出错了,Err：' + xhr.status);
+			}
+		}
+	}
+}
+
+
+//深度克隆对象
+function cloneObj(obj){
+	//obj是数组 就创建newObj为空数组 否则为空{}
+    var newObj = obj.constructor === Array ? [] : {};
+    
+    //非对象 return
+    if(typeof obj !== 'object') {
+        return;
+    } else {
+    	//数组及{}情况 都可以for in
+        for(var i in obj) {
+        	//拷贝newObj[i] =  obj[i]  
+        	//但是多维数组或多维对象情况下 obj[i]还是对象获数组 递归回调函数
+            newObj[i] = typeof obj[i] === 'object' ? cloneObj(obj[i]) : obj[i]; 
+        }
+    }
+    
+    return newObj;
+}
+
+
+//异步加载js方案
+//1: &ltscript type="text/javascript" defer="defer" src="xxx">&lt/script>  只有IE支持
+//2: &ltscript type="text/javascript" async="async" src="xxx">&lt/script>	HTML5支持
+//3：使用sea.js等模块开发工具 全支持 可保证js加载安全
+//4: DOM中插入创建的script标签 加载完毕回调函数 全支持 可保证js加载安全
+function loadScript(url, callback){
+	//DOM中插入创建的script标签
+	var oScript = document.createElement('script');
+	oScript.src = url;
+	document.body.appendChild(oScript);
+
+	//加载完毕回调函数
+	if(oScript.readyState){		//低版本IE
+		oScript.onreadystatechange = function(){
+			if(oScript.readyState == 'loaded' || oScript.readyState == 'complete'){
+				oScript.onreadystatechange = null;
+				callback();
+			}
+		}
+	}else{						//标准
+		oScript.onload = function(){
+			callback();
+		}
+	}
+}
+
+
+/* 缓冲运动
+ * obj 运动对象
+ * json 运动目标属性 如{"left":"800px","opacity":"0.5"} 
+ * fn 回调函数
+ */
+function bufferMove(obj,json,fn){  
+	var iCur = 0;
+	var iTarget = 0;
+	var iSpeed = 0;  
+	var bStop = true;        
+	clearInterval(obj.fMove);
+
+	obj.fMove = setInterval(function(){
+		bStop = true;                       	//每次定时器一开始 就设置bStop为ture
+		
+		for(attr in json){                  	//for in json 同时做n个属性的缓冲型数值变化
+			if(attr == 'opacity'){   
+				//对于opacity属性 传入0.x 然后放大100倍进行操作 后续赋值再除以100         
+				iCur = parseInt(parseFloat(getStyle(obj,attr)) * 100);	
+				iTarget = parseInt(parseFloat(json[attr]) * 100);		 
+			}else{
+				iCur = parseInt(getStyle(obj,attr)); 
+				iTarget = parseInt(json[attr]);                       
+			}
+			iSpeed = (iTarget - iCur)/8;                                 
+			
+			if(iSpeed > 0){
+				iSpeed = Math.ceil(iSpeed);
+			}
+			if(iSpeed &lt 0){
+				iSpeed = Math.floor(iSpeed);
+			}
+			
+			//每个定时器周期里 for in 循环了n次 有n个同时进行的bufferMove函数 从而变化属性值 
+			//n个bufferMove函数里只要有任意一个函数里的属性值还没到达终点 都会把bStop变为false  
+			//当所有属性值都到达终点后 也就是n个bufferMove函数都不执行这句的时候  
+			//这次定时器周期最后的bStop没有被变化为false 还是true   
+			//当这次定时器周期的bStop还是ture的话 在定时器周期函数最后判断bStop为ture 那就关闭定时器了                     	
+			if(iTarget != iCur){   
+				bStop = false;          	
+			}                           	
+                                          	
+			if(attr == 'opacity'){                                       
+				obj.style[attr] = (iCur + iSpeed)/100 + '';            
+				obj.style.filter = 'alpha(opacity:'+(iCur+iSpeed)+')';  
+			}else{
+				obj.style[attr] = iCur + iSpeed + 'px';                
+			}		
+		}
+		
+		if(bStop){                     		//只要有任意一个还没到达终点 bStop会被变成false 不停止定时器
+			clearInterval(obj.fMove);  	//当所有属性值都到达终点后 bStop不会变false 还是原来的true 停止定时器         
+			if(fn){                                                    
+				fn();                                                  
+			}
+		}
+	},20);
+}
+
+
+/* 匀速运动
+ * obj 运动对象
+ * json 运动目标属性 如{"left":"800px","opacity":"0.5"} 
+ * fn 回调函数
+ */
+function uniMove(obj,json,fn){  
+	var iCur = 0;  
+	var iTarget = 0; 
+	var Speed = 10;					//要改变运动速度 只有进函数内部改这里的数值
+	var bStop = true; 
+	clearInterval(obj.fMove);
+
+	obj.fMove = setInterval(function(){
+		bStop = true;                     	//每次定时器一开始 就设置bStop为ture
+
+		for(attr in json){                	//for in json 同时做n个属性的缓冲型数值变化
+			if(attr == 'opacity'){    
+				//对于opacity属性 传入0.x 然后放大100倍进行操作 后续赋值再除以100         
+				iCur = parseInt(parseFloat(getStyle(obj,attr)) * 100);	
+				iTarget = parseInt(parseFloat(json[attr]) * 100);		          
+			}else{
+				iCur = parseInt(getStyle(obj,attr));
+				iTarget = parseInt(json[attr]);                       
+			}	                                
+			
+			if(iTarget - iCur > 0){
+				iSpeed = Speed;          		
+			}
+			if(iTarget - iCur &lt 0){
+				iSpeed = -Speed;
+			}
+			
+			if( Math.abs(iTarget - iCur) &lt Math.abs(iSpeed) ){  	//如果最后一次的运动 目标值和当前值相差小于一个iSpeed 
+				iSpeed = iTarget - iCur;			//那iSpeed就等于iTarget - iCur
+			}
+                                              
+			if(iTarget != iCur){                       
+				bStop = false;                   
+			}
+			else{									
+				iSpeed = 0;              //一旦某个json属性等于属性值后这个属性值变化的iSpeed变为0 以免最后还多加一次
+			}                                              
+                                             
+			if(attr == 'opacity'){                                       
+				obj.style[attr] = (iCur + iSpeed)/100 + '';            
+				obj.style.filter = 'alpha(opacity:'+(iCur+iSpeed)+')';  
+			}else{
+				obj.style[attr] = iCur + iSpeed + 'px';                
+			}		
+		}
+		
+		if(bStop){                       	//只要有任意一个还没到达终点 bStop会被变成false 不停止定时器
+			clearInterval(obj.fMove);    	//当所有属性值都到达终点后 bStop不会变false 还是原来的true 停止定时器         
+			if(fn){                                                    
+				fn();                                                  
+			}
+		}
+	},20);
+}
+
+
+/* 弹性运动
+ * obj 运动对象
+ * json 运动目标属性 如{"left":"800px","top":"50px"}  
+ * fn 回调函数
+ * 由于弹性运动会过界目标点 所以height opacity等不能为负值的属性不能用弹性运动
+ */
+function elaMove(obj,json,fn){
+	clearInterval(obj.timer);                     
+	var iCur = 0;
+	var iSpeed = 0;
+	var iTarget = 0;       
+	                              
+	obj.timer = setInterval(function(){
+		var bStop = true;  
+		
+		for(attr in json){
+			if(attr != "opacity"){
+				iCur = parseFloat(getStyle(obj,attr));          //由于每次循环iSpeed会形成小数 所以这里获取iCur用parseFloat
+				iTarget = parseInt(json[attr]);
+			    iSpeed += (iTarget - iCur)/5;                   	//冲击速度 改变这个5 越大就冲的越慢
+			    iSpeed *= 0.7;                              	//模拟摩擦力 改变这个0.7 越大说明摩擦力越小 摆动的幅度越大 如果为1 那就是永动钟摆运动了
+		
+			    if( Math.abs(iSpeed)&lt1 && Math.abs(iCur - iTarget)&lt1){ 	//当速度绝对值小于1而且目标点与最终位置小于1就停下
+			    	obj.style[attr] = iTarget + "px";                	//停下可能有1px误差 强行定住
+			    }else{	 	 
+		    		obj.style[attr] = iCur + iSpeed + "px";  
+		    		bStop = false;                 		      
+				}		 
+				document.title = iTarget +"||"+ iSpeed +"||"+ (iCur - iTarget);
+			}
+		}	
+		
+		if(bStop){       					//只要有任意一个还没到达终点 bStop会被变成false 不停止定时器
+			clearInterval(obj.timer);                   	//当所有属性值都到达终点后 bStop不会变false 还是原来的true 停止定时器         
+			if(fn){                                                    
+				fn();                                                  
+			}
+		}	
+	},30)
+}	
+
+
+//限定拖拽 必传参数obj 选传参数xRange yRange 
+function limitDrag(obj, xRange, yRange){
+	obj.onmousedown = function(ev){
+		var oEvent = ev||event
+		if(getStyle(obj,"position") == "absolute"){ 
+		   	//如果css设置的是absolute定位 那后续计算就需要加上scrollLeft                   
+			var scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;   
+			var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+		}else if(getStyle(obj,"position") == "fixed"){  
+			//如果css设置的是fixed定位 那后续计算就不需要加上scrollLeft 所以为0                 
+			var scrollLeft = 0; 
+			var scrollTop = 0;
+		}
+
+		var disX = oEvent.clientX + scrollLeft - this.offsetLeft; 
+		var disY = oEvent.clientY + scrollTop - this.offsetTop;
+		//xRange yRange设定obj的某些区域拖拽才有效 当被点击的disX大于xRange参数或者disY大于参数yRange 就跳出函数不能拖拽 
+		if(disX>xRange || disY>yRange){                        
+			return;                                            
+		}
+		  	
+		document.onmousemove = function(ev){
+			var oEvent = ev||event;
+			var nLeft = oEvent.clientX + scrollLeft - disX;
+			var nTop = oEvent.clientY + scrollTop - disY;
+			var clientWidth = document.documentElement.clientWidth||document.body.clientWidth;   
+			var clientHeight = document.documentElement.clientHeight||document.body.clientHeight;
+			
+			if(nLeft &lt scrollLeft){               
+				nLeft = scrollLeft;
+			}
+			if(nLeft > clientWidth - obj.offsetWidth + scrollLeft){
+				//如果在他的某层父级有relative 而又想把拖拽限定在这层父级内
+				//clientWidth需要改动为obj.parentNode.offsetWidth（多层父级就多加几个parentNode）     
+				nLeft = clientWidth - obj.offsetWidth + scrollLeft;    
+			}
+			if(nTop &lt scrollTop){
+				nTop = scrollTop;
+			}
+			if(nTop > clientHeight - obj.offsetHeight + scrollTop){
+				nTop = clientHeight - obj.offsetHeight + scrollTop;
+			}
+			
+			obj.style.left = nLeft + "px";
+			obj.style.top = nTop + "px";
+			//阻止拖动过程中选择oDiv内部文字的默认事件 
+			return false;           
+		}
+		
+		document.onmouseup = function(){
+			this.onmousemove = null;
+			this.onmouseup = null;
+		}
+		return false;            
+	}	
+}
+</pre>
+	
+
+</body> 
+</html>    
+      
+     
+     
+     

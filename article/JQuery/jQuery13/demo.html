@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>jQuery源码分析2--继承extend的实现</title>
+<link rel="stylesheet" type="text/css" href="../../../css/article_base.css" />
+</head>
+<body>
+<pre>
+<p class="title">概述</p>
+本文主要介绍源码的$.extend及$.fn.extend的作用及实现
+PS：(349-817)的意思就是对应源码的349行到817行，源码版本是jquery-2.0.3.js。
+
+<p class="title">(285-347) jQuery.extend = jQuery.fn.extend = function(){xxx} 定义JQ的继承方法extend</p>
+//后续扩展工具方法就用jQuery.extend({xxx}) 扩展实例方法就用jQuery.fn.extend({xxx})
+
+<strong>1：应用$.extend方法 将第二个到最后一个参数的对象扩展到第一个参数a对象上</strong>
+var a = {};
+$.extend(a, {name: 'luo'}, {showName:function(){alert('luo')}});
+console.log(a);		//{ name="luo", showName=function() } a对象被扩展了
+a.showName();		//弹出 luo 相对于a对象继承了showName方法
+相当于a对象继承了第二个第三个参数对象 所以可以用$.extend()模拟继承
+
+
+<strong>2：$.extend模拟继承的浅拷贝</strong> 
+var aaa = {};
+var bbb = {name: {firstName:'luo'}}		//被拷贝(被继承)对象2层以上的对象嵌套
+$.extend(aaa, bbb);
+aaa.name.firstName = 'luo11111';		//修改子类
+alert(aaa.name.firstName);			//luo11111 子类正常
+alert(bbb.name.firstName);			//luo11111 子类影响了父类 不正常
+如果被拷贝(被继承)对象有2层以上的对象嵌套 那extend过程中子类修改后会影响父类 因为extend默认就是浅拷贝
+为了子类修改后不影响父类 需要使用深拷贝模式 把extend()方法的第一个参数设置为true就是启动深拷贝
+
+
+<strong>3：$.extend模拟继承的深拷贝</strong> 
+var ccc = {};
+var ddd = {name: {firstName:'luo'}}		//被拷贝(被继承)对象2层以上的对象嵌套
+$.extend(true, ccc, ddd);			//第一个参数设置为true 启动深拷贝
+ccc.name.firstName = 'luo11111';		//修改子类
+alert(ccc.name.firstName);			//luo11111 子类正常
+alert(ddd.name.firstName);			//luo 子类没有影响父类 正常
+
+
+<strong>4：如果$.extend()只有一个参数对象 那就是把这个参数对象扩展到jQuery对象上 就是添加jQuery工具方法</strong>
+$.extend({say:function(){alert('我是工具方法插件')}});
+$.say();			//弹窗 我是工具方法插件 添加了jQuery的工具方法
+
+
+<strong>5：如果$.fn.extend()只有一个参数对象 那就是扩展到jQuery.fn对象 就是扩展到实例化$(xxx)对象上 就是添加了jQuery实例方法</strong> 
+$.fn.extend({say:function(){alert('我是实例方法插件')}});
+$().say();			//弹窗 我是实例方法插件 添加了jQuery的实例方法
+
+
+<strong>6：(285-347) 源码具体分析</strong>
+jQuery.extend = jQuery.fn.extend = function() {
+	var options, name, src, copy, copyIsArray, clone,
+		target = arguments[0] || {},	//初始target是第一个参数 
+		i = 1,				//定义后续循环的起始数 默认从1开始循环
+		length = arguments.length,		
+		deep = false;			//是否深拷贝 默认浅拷贝
+
+	//如果arguments[0]是布尔值 也就是$.extend(true,{xx},{xx})的写法 说明是要进行深拷贝
+	if ( typeof target === "boolean" ) {
+		deep = target;			//把deep变为true 启动深拷贝
+		target = arguments[1] || {};	//被扩展对象target变为第二个参数
+		i = 2;				//循环起始数改为2
+	}
+
+	//被扩展对象target必须是对象
+	if ( typeof target !== "object" && !jQuery.isFunction(target) ) {
+		target = {};
+	}
+
+	//如果arguments.length是1(i默认是1) 那被扩展对象就是jQuery 也就是插件模式
+	if ( length === i ) {
+		target = this;
+		--i;
+	}
+
+	//开始循环 如果是浅拷贝那i就是默认的1 从第二个参数(arguments[1])开始循环到arguments.length
+	//如果是深拷贝那i被修改为2 从第三个参数(arguments[2])开始循环到arguments.length
+	for ( ; i < length; i++ ) {
+		if ( (options = arguments[ i ]) != null ) {
+			//for in每个arguments[i]对象 
+			for ( name in options ) {
+				src = target[ name ];
+				copy = options[ name ];
+
+				//防止$.extend(a, {name:a})此种类型的对象引用死循环
+				if ( target === copy ) {
+					continue;
+				}
+
+				//deep为true并且copy存在 并且copy(也就是options[name])也是对象或对象数组 进行深拷贝处理 
+				if ( deep && copy && ( jQuery.isPlainObject(copy) || (copyIsArray = jQuery.isArray(copy)) ) ) {
+					if ( copyIsArray ) {
+						copyIsArray = false;
+						clone = src && jQuery.isArray(src) ? src : [];
+
+					} else {
+						clone = src && jQuery.isPlainObject(src) ? src : {};
+					}
+
+					target[ name ] = jQuery.extend( deep, clone, copy );
+
+				//默认的浅拷贝处理
+				} else if ( copy !== undefined ) {
+					//target[name] = arguments[i][name] 拷贝继承 最终把每个arguments[i]扩充到target对象上  
+					target[ name ] = copy;
+				}
+			}
+		}
+	}
+
+	//最终返回被扩展完的对象target 	
+	return target;
+}; 
+
+</pre>
+</body>
+</html>
