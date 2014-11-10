@@ -1,0 +1,22 @@
+@CHARSET "UTF-8";
+body {
+	width:auto;
+}
+/*由于引入了base.css 所以这里的width:80%会相对base.css的宽度 所以上面重写body冲突掉base的body*/
+#face h3 {
+	width:80%;
+	margin:10px auto;
+	height:30px;
+	line-height:30px;
+	text-align:center;
+	border:1px dashed #333;
+}
+#face dl {
+	width:80%;
+	margin:0 auto;
+}
+#face dl dd {
+	margin:11px;
+	cursor:pointer;
+	float:left;
+}
