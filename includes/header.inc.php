@@ -25,8 +25,9 @@ if(!defined("IN_TG")){
 		<li><a href="list.php?category=HTML5">HTML5</a></li>
 		<li><a href="list.php?category=PHP">PHP</a></li>
 		<li><a href="list.php?category=display">web相关</a></li>
-		<li><a href="about.php#download">代码下载</a></li>
+		<li><a href="#">项目展示</a></li>
 		<li><a href="about.php">关于本站</a></li>
-		<li class="right">www.web1026.com</li>
+		<li><a href="https://github.com/myadomin?tab=repositories" target="_blank" style="color:red">my github</a></li>
+		<!-- <li class="right">www.web1026.com</li> -->
 	</ul>
 </div>

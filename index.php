@@ -59,7 +59,7 @@ require ROOT_PATH.'includes/header.inc.php';
 	</dl>
 	<dl>
 		<dt class="dt7"><a href="list.php?category=display">WEB相关</a></dt>
-		<dd class="dd1">公司及个人的项目展示，css布局展示，web优化，web相关等。</dd>
+		<dd class="dd1">css布局展示，服务器环境搭建，工具使用，web优化等web相关笔记。</dd>
 		<dd class="dd2"><a href="list.php?category=display">查看博文</a></dd>
 	</dl>
 </div>

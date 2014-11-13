@@ -48,7 +48,7 @@ require ROOT_PATH.'includes/header.inc.php';
 			echo 'Ajax封装及应用，Ajax瀑布流，<br />Ajax获取后端数据的应用，JSONP应用等。';		
 			break;
 		case 'display';
-			echo '公司及个人的项目展示，<br />css布局展示，web优化，web相关等。';
+			echo 'css布局展示，服务器环境搭建，<br />工具使用，web优化等web相关笔记。';
 			break;
 		case 'HTML5';
 			echo 'HTML5各知识点DEMO，HTML5的LBS应用，<br />canvas应用与canvas游戏，CSS3的2D及3D操作等。';
